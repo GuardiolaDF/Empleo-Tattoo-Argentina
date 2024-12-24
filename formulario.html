@@ -31,28 +31,38 @@
             <div class="mb-3">
                 <label for="studioName" class="form-label">Nombre del Estudio</label>
                 <input type="text" id="studioName" class="form-control" required>
+                <div id="studioNameValidacion" class="text-danger" style="display: none;"></div>
             </div>
             <div class="mb-3">
                 <label for="tipoBusqueda" class="form-label">¿Qué estás buscando?</label>
                 <select id="tipoBusqueda" class="form-control" required>
+                    <option value="">Seleccione una opción</option>
                     <option value="Alquiler de Box">Alquiler de Box</option>
                     <option value="Búsqueda de Personal">Búsqueda de Personal</option>
                 </select>
+                <div id="tipoBusquedaValidacion" class="text-danger" style="display: none;"></div>
             </div>
             <div class="mb-3">
                 <label for="puesto" class="form-label">Puesto (Tatuador/a, Perforador/a)</label>
                 <input type="text" id="puesto" class="form-control" required>
+                <div id="puestoValidacion" class="text-danger" style="display: none;"></div>
             </div>
             <div class="mb-3">
                 <label for="ubicacion" class="form-label">Ubicación (Ciudad o Barrio)</label>
                 <input type="text" id="ubicacion" class="form-control" required>
+                <div id="ubicacionValidacion" class="text-danger" style="display: none;"></div>
             </div>
             <div class="mb-3">
                 <label for="descripcion" class="form-label">Descripción Detallada</label>
                 <textarea id="descripcion" class="form-control" rows="4" required></textarea>
+                <div id="descripcionValidacion" class="text-danger" style="display: none;"></div>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" name="terminos" id="terminos">
+                <label for="terminos" class="form-label">Acepto <a href="#">terminos y condiciones</a></label>
             </div>
             <!-- Botón para previsualizar la oferta -->
-            <button type="button" id="previsualizar-btn" class="btn btn-primary">Previsualizar</button>
+            <button type="button" id="previsualizar-btn" class="btn btn-primary" disabled>Previsualizar</button>
         </form>
     </main>
 
