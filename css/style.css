@@ -101,7 +101,7 @@ body {
 
 
 /* Botón Postularse */
- #postular-btn {  // No referenciado en ninguna parte del código
+ #postular-btn {  /* No referenciado en ninguna parte del código */
     width: 100%;
     padding: 10px;
     font-size: 16px;
