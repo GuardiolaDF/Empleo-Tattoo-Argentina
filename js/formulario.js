@@ -56,6 +56,7 @@ function validarFormulario() {
     const isPuestoValido = puestoValue.length >= 3 && puestoValue.length <= 50;
     const isUbicacionValida = ubicacionValue.length >= 3 && ubicacionValue.length <= 50;
     const isDescripcionValida = descripcionValue.length >= 10 && descripcionValue.length <= 200;
+    const isTesminosValido = terminos.checked;
 
  
      // Validar cada campo y mostrar mensajes de error
@@ -106,7 +107,15 @@ function validarFormulario() {
          document.getElementById('descripcionValidacion').style.display = 'none';
      }
 
+     if (!isTesminosValido) {
+        document.getElementById('terminosValidacion').innerText = 'Debes aceptar los terminos y condiciones para continuar.';
+        document.getElementById('terminosValidacion').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('terminosValidacion').style.display = 'none';
+    }
+
     // Habilitar o deshabilitar el botón de previsualizar
     const previsualizarBtn = document.getElementById('previsualizar-btn');
-    previsualizarBtn.disabled = !(isNombreEstudioValido && isTipoBusquedaValido && isPuestoValido && isUbicacionValida && isDescripcionValida);
+    previsualizarBtn.disabled = !(isNombreEstudioValido && isTipoBusquedaValido && isPuestoValido && isUbicacionValida && isDescripcionValida && isTesminosValido);
 }
