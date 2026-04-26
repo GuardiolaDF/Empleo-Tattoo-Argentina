@@ -5,52 +5,30 @@ import Link from "next/link";
 
 // --- Components ---
 
-type JobVariant = 'white' | 'dark' | 'image' | 'gray';
+const cardTones = [
+  "bg-[#FFFFFF]", // Tone 1: white
+  "bg-[#F0F0F0]", // Tone 2: light gray
+  "bg-[#E0E0E0]", // Tone 3: medium gray
+  "bg-[#C8C8C8]", // Tone 4: darker gray
+];
 
 interface JobCardProps {
-  variant: JobVariant;
+  index: number;
   studioName?: string;
   role: string;
   specialty: string;
   location: string;
 }
 
-function JobCard({ variant, studioName, role, specialty, location }: JobCardProps) {
-  let variantClasses = "";
-  let textClasses = "";
-  let overlay = null;
-  
-  switch (variant) {
-    case 'white':
-      variantClasses = "bg-white";
-      textClasses = "text-black";
-      break;
-    case 'dark':
-      variantClasses = "bg-[#252525]";
-      textClasses = "text-white";
-      break;
-    case 'image':
-      variantClasses = "bg-cover bg-center relative";
-      textClasses = "text-white relative z-10";
-      overlay = <div className="absolute inset-0 bg-black/80 z-0"></div>;
-      break;
-    case 'gray':
-      variantClasses = "bg-[#B5B5B5]";
-      textClasses = "text-black";
-      break;
-  }
-
-  // Fallback image for the 'image' variant
-  const style = variant === 'image' ? { backgroundImage: "url('https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=800&auto=format&fit=crop')" } : {};
+function JobCard({ index, studioName, role, specialty, location }: JobCardProps) {
+  const bgColor = cardTones[index % 4];
 
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${variantClasses}`} 
-      style={style}
+      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl text-black ${bgColor}`} 
     >
-      {overlay}
-      <div className={`relative z-10 ${textClasses}`}>
+      <div className="relative z-10 text-black">
         {studioName && (
           <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
         )}
@@ -58,7 +36,7 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
         <h2 className="font-serif text-5xl md:text-6xl tracking-tight mb-2 leading-[1.1]">{role}</h2>
         <p className="font-sans italic text-sm tracking-widest opacity-80">{specialty}</p>
       </div>
-      <div className={`relative z-10 flex items-center space-x-2 mt-8 ${textClasses}`}>
+      <div className="relative z-10 flex items-center space-x-2 mt-8 text-black">
         <MapPin className="w-4 h-4" />
         <span className="font-sans text-sm tracking-wide">{location}</span>
       </div>
@@ -112,34 +90,21 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-          <JobCard 
-            variant="white"
-            studioName="BLACK PANTER"
-            role="Tatuador/a"
-            specialty="Realismo en black and grey"
-            location="Palermo, Buenos Aires"
-          />
-          <JobCard 
-            variant="dark"
-            studioName="BLACK PANTER"
-            role="Tatuador/a"
-            specialty="Realismo en black and grey"
-            location="Palermo, Buenos Aires"
-          />
-          <JobCard 
-            variant="image"
-            studioName=""
-            role="Tatuador"
-            specialty="Realismo en black and grey"
-            location="Palermo, Buenos Aires"
-          />
-          <JobCard 
-            variant="gray"
-            studioName="BLACK PANTER"
-            role="Tatuador/a"
-            specialty="Realismo en black and grey"
-            location="Palermo, Buenos Aires"
-          />
+          {[
+            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
+            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
+            { studioName: "", role: "Tatuador", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
+            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" }
+          ].map((job, idx) => (
+            <JobCard 
+              key={idx}
+              index={idx}
+              studioName={job.studioName}
+              role={job.role}
+              specialty={job.specialty}
+              location={job.location}
+            />
+          ))}
         </div>
 
         <div className="flex justify-center">
