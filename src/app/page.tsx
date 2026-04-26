@@ -43,7 +43,14 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   );
 }
 
-// --- Main Page ---
+const brands = [
+  "INK MASTER",
+  "DRAGONFLY IRONS", 
+  "CHEYENNE",
+  "BISHOP ROTARY",
+  "ETERNAL INK",
+  "FK IRONS",
+];
 
 export default function Home() {
   return (
@@ -69,12 +76,25 @@ export default function Home() {
       </section>
 
       {/* Logo Bar */}
-      <section className="bg-white py-10 w-full border-y border-border">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-8 flex-wrap text-muted-foreground font-sans text-xs tracking-[0.3em] uppercase">
-          <span className="opacity-60">Ink Master</span>
-          <span className="opacity-60">Dragonfly Irons</span>
-          <span className="opacity-60">Cheyenne</span>
-          <span className="opacity-60">Bishop Rotary</span>
+      <section className="bg-white py-10 w-full border-y border-border overflow-hidden">
+        <div style={{
+          maskImage: 'linear-gradient(to right, transparent 0px, black 80px, black calc(100% - 80px), transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0px, black 80px, black calc(100% - 80px), transparent 100%)',
+        }}>
+          <div 
+            className="flex whitespace-nowrap w-max hover:[animation-play-state:paused]"
+            style={{ animation: "ticker 30s linear infinite" }}
+          >
+            {/* Double the array for seamless loop */}
+            {[...brands, ...brands].map((brand, i) => (
+              <div key={i} className="flex items-center">
+                <span className="font-sans text-xs tracking-widest uppercase text-[#666666] px-8">
+                  {brand}
+                </span>
+                <span className="text-[#666666]/50">•</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
