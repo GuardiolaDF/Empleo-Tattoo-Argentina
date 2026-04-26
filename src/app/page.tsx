@@ -102,6 +102,7 @@ export default function Home() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [filterBarOpen, setFilterBarOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -214,53 +215,72 @@ export default function Home() {
 
       {/* Puestos Vacantes (Job Grid) */}
       <section id="ofertas" className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <style>{`
+          @keyframes filterSlideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
         <div className="flex flex-col mb-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
-            <button className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex">
+            <button 
+              onClick={() => setFilterBarOpen(!filterBarOpen)}
+              className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex"
+            >
               <span className="font-sans text-xs tracking-widest uppercase">Filtro</span>
               <Settings2 className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="w-full bg-white border-y border-border relative z-20" ref={dropdownRef}>
-            <div className="grid grid-cols-2 md:grid-cols-6 divide-x divide-y md:divide-y-0 divide-border">
-              {Object.entries(FILTROS).map(([key, options]) => {
-                const isActive = !!activeFilters[key];
-                const isOpen = openDropdown === key;
-                const label = FILTER_LABELS[key];
+          {filterBarOpen && (
+            <div 
+              className="w-full bg-white relative z-20" 
+              ref={dropdownRef}
+              style={{ animation: 'filterSlideIn 300ms ease-out forwards' }}
+            >
+              <div className="grid grid-cols-2 md:grid-cols-6 border-b border-border">
+                {Object.entries(FILTROS).map(([key, options]) => {
+                  const isActive = !!activeFilters[key];
+                  const isOpen = openDropdown === key;
+                  const label = FILTER_LABELS[key];
 
-                return (
-                  <div key={key} className="relative">
-                    <button 
-                      onClick={() => setOpenDropdown(isOpen ? null : key)}
-                      className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
-                        isActive ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-50'
-                      }`}
-                    >
-                      <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
-                      <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    {isOpen && (
-                      <div className="absolute top-full left-0 w-full min-w-[200px] bg-white border border-black shadow-xl max-h-[280px] overflow-y-auto z-30">
-                        {options.map((opt) => (
-                          <button
-                            key={opt}
-                            onClick={() => handleFilterSelect(key, opt)}
-                            className="w-full text-left px-4 py-3 hover:bg-muted font-sans text-xs transition-colors flex items-center justify-between"
-                          >
-                            <span>{opt}</span>
-                            {activeFilters[key] === opt && <Check className="w-4 h-4" />}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  return (
+                    <div key={key} className="relative">
+                      <button 
+                        onClick={() => setOpenDropdown(isOpen ? null : key)}
+                        className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
+                          isActive ? 'text-black font-medium' : 'text-[#666666] hover:text-black font-normal'
+                        }`}
+                      >
+                        <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+                      </button>
+                      {isOpen && (
+                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] max-h-[280px] overflow-y-auto z-30">
+                          {options.map((opt) => {
+                            const isSelected = activeFilters[key] === opt;
+                            return (
+                              <button
+                                key={opt}
+                                onClick={() => handleFilterSelect(key, opt)}
+                                className={`w-full text-left px-4 py-2 font-sans text-xs transition-colors flex items-center justify-between ${
+                                  isSelected ? 'bg-[#F4F4F4] font-medium' : 'bg-white hover:bg-[#F4F4F4] font-normal'
+                                }`}
+                              >
+                                <span className="text-black">{opt}</span>
+                                {isSelected && <Check className="w-4 h-4 text-black" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
 
-            {Object.keys(activeFilters).length > 0 && (
+              {Object.keys(activeFilters).length > 0 && (
               <div className="flex items-center justify-between px-4 py-4 bg-[#F4F4F4]">
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(activeFilters).map(([key, value]) => (
@@ -278,9 +298,10 @@ export default function Home() {
               </div>
             )}
           </div>
-        </div>
+        )}
+      </div>
 
-        {filteredJobs.length > 0 ? (
+      {filteredJobs.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
               {filteredJobs.map((job, idx) => (
