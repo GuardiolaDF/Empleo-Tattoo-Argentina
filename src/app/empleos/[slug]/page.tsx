@@ -22,7 +22,7 @@ export default function JobListingPage() {
           </h1>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
-            <Link href="#" className="font-sans text-xs tracking-widest uppercase underline hover:text-muted-foreground transition-colors">
+            <Link href="/estudios/void-tattoo-club" className="font-sans text-xs tracking-widest uppercase underline hover:text-muted-foreground transition-colors">
               Void Tattoo Club
             </Link>
             <button className="bg-black text-white px-12 py-5 text-[10px] tracking-[0.2em] uppercase hover:bg-black/90 transition-colors">

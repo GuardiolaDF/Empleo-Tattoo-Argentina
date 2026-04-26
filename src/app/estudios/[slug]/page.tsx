@@ -92,10 +92,10 @@ export default function PublicStudioProfilePage() {
         {/* SECTION 1 - Hero */}
         <section className="w-full bg-white text-center pb-12 border-b border-border">
           <h1 className="font-serif text-6xl md:text-[7rem] tracking-tighter leading-[0.9] uppercase mb-8">
-            Void Tattoo<br/>Club
+            VOID TATTOO CLUB
           </h1>
           <p className="font-sans text-xs tracking-widest text-muted-foreground uppercase">
-            EST. 2015 | Palermo, Buenos Aires
+            EST. 2018 | Palermo, Buenos Aires
           </p>
         </section>
 
@@ -110,7 +110,7 @@ export default function PublicStudioProfilePage() {
                 <div className="flex-1 border-t border-border/50"></div>
               </div>
               <p className="font-sans text-sm leading-loose text-foreground/90">
-                Ubicado en el corazón de Palermo, Void Tattoo Club es un espacio diseñado para la creatividad y la excelencia técnica. Fundado en 2015, nos especializamos en estilos oscuros y tradicionales, brindando un entorno privado y tranquilo tanto para nuestros artistas como para nuestros clientes. Buscamos siempre mantener un estándar internacional de higiene y calidad artística, siendo referentes en Argentina y Latinoamérica.
+                Espacio privado especializado en Blackwork y Dotwork. Agenda gestionada, entorno silencioso y enfocado. Valoramos la consistencia técnica y una visión artística propia.
               </p>
             </div>
 
@@ -121,9 +121,9 @@ export default function PublicStudioProfilePage() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <SpecialtyPill label="Blackwork" variant="default" />
-                <SpecialtyPill label="Realismo" variant="outline" />
-                <SpecialtyPill label="Tradicional" variant="default" />
                 <SpecialtyPill label="Dotwork" variant="outline" />
+                <SpecialtyPill label="Geometría" variant="default" />
+                <SpecialtyPill label="Fineline" variant="outline" />
               </div>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function PublicStudioProfilePage() {
           {/* Right Column (Narrow, Sticky) */}
           <aside className="w-full lg:w-80 flex-shrink-0">
             <div className="sticky top-12 flex flex-col space-y-12">
-              <ContactButtons whatsapp="5491122334455" instagram="@voidtattooclub" />
+              <ContactButtons whatsapp="5491112345678" instagram="@voidtattooclub" />
               
               <div className="w-full border-t border-border/50"></div>
 
