@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ConfirmacionPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F4F4F4] px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F4F4] px-4 py-12 space-y-8">
       <div className="bg-white w-full max-w-2xl border border-border">
         
         {/* Top Header */}
@@ -86,6 +86,22 @@ export default function ConfirmacionPage() {
         </div>
 
       </div>
+
+      {/* NEW PROMINENT SECTION */}
+      <div className="bg-muted w-full max-w-2xl border border-black p-8 md:p-12 text-center">
+        <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-6 block">Siguiente Paso</span>
+        <h2 className="font-serif text-3xl md:text-4xl tracking-tight uppercase mb-4 font-bold">Creá el Perfil de tu Estudio</h2>
+        <p className="font-sans text-sm text-foreground/80 leading-relaxed mb-8 max-w-md mx-auto">
+          Aparecé en búsquedas, mostrá tu trabajo y recibí postulaciones directas de artistas. Es gratis.
+        </p>
+        <Link href="/dashboard/perfil" className="w-full bg-black text-white py-5 flex items-center justify-center hover:bg-black/90 transition-colors mb-6">
+          <span className="font-sans text-xs tracking-widest uppercase">Crear Perfil Ahora &rarr;</span>
+        </Link>
+        <p className="font-sans text-[10px] tracking-[0.1em] text-muted-foreground uppercase">
+          Ya tenés cuenta? <Link href="/auth/login" className="underline hover:text-black">Ingresá acá</Link>
+        </p>
+      </div>
+
     </div>
   );
 }
