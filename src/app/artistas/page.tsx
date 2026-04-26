@@ -3,11 +3,11 @@ import { Footer } from "@/components/layout/Footer";
 import { MapPin, Settings2 } from "lucide-react";
 import Link from "next/link";
 
-const cardTones = [
-  "bg-[#FFFFFF]", // Tone 1: white
-  "bg-[#F0F0F0]", // Tone 2: light gray
-  "bg-[#E0E0E0]", // Tone 3: medium gray
-  "bg-[#C8C8C8]", // Tone 4: darker gray
+const cardStyles = [
+  { bg: "bg-[#FFFFFF]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 1: white
+  { bg: "bg-[#1A1A1A]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 2: near black
+  { bg: "bg-[#F0F0F0]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 3: light gray
+  { bg: "bg-[#2D2D2D]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 4: dark gray
 ];
 
 interface JobCardProps {
@@ -19,22 +19,21 @@ interface JobCardProps {
 }
 
 function JobCard({ index, studioName, role, specialty, location }: JobCardProps) {
-  const bgColor = cardTones[index % 4];
+  const pattern = [0, 1, 1, 2];
+  const style = cardStyles[pattern[index % 4]];
 
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl text-black ${bgColor}`} 
+      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
-      <div className="relative z-10 text-black">
-        {studioName && (
-          <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
-        )}
-        <p className="font-sans text-sm tracking-widest uppercase mb-2 opacity-90">Busca</p>
+      <div className="relative z-10">
+        <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
+        <p className={`font-sans text-sm tracking-widest uppercase mb-2 ${style.muted}`}>Busca</p>
         <h2 className="font-serif text-5xl md:text-6xl tracking-tight mb-2 leading-[1.1]">{role}</h2>
-        <p className="font-sans italic text-sm tracking-widest opacity-80">{specialty}</p>
+        <p className={`font-sans italic text-sm tracking-widest ${style.muted}`}>{specialty}</p>
       </div>
-      <div className="relative z-10 flex items-center space-x-2 mt-8 text-black">
+      <div className="relative z-10 flex items-center space-x-2 mt-8">
         <MapPin className="w-4 h-4" />
         <span className="font-sans text-sm tracking-wide">{location}</span>
       </div>
@@ -122,7 +121,7 @@ export default function ArtistasPage() {
           {[
             { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
             { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
-            { studioName: "", role: "Tatuador", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
+            { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
             { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" }
           ].map((job, idx) => (
             <JobCard 
