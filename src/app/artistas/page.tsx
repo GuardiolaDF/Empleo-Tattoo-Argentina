@@ -42,7 +42,11 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
   const style = variant === 'image' ? { backgroundImage: "url('https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?q=80&w=800&auto=format&fit=crop')" } : {};
 
   return (
-    <div className={`flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden border border-border ${variantClasses}`} style={style}>
+    <Link 
+      href="/empleos/tatuador-blackwork" 
+      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${variantClasses}`} 
+      style={style}
+    >
       {overlay}
       <div className={`relative z-10 ${textClasses}`}>
         {studioName && (
@@ -56,7 +60,7 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
         <MapPin className="w-4 h-4" />
         <span className="font-sans text-sm tracking-wide">{location}</span>
       </div>
-    </div>
+    </Link>
   );
 }
 
