@@ -1,3 +1,5 @@
+"use client";
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MapPin, Settings2 } from "lucide-react";
@@ -69,9 +71,19 @@ export default function Home() {
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
             Publicar
           </Link>
-          <Link href="/buscar" className="bg-transparent text-black border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors w-full sm:w-auto text-center">
-            Buscar
-          </Link>
+          <a 
+            href="#ofertas"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('ofertas')?.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }}
+            className="bg-transparent text-black border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors w-full sm:w-auto text-center"
+          >
+            BUSCAR
+          </a>
         </div>
       </section>
 
@@ -99,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* Puestos Vacantes (Job Grid) */}
-      <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
+      <section id="ofertas" className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-12 border-b border-black/10 pb-4">
           <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
           <button className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors">
