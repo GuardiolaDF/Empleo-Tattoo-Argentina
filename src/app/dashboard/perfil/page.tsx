@@ -24,14 +24,25 @@ import {
 
 const profileSchema = z.object({
   nombre: z.string().min(1, "El nombre del estudio es requerido"),
-  anio: z.string().min(4, "Ingresa un año válido (ej. 2015)"),
+  anio: z.string()
+    .regex(/^\d{4}$/, "Ingresá un año válido. Ej: 2015")
+    .refine((val) => {
+      const year = parseInt(val);
+      return year >= 1900 && year <= new Date().getFullYear();
+    }, "El año no puede ser futuro ni anterior a 1900"),
   ubicacion: z.string().min(1, "La ubicación es requerida"),
   bio: z.string().min(10, "La descripción debe tener al menos 10 caracteres"),
-  instagram: z.string().regex(/^@[a-zA-Z0-9._]{2,30}$/, "Ingresá un usuario válido. Ej: @tuestudio"),
-  whatsapp: z.string().regex(/^549\d{7,10}$/, "Ingresá un número válido. Ej: 5491112345678"),
-  website: z.string().refine(val => val === "" || /^https?:\/\/[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+.*$/.test(val ?? ""), {
-    message: "Ingresá una URL válida. Ej: https://tuestudio.com"
-  }).optional(),
+  instagram: z.string()
+    .regex(/^@[a-zA-Z0-9._]{2,30}$/, "Ingresá un usuario válido. Ej: @tuestudio")
+    .min(1, "Este campo es requerido"),
+  whatsapp: z.string()
+    .regex(/^549\d{8,10}$/, "Ingresá un número válido. Ej: 5491112345678")
+    .min(1, "Este campo es requerido"),
+  website: z.string()
+    .refine((val) => val === "" || /^https?:\/\/.+\..+/.test(val), {
+      message: "Ingresá una URL válida. Ej: https://tuestudio.com"
+    })
+    .optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -49,9 +60,15 @@ export default function PerfilEstudioPage() {
     formState: { errors },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
+    mode: "onChange",
     defaultValues: {
       nombre: "",
+      anio: "",
       ubicacion: "",
+      bio: "",
+      instagram: "",
+      whatsapp: "",
+      website: "",
     }
   });
 
@@ -279,14 +296,14 @@ export default function PerfilEstudioPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col space-y-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Instagram Handle</label>
+                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Instagram</label>
                   <div className="relative">
                     <input 
                       {...register("instagram")}
                       placeholder="@tuestudio"
                       className={`w-full border ${errors.instagram ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
                     />
-                    {liveInstagram && !errors.instagram && (
+                    {liveInstagram && liveInstagram.length > 0 && !errors.instagram && (
                       <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                     )}
                   </div>
@@ -301,7 +318,7 @@ export default function PerfilEstudioPage() {
                       placeholder="5491112345678"
                       className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
                     />
-                    {liveWhatsapp && !errors.whatsapp && (
+                    {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
                       <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                     )}
                   </div>
@@ -316,7 +333,7 @@ export default function PerfilEstudioPage() {
                       placeholder="https://"
                       className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
                     />
-                    {liveWebsite && !errors.website && (
+                    {liveWebsite && liveWebsite.length > 0 && !errors.website && (
                       <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                     )}
                   </div>
