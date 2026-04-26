@@ -1,8 +1,12 @@
 "use client";
 
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MapPin, Settings2 } from "lucide-react";
+import { MapPin, Settings2, Check } from "lucide-react";
 import Link from "next/link";
 
 // --- Components ---
@@ -54,7 +58,33 @@ const brands = [
   "FK IRONS",
 ];
 
+const newsletterSchema = z.object({
+  email: z.string()
+    .min(1, "Ingresá tu email")
+    .email("Ingresá un email válido. Ej: nombre@ejemplo.com"),
+});
+
+type NewsletterFormValues = z.infer<typeof newsletterSchema>;
+
 export default function Home() {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid }
+  } = useForm<NewsletterFormValues>({
+    resolver: zodResolver(newsletterSchema),
+    mode: "onChange",
+    defaultValues: { email: "" }
+  });
+  
+  const emailValue = watch("email");
+
+  const onSubmit = (data: NewsletterFormValues) => {
+    setIsSubscribed(true);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#D6D6D6]">
       <Navbar />
@@ -155,20 +185,40 @@ export default function Home() {
             </p>
           </div>
           <div>
-            <form className="flex flex-col sm:flex-row border border-border">
-              <input 
-                type="email" 
-                placeholder="nombre@ejemplo.com"
-                className="flex-1 px-6 py-4 bg-transparent outline-none font-sans text-sm placeholder:text-muted-foreground focus:bg-gray-50 transition-colors"
-                required
-              />
-              <button 
-                type="submit" 
-                className="border-l border-border px-8 py-4 text-xs tracking-widest uppercase font-sans hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
-              >
-                Suscribirme →
-              </button>
-            </form>
+            {isSubscribed ? (
+              <p className="font-serif italic text-sm text-black">
+                ¡Listo! Te avisamos cuando haya novedades.
+              </p>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+                <div className={`flex flex-col sm:flex-row border ${errors.email ? 'border-red-500' : 'border-border'}`}>
+                  <div className="relative flex-1">
+                    <input 
+                      {...register("email")}
+                      placeholder="nombre@ejemplo.com"
+                      className="w-full px-6 py-4 bg-transparent outline-none font-sans text-sm placeholder:text-muted-foreground focus:bg-gray-50 transition-colors pr-12"
+                    />
+                    {emailValue && !errors.email && (
+                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
+                    )}
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={!isValid || !emailValue}
+                    className={`border-l ${errors.email ? 'border-red-500' : 'border-border'} px-8 py-4 text-xs tracking-widest uppercase font-sans transition-colors whitespace-nowrap ${
+                      isValid && emailValue
+                        ? 'bg-black text-white hover:bg-black/90'
+                        : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    }`}
+                  >
+                    SUSCRIBIRSE →
+                  </button>
+                </div>
+                {errors.email && (
+                  <span className="font-sans text-[10px] text-red-500 mt-2">{errors.email.message}</span>
+                )}
+              </form>
+            )}
           </div>
         </div>
       </section>
