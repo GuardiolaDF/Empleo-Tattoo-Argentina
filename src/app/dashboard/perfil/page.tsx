@@ -23,7 +23,9 @@ import {
 } from "lucide-react";
 
 const profileSchema = z.object({
-  nombre: z.string().min(1, "El nombre del estudio es requerido"),
+  nombre: z.string()
+    .min(1, "El nombre del estudio es requerido")
+    .max(30, "Máximo 30 caracteres"),
   anio: z.string()
     .regex(/^\d{4}$/, "Ingresá un año válido. Ej: 2015")
     .refine((val) => {
@@ -33,7 +35,7 @@ const profileSchema = z.object({
   ubicacion: z.string().min(1, "La ubicación es requerida"),
   bio: z.string().min(10, "La descripción debe tener al menos 10 caracteres"),
   instagram: z.string()
-    .regex(/^@[a-zA-Z0-9._]{2,30}$/, "Ingresá un usuario válido. Ej: @tuestudio")
+    .regex(/^[a-zA-Z0-9._]{2,30}$/, "Solo letras, números, puntos y guiones bajos. Mín. 2 caracteres.")
     .min(1, "Este campo es requerido"),
   whatsapp: z.string()
     .regex(/^\d{2}\s\d{4}\s\d{4}$/, "Ingresá un número válido. Ej: 11 2222 3333")
@@ -47,11 +49,24 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
+const COUNTRY_CODES = [
+  { code: "54", flag: "🇦🇷", label: "+54 Argentina" },
+  { code: "598", flag: "🇺🇾", label: "+598 Uruguay" },
+  { code: "56", flag: "🇨🇱", label: "+56 Chile" },
+  { code: "591", flag: "🇧🇴", label: "+591 Bolivia" },
+  { code: "595", flag: "🇵🇾", label: "+595 Paraguay" },
+  { code: "55", flag: "🇧🇷", label: "+55 Brasil" },
+  { code: "34", flag: "🇪🇸", label: "+34 España" },
+];
+
 export default function PerfilEstudioPage() {
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [specialtyInput, setSpecialtyInput] = useState("");
   const [photos, setPhotos] = useState<{ id: string; file: File; preview: string }[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -73,11 +88,22 @@ export default function PerfilEstudioPage() {
   });
 
   // Watch fields for live preview and validation
-  const liveNombre = watch("nombre") || "Nombre de tu Estudio";
+  const liveNombreRaw = watch("nombre") || "";
+  const liveNombre = liveNombreRaw || "Nombre de tu Estudio";
   const liveUbicacion = watch("ubicacion") || "Ubicación, Ciudad";
   const liveInstagram = watch("instagram");
   const liveWhatsapp = watch("whatsapp");
   const liveWebsite = watch("website");
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsCountryDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const { onChange: onChangeWhatsapp, ...restWhatsapp } = register("whatsapp");
 
@@ -131,8 +157,10 @@ export default function PerfilEstudioPage() {
 
   const onSubmit = (data: ProfileFormValues) => {
     const rawDigits = data.whatsapp.replace(/\D/g, '');
-    const finalWhatsapp = `549${rawDigits}`;
-    console.log("Saving profile...", { ...data, whatsapp: finalWhatsapp, specialties, photos });
+    const prefix = selectedCountry.code === "54" ? "549" : selectedCountry.code;
+    const finalWhatsapp = `${prefix}${rawDigits}`;
+    const finalInstagram = `@${data.instagram}`;
+    console.log("Saving profile...", { ...data, whatsapp: finalWhatsapp, instagram: finalInstagram, specialties, photos });
     setIsSuccess(true);
     setTimeout(() => setIsSuccess(false), 5000); // hide success message after 5s
   };
@@ -146,8 +174,8 @@ export default function PerfilEstudioPage() {
         {/* Left Sidebar */}
         <aside className="w-full lg:w-64 bg-white border-r border-border flex flex-col justify-between py-12 flex-shrink-0">
           <div>
-            <div className="px-8 mb-12">
-              <h2 className="font-serif text-xl tracking-tight uppercase font-bold">{liveNombre !== "Nombre de tu Estudio" ? liveNombre : "Tu Estudio"}</h2>
+            <div className="px-8 mb-12 overflow-hidden w-full">
+              <h2 className="font-serif text-xl tracking-tight uppercase font-bold truncate max-w-full block">{liveNombre !== "Nombre de tu Estudio" ? liveNombre : "Tu Estudio"}</h2>
               <p className="font-sans text-[10px] tracking-widest text-muted-foreground uppercase mt-1">Configuración</p>
             </div>
             
@@ -217,7 +245,12 @@ export default function PerfilEstudioPage() {
                     placeholder="Ej. Ink & Concrete"
                     className={`border ${errors.nombre ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white`}
                   />
-                  {errors.nombre && <span className="font-sans text-[10px] text-red-500">{errors.nombre.message}</span>}
+                  <div className="flex justify-between items-start mt-1">
+                    <span className="font-sans text-[10px] text-red-500">{errors.nombre ? errors.nombre.message : ""}</span>
+                    <span className="font-sans text-[10px] text-muted-foreground ml-auto">
+                      {liveNombreRaw.length}/30
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex flex-col space-y-2">
@@ -301,15 +334,20 @@ export default function PerfilEstudioPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col space-y-2">
                   <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Instagram</label>
-                  <div className="relative">
-                    <input 
-                      {...register("instagram")}
-                      placeholder="@tuestudio"
-                      className={`w-full border ${errors.instagram ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
-                    />
-                    {liveInstagram && liveInstagram.length > 0 && !errors.instagram && (
-                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
-                    )}
+                  <div className="relative flex">
+                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
+                      @
+                    </div>
+                    <div className="relative flex-1">
+                      <input 
+                        {...register("instagram")}
+                        placeholder="tuestudio"
+                        className={`w-full border ${errors.instagram ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                      />
+                      {liveInstagram && liveInstagram.length > 0 && !errors.instagram && (
+                        <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
+                      )}
+                    </div>
                   </div>
                   {errors.instagram && <span className="font-sans text-[10px] text-red-500">{errors.instagram.message}</span>}
                 </div>
@@ -317,8 +355,31 @@ export default function PerfilEstudioPage() {
                 <div className="flex flex-col space-y-2">
                   <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Número de WhatsApp</label>
                   <div className="relative flex">
-                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
-                      🇦🇷 +54 9
+                    <div className="relative flex items-stretch bg-muted border border-r-0 border-border font-sans text-sm text-muted-foreground" ref={dropdownRef}>
+                      <button 
+                        type="button"
+                        onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                        className="px-4 py-3 flex items-center gap-2 hover:bg-black/5 transition-colors"
+                      >
+                        {selectedCountry.flag} +{selectedCountry.code}
+                      </button>
+                      {isCountryDropdownOpen && (
+                        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-black z-50 shadow-xl">
+                          {COUNTRY_CODES.map((country) => (
+                            <button
+                              key={country.code}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCountry(country);
+                                setIsCountryDropdownOpen(false);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-black/5 transition-colors font-sans text-xs flex items-center gap-3 text-black border-b border-border/50 last:border-0"
+                            >
+                              <span className="text-sm">{country.flag}</span> <span>{country.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="relative flex-1">
                       <input 
@@ -426,9 +487,9 @@ export default function PerfilEstudioPage() {
           
           <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground border-b border-border pb-4 block">Vista Previa</span>
           
-          <div className="bg-white border border-border p-8 text-center flex flex-col items-center">
-            <h3 className="font-serif text-3xl tracking-tight uppercase mb-2">{liveNombre}</h3>
-            <p className="font-sans text-xs text-muted-foreground mb-6">{liveUbicacion}</p>
+          <div className="bg-white border border-border p-8 text-center flex flex-col items-center overflow-hidden w-full">
+            <h3 className="font-serif text-3xl tracking-tight uppercase mb-2 max-w-full break-words line-clamp-3">{liveNombre}</h3>
+            <p className="font-sans text-xs text-muted-foreground mb-6 max-w-full break-words line-clamp-3">{liveUbicacion}</p>
             
             <div className="flex flex-wrap justify-center gap-2 mb-8 w-full max-w-[200px]">
               {specialties.length > 0 ? specialties.slice(0, 3).map((spec) => (
