@@ -1,9 +1,25 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { ArrowLeft, ArrowRight, Store } from "lucide-react";
+import { ArrowLeft, ArrowRight, Store, MessageCircle, ExternalLink, X } from "lucide-react";
 import Link from "next/link";
 
 export default function JobListingPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F4F4F4]">
       <Navbar />
@@ -25,7 +41,10 @@ export default function JobListingPage() {
             <Link href="/estudios/void-tattoo-club" className="font-sans text-xs tracking-widest uppercase underline hover:text-muted-foreground transition-colors">
               Void Tattoo Club
             </Link>
-            <button className="bg-black text-white px-12 py-5 text-[10px] tracking-[0.2em] uppercase hover:bg-black/90 transition-colors">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="bg-black text-white px-12 py-5 text-[10px] tracking-[0.2em] uppercase hover:bg-black/90 transition-colors"
+            >
               Postularse
             </button>
           </div>
@@ -146,6 +165,65 @@ export default function JobListingPage() {
       </main>
 
       <Footer />
+
+      {/* Apply Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/60" 
+            onClick={() => setIsModalOpen(false)}
+          ></div>
+          <div className="relative bg-white w-full max-w-[480px] p-8 md:p-12 shadow-2xl">
+            {/* 1. Top row */}
+            <div className="flex justify-between items-center mb-8">
+              <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Postularse</span>
+              <button onClick={() => setIsModalOpen(false)} className="text-black hover:text-black/60 transition-colors">
+                <X className="w-8 h-8" strokeWidth={1} />
+              </button>
+            </div>
+
+            {/* 2. Studio + role info */}
+            <div className="mb-8">
+              <h2 className="font-serif text-3xl md:text-4xl uppercase tracking-tight leading-none mb-2">Tatuador Blackwork</h2>
+              <p className="font-sans text-xs tracking-widest uppercase text-muted-foreground">Void Tattoo Club</p>
+            </div>
+            <div className="w-full border-t border-border mb-8"></div>
+
+            {/* 3. Instructions */}
+            <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-8">
+              Contactá directamente al estudio mencionando que venís de Empleo Tattoo Argentina.
+            </p>
+
+            {/* 4. WhatsApp button */}
+            <a 
+              href="https://wa.me/5491112345678?text=Hola%2C+vi+tu+b%C3%BAsqueda+de+Tatuador+Blackwork+en+Empleo+Tattoo+Argentina+y+me+gustar%C3%ADa+postularme." 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full bg-black text-white py-5 flex items-center justify-center space-x-3 hover:bg-black/90 transition-colors mb-4"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span className="font-sans text-[10px] tracking-widest uppercase">Escribir por WhatsApp &rarr;</span>
+            </a>
+
+            {/* 5. Instagram button */}
+            <a 
+              href="https://instagram.com/voidtattooclub" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full bg-transparent text-black border border-black py-5 flex items-center justify-center space-x-3 hover:bg-black/5 transition-colors mb-8"
+            >
+              <ExternalLink className="w-5 h-5" />
+              <span className="font-sans text-[10px] tracking-widest uppercase">Ver Perfil de Instagram &rarr;</span>
+            </a>
+
+            {/* 6. Footer text */}
+            <p className="font-sans text-[10px] text-muted-foreground text-center">
+              El contacto es directo entre vos y el estudio.<br/>ETA no intermedia en el proceso.
+            </p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
