@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Store } from "lucide-react";
 import Link from "next/link";
 
 export default function JobListingPage() {
@@ -100,22 +100,32 @@ export default function JobListingPage() {
 
         {/* Right Sidebar (Sticky) */}
         <aside className="w-full lg:w-80 flex-shrink-0 pt-4">
-          <div className="sticky top-24 flex flex-col space-y-16">
+          <div className="sticky top-24 flex flex-col space-y-8">
             
-            {/* Contacto Directo */}
-            <div>
-              <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-6 block">Contacto Directo</span>
-              <div className="flex flex-col space-y-4">
-                <button className="w-full border border-black bg-transparent text-black py-5 flex items-center justify-between px-6 hover:bg-black/5 transition-colors">
-                  <span className="font-sans text-[10px] tracking-[0.2em] uppercase">WhatsApp</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-                <button className="w-full border border-black bg-transparent text-black py-5 flex items-center justify-between px-6 hover:bg-black/5 transition-colors">
-                  <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Instagram Perfil</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+            {/* Studio Profile block */}
+            <div className="flex flex-col items-center">
+              {/* Photo placeholder */}
+              <div className="w-full aspect-square bg-[#F4F4F4] border border-border flex items-center justify-center mb-6">
+                <Store className="w-12 h-12 text-muted-foreground/30" strokeWidth={1} />
               </div>
+              
+              {/* Studio Name */}
+              <h3 className="font-serif text-2xl font-bold uppercase tracking-tight text-center">
+                Void Tattoo Club
+              </h3>
             </div>
+
+            {/* Contact buttons row */}
+            <div className="flex space-x-4 w-full">
+              <button className="flex-1 border border-black bg-transparent text-black py-4 flex items-center justify-center hover:bg-black/5 transition-colors">
+                <span className="font-sans text-[10px] tracking-widest uppercase">Instagram &rarr;</span>
+              </button>
+              <button className="flex-1 border border-black bg-transparent text-black py-4 flex items-center justify-center hover:bg-black/5 transition-colors">
+                <span className="font-sans text-[10px] tracking-widest uppercase">WhatsApp &rarr;</span>
+              </button>
+            </div>
+
+            <div className="w-full border-t border-border"></div>
 
             {/* Ubicación */}
             <div>
