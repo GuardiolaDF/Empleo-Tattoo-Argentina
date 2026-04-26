@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MapPin, Settings2, Check } from "lucide-react";
+import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
+import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 
 // --- Components ---
 
@@ -49,6 +50,37 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   );
 }
 
+const FILTROS = {
+  puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
+    "Encargado/a de local", "Mantenimiento"],
+  experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
+    "Avanzado (3-5 años)", "Senior (+5 años)"],
+  especialidad: ["Blackwork", "Realismo", "Traditional", 
+    "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
+    "Dotwork", "Acuarela", "Lettering", "Cover up", 
+    "Generalista", "Comercial", "Otro"],
+  tipoEstudio: ["Privado", "Local comercial"],
+  tipoRol: ["Alquiler de box", "Residente con porcentaje", 
+    "Residente clientes propios"],
+  ubicacion: ["CABA", "Zona Norte GBA", "Zona Sur GBA", 
+    "Zona Oeste GBA", "Buenos Aires provincia", "Córdoba", 
+    "Rosario", "Mendoza", "Tucumán", "Salta", "Jujuy",
+    "Santiago del Estero", "Chaco", "Corrientes", "Misiones",
+    "Entre Ríos", "Santa Fe", "La Rioja", "Catamarca",
+    "San Juan", "San Luis", "La Pampa", "Neuquén",
+    "Río Negro", "Chubut", "Santa Cruz", 
+    "Tierra del Fuego", "Islas Malvinas"],
+};
+
+const FILTER_LABELS: Record<string, string> = {
+  puesto: "PUESTO",
+  experiencia: "EXPERIENCIA",
+  especialidad: "ESPECIALIDAD",
+  tipoEstudio: "TIPO DE ESTUDIO",
+  tipoRol: "TIPO DE ROL",
+  ubicacion: "UBICACIÓN"
+};
+
 const brands = [
   "INK MASTER",
   "DRAGONFLY IRONS", 
@@ -68,6 +100,33 @@ type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 
 export default function Home() {
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleFilterSelect = (category: string, value: string) => {
+    setActiveFilters(prev => ({ ...prev, [category]: value }));
+    setOpenDropdown(null);
+  };
+
+  const removeFilter = (category: string) => {
+    const newFilters = { ...activeFilters };
+    delete newFilters[category];
+    setActiveFilters(newFilters);
+  };
+
+  const clearFilters = () => setActiveFilters({});
+
   const {
     register,
     handleSubmit,
@@ -84,6 +143,19 @@ export default function Home() {
   const onSubmit = (data: NewsletterFormValues) => {
     setIsSubscribed(true);
   };
+
+  const allJobs = [
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 años)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 años)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
+  ];
+
+  const filteredJobs = allJobs.filter(job => {
+    return Object.entries(activeFilters).every(([key, value]) => {
+      return job[key as keyof typeof job] === value;
+    });
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-[#D6D6D6]">
@@ -142,37 +214,100 @@ export default function Home() {
 
       {/* Puestos Vacantes (Job Grid) */}
       <section id="ofertas" className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-12 border-b border-black/10 pb-4">
-          <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
-          <button className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors">
-            <span className="font-sans text-xs tracking-widest uppercase">Filtro</span>
-            <Settings2 className="w-4 h-4" />
-          </button>
+        <div className="flex flex-col mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
+            <button className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex">
+              <span className="font-sans text-xs tracking-widest uppercase">Filtro</span>
+              <Settings2 className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="w-full bg-white border-y border-border relative z-20" ref={dropdownRef}>
+            <div className="grid grid-cols-2 md:grid-cols-6 divide-x divide-y md:divide-y-0 divide-border">
+              {Object.entries(FILTROS).map(([key, options]) => {
+                const isActive = !!activeFilters[key];
+                const isOpen = openDropdown === key;
+                const label = FILTER_LABELS[key];
+
+                return (
+                  <div key={key} className="relative">
+                    <button 
+                      onClick={() => setOpenDropdown(isOpen ? null : key)}
+                      className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
+                        isActive ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-50'
+                      }`}
+                    >
+                      <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
+                      <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isOpen && (
+                      <div className="absolute top-full left-0 w-full min-w-[200px] bg-white border border-black shadow-xl max-h-[280px] overflow-y-auto z-30">
+                        {options.map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => handleFilterSelect(key, opt)}
+                            className="w-full text-left px-4 py-3 hover:bg-muted font-sans text-xs transition-colors flex items-center justify-between"
+                          >
+                            <span>{opt}</span>
+                            {activeFilters[key] === opt && <Check className="w-4 h-4" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {Object.keys(activeFilters).length > 0 && (
+              <div className="flex items-center justify-between px-4 py-4 bg-[#F4F4F4]">
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(activeFilters).map(([key, value]) => (
+                    <div key={key} className="flex items-center bg-black text-white border border-black group cursor-pointer" onClick={() => removeFilter(key)}>
+                      <SpecialtyPill label={`${FILTER_LABELS[key]}: ${value}`} variant="default" />
+                      <span className="pr-3 text-white/50 group-hover:text-white transition-colors">
+                        <X className="w-3 h-3" />
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={clearFilters} className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
+                  Limpiar Filtros
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-          {[
-            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
-            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
-            { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" },
-            { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo en black and grey", location: "Palermo, Buenos Aires" }
-          ].map((job, idx) => (
-            <JobCard 
-              key={idx}
-              index={idx}
-              studioName={job.studioName}
-              role={job.role}
-              specialty={job.specialty}
-              location={job.location}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-center">
-          <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
-            Cargar Más
-          </button>
-        </div>
+        {filteredJobs.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+              {filteredJobs.map((job, idx) => (
+                <JobCard 
+                  key={idx}
+                  index={idx}
+                  studioName={job.studioName}
+                  role={job.role}
+                  specialty={job.specialty}
+                  location={job.location}
+                />
+              ))}
+            </div>
+            <div className="flex justify-center">
+              <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
+                Cargar Más
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="py-24 flex flex-col items-center justify-center text-center">
+            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
+            <button onClick={clearFilters} className="font-sans text-xs tracking-widest uppercase border-b border-black text-black hover:text-black/70 transition-colors pb-1">
+              LIMPIAR FILTROS
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Newsletter */}
