@@ -36,11 +36,11 @@ const profileSchema = z.object({
     .regex(/^@[a-zA-Z0-9._]{2,30}$/, "Ingresá un usuario válido. Ej: @tuestudio")
     .min(1, "Este campo es requerido"),
   whatsapp: z.string()
-    .regex(/^549\d{8,10}$/, "Ingresá un número válido. Ej: 5491112345678")
+    .regex(/^\d{2}\s\d{4}\s\d{4}$/, "Ingresá un número válido. Ej: 11 2222 3333")
     .min(1, "Este campo es requerido"),
   website: z.string()
-    .refine((val) => val === "" || /^https?:\/\/.+\..+/.test(val), {
-      message: "Ingresá una URL válida. Ej: https://tuestudio.com"
+    .refine((val) => val === "" || /^[a-zA-Z0-9][a-zA-Z0-9-_.]+\.[a-zA-Z]{2,}/.test(val), {
+      message: "Ingresá un dominio válido. Ej: tuestudio.com"
     })
     .optional(),
 });
@@ -78,6 +78,8 @@ export default function PerfilEstudioPage() {
   const liveInstagram = watch("instagram");
   const liveWhatsapp = watch("whatsapp");
   const liveWebsite = watch("website");
+
+  const { onChange: onChangeWhatsapp, ...restWhatsapp } = register("whatsapp");
 
   // --- Handlers ---
   const handleAddSpecialty = () => {
@@ -128,7 +130,9 @@ export default function PerfilEstudioPage() {
   }, []);
 
   const onSubmit = (data: ProfileFormValues) => {
-    console.log("Saving profile...", { ...data, specialties, photos });
+    const rawDigits = data.whatsapp.replace(/\D/g, '');
+    const finalWhatsapp = `549${rawDigits}`;
+    console.log("Saving profile...", { ...data, whatsapp: finalWhatsapp, specialties, photos });
     setIsSuccess(true);
     setTimeout(() => setIsSuccess(false), 5000); // hide success message after 5s
   };
@@ -312,30 +316,49 @@ export default function PerfilEstudioPage() {
 
                 <div className="flex flex-col space-y-2">
                   <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Número de WhatsApp</label>
-                  <div className="relative">
-                    <input 
-                      {...register("whatsapp")}
-                      placeholder="5491112345678"
-                      className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
-                    />
-                    {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
-                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
-                    )}
+                  <div className="relative flex">
+                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
+                      🇦🇷 +54 9
+                    </div>
+                    <div className="relative flex-1">
+                      <input 
+                        {...restWhatsapp}
+                        onChange={(e) => {
+                          let val = e.target.value.replace(/\D/g, '');
+                          if (val.length > 10) val = val.slice(0, 10);
+                          let formatted = val;
+                          if (val.length > 2) formatted = val.slice(0, 2) + ' ' + val.slice(2);
+                          if (val.length > 6) formatted = val.slice(0, 2) + ' ' + val.slice(2, 6) + ' ' + val.slice(6);
+                          e.target.value = formatted;
+                          onChangeWhatsapp(e);
+                        }}
+                        placeholder="11 2222 3333"
+                        className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                      />
+                      {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
+                        <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
+                      )}
+                    </div>
                   </div>
                   {errors.whatsapp && <span className="font-sans text-[10px] text-red-500">{errors.whatsapp.message}</span>}
                 </div>
 
                 <div className="flex flex-col space-y-2 md:col-span-2">
                   <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Website (Opcional)</label>
-                  <div className="relative">
-                    <input 
-                      {...register("website")}
-                      placeholder="https://"
-                      className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
-                    />
-                    {liveWebsite && liveWebsite.length > 0 && !errors.website && (
-                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
-                    )}
+                  <div className="relative flex">
+                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
+                      https://
+                    </div>
+                    <div className="relative flex-1">
+                      <input 
+                        {...register("website")}
+                        placeholder="tuestudio.com (opcional)"
+                        className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                      />
+                      {liveWebsite && liveWebsite.length > 0 && !errors.website && (
+                        <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
+                      )}
+                    </div>
                   </div>
                   {errors.website && <span className="font-sans text-[10px] text-red-500">{errors.website.message}</span>}
                 </div>
