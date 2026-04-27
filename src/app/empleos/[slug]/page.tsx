@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ArrowLeft, ArrowRight, Store, MessageCircle, ExternalLink, X } from "lucide-react";
 import Link from "next/link";
 
 export default function JobListingPage() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -28,10 +30,10 @@ export default function JobListingPage() {
         
         {/* Left Column (Main Content) */}
         <div className="flex-1">
-          <Link href="/buscar" className="inline-flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-16">
+          <button onClick={() => router.back()} className="inline-flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-16">
             <ArrowLeft className="w-4 h-4" />
-            <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Volver al Feed de Búsqueda</span>
-          </Link>
+            <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Volver</span>
+          </button>
 
           <h1 className="font-serif text-6xl md:text-[7rem] tracking-tighter leading-[0.9] uppercase mb-12">
             Tatuador<br/>Blackwork

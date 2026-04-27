@@ -41,14 +41,14 @@ export default function EstudiosPage() {
         <div className="bg-black text-white p-12 md:p-24 flex flex-col md:flex-row gap-16 md:gap-8 items-center justify-between">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-white/70 mb-4">Pago único por publicación</p>
-            <h2 className="font-serif text-8xl md:text-[10rem] tracking-tighter leading-none">$150</h2>
+            <h2 className="font-serif text-8xl md:text-[10rem] tracking-tighter leading-none">$ 20.000</h2>
           </div>
           
           <div className="flex flex-col items-center md:items-start space-y-8">
             <ul className="space-y-4 font-sans text-sm tracking-wide text-white/90">
               <li className="flex items-center space-x-3">
                 <ArrowRight className="w-4 h-4 text-white/50" />
-                <span>Duración: 30 días</span>
+                <span>Editá tu publicación por 30 días</span>
               </li>
               <li className="flex items-center space-x-3">
                 <ArrowRight className="w-4 h-4 text-white/50" />
@@ -68,7 +68,7 @@ export default function EstudiosPage() {
               href="/publicar-empleo" 
               className="bg-white text-black px-12 py-5 text-xs tracking-[0.2em] uppercase font-sans hover:bg-gray-200 transition-colors inline-block w-full text-center"
             >
-              Empezar Publicación
+              PUBLICAR UN EMPLEO
             </Link>
           </div>
         </div>
@@ -85,27 +85,47 @@ export default function EstudiosPage() {
               <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
             </summary>
             <p className="mt-4 font-sans text-sm text-muted-foreground leading-relaxed pr-8">
-              Tu anuncio estará visible durante 30 días completos desde el momento de la publicación y pago exitoso.
+              Tu anuncio estará visible de forma permanente hasta que vos lo pausés, elimines o indiqués que la vacante fue cubierta. Durante los primeros 30 días podés editar toda la información de la publicación.
             </p>
           </details>
 
           <details className="group border-b border-border pb-6 cursor-pointer marker:content-['']">
             <summary className="flex items-center justify-between font-serif text-2xl tracking-tight list-none">
-              ¿Cómo pago con Mercado Pago?
+              ¿Cómo se realiza el pago?
               <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
             </summary>
             <p className="mt-4 font-sans text-sm text-muted-foreground leading-relaxed pr-8">
-              Al hacer clic en "Empezar Publicación", serás redirigido a nuestro portal de pago seguro operado por Mercado Pago. Aceptamos todas las tarjetas de crédito, débito y dinero en cuenta.
+              Al hacer click en 'Publicar un Empleo' serás redirigido a un formulario donde completás los datos del estudio y el rol que buscás. Al finalizar, la plataforma te llevará al checkout de Mercado Pago donde podés pagar con tarjeta de crédito, débito o dinero en cuenta.
             </p>
           </details>
 
           <details className="group border-b border-border pb-6 cursor-pointer marker:content-['']">
             <summary className="flex items-center justify-between font-serif text-2xl tracking-tight list-none">
-              ¿Puedo editarlo después?
+              ¿Puedo editar mi publicación después?
               <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
             </summary>
             <p className="mt-4 font-sans text-sm text-muted-foreground leading-relaxed pr-8">
-              Sí, recibirás un link mágico en tu correo que te permitirá pausar, editar o cancelar tu anuncio en cualquier momento.
+              Sí. Recibirás un link en tu correo que te permitirá editar o pausar tu anuncio durante los primeros 30 días. Pasado ese plazo, la publicación queda fija hasta que indiques que la vacante fue cubierta o la elimines.
+            </p>
+          </details>
+
+          <details className="group border-b border-border pb-6 cursor-pointer marker:content-['']">
+            <summary className="flex items-center justify-between font-serif text-2xl tracking-tight list-none">
+              ¿Qué pasa si ya encontré al artista que buscaba?
+              <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
+            </summary>
+            <p className="mt-4 font-sans text-sm text-muted-foreground leading-relaxed pr-8">
+              Podés pausar o eliminar tu anuncio en cualquier momento usando el link que recibís por email. Así mantenés el feed limpio y relevante para todos.
+            </p>
+          </details>
+
+          <details className="group border-b border-border pb-6 cursor-pointer marker:content-['']">
+            <summary className="flex items-center justify-between font-serif text-2xl tracking-tight list-none">
+              ¿Mi publicación aparece en búsquedas de Google?
+              <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
+            </summary>
+            <p className="mt-4 font-sans text-sm text-muted-foreground leading-relaxed pr-8">
+              Sí. Cada publicación tiene su propia página indexada, lo que aumenta las chances de que artistas te encuentren orgánicamente, incluso fuera de la plataforma.
             </p>
           </details>
         </div>
