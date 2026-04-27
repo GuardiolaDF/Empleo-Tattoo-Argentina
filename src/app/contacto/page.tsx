@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ContactoPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#D6D6D6] items-center justify-center p-4">
+    <div className="flex flex-col min-h-screen bg-gray-200 items-center justify-center p-4">
       <div className="bg-white w-full max-w-md p-8 md:p-12 shadow-2xl relative">
         <p className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground mb-4">
           Contacto

@@ -166,7 +166,7 @@ export default function PerfilEstudioPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F4F4F4]">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
 
       <main className="flex-1 w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row border-t border-border">
@@ -223,7 +223,7 @@ export default function PerfilEstudioPage() {
           <h1 className="font-serif text-4xl md:text-5xl tracking-tight uppercase mb-12">Perfil del Estudio</h1>
           
           {isSuccess && (
-            <div className="bg-[#EAEAEA] border border-black p-6 mb-12 flex items-center space-x-4">
+            <div className="bg-gray-100 border border-black p-6 mb-12 flex items-center space-x-4">
               <CheckCircle2 className="w-6 h-6 text-black" />
               <span className="font-sans text-xs tracking-widest uppercase">Perfil actualizado correctamente.</span>
             </div>

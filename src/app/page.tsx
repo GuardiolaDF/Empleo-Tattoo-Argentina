@@ -13,10 +13,10 @@ import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 // --- Components ---
 
 const cardStyles = [
-  { bg: "bg-[#FFFFFF]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 1: white
-  { bg: "bg-[#1A1A1A]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 2: near black
-  { bg: "bg-[#F0F0F0]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 3: light gray
-  { bg: "bg-[#2D2D2D]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 4: dark gray
+  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 1: white
+  { bg: "bg-card-2", text: "text-background", muted: "text-white/80" },   // Tone 2: near black
+  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 3: light gray
+  { bg: "bg-card-4", text: "text-background", muted: "text-white/80" },   // Tone 4: dark gray
 ];
 
 interface JobCardProps {
@@ -53,22 +53,22 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
 const FILTROS = {
   puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
     "Encargado/a de local", "Mantenimiento"],
-  experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
-    "Avanzado (3-5 años)", "Senior (+5 años)"],
+  experiencia: ["Sin experiencia", "Intermedio (1-3 aÃ±os)", 
+    "Avanzado (3-5 aÃ±os)", "Senior (+5 aÃ±os)"],
   especialidad: ["Blackwork", "Realismo", "Traditional", 
-    "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
+    "Neo Traditional", "JaponÃ©s", "GeomÃ©trico", "Fineline", 
     "Dotwork", "Acuarela", "Lettering", "Cover up", 
     "Generalista", "Comercial", "Otro"],
   tipoEstudio: ["Privado", "Local comercial"],
   tipoRol: ["Alquiler de box", "Residente con porcentaje", 
     "Residente clientes propios"],
   ubicacion: ["CABA", "Zona Norte GBA", "Zona Sur GBA", 
-    "Zona Oeste GBA", "Buenos Aires provincia", "Córdoba", 
-    "Rosario", "Mendoza", "Tucumán", "Salta", "Jujuy",
+    "Zona Oeste GBA", "Buenos Aires provincia", "CÃ³rdoba", 
+    "Rosario", "Mendoza", "TucumÃ¡n", "Salta", "Jujuy",
     "Santiago del Estero", "Chaco", "Corrientes", "Misiones",
-    "Entre Ríos", "Santa Fe", "La Rioja", "Catamarca",
-    "San Juan", "San Luis", "La Pampa", "Neuquén",
-    "Río Negro", "Chubut", "Santa Cruz", 
+    "Entre RÃ­os", "Santa Fe", "La Rioja", "Catamarca",
+    "San Juan", "San Luis", "La Pampa", "NeuquÃ©n",
+    "RÃ­o Negro", "Chubut", "Santa Cruz", 
     "Tierra del Fuego", "Islas Malvinas"],
 };
 
@@ -78,7 +78,7 @@ const FILTER_LABELS: Record<string, string> = {
   especialidad: "ESPECIALIDAD",
   tipoEstudio: "TIPO DE ESTUDIO",
   tipoRol: "TIPO DE ROL",
-  ubicacion: "UBICACIÓN"
+  ubicacion: "UBICACIÃ“N"
 };
 
 const brands = [
@@ -92,8 +92,8 @@ const brands = [
 
 const newsletterSchema = z.object({
   email: z.string()
-    .min(1, "Ingresá tu email")
-    .email("Ingresá un email válido. Ej: nombre@ejemplo.com"),
+    .min(1, "IngresÃ¡ tu email")
+    .email("IngresÃ¡ un email vÃ¡lido. Ej: nombre@ejemplo.com"),
 });
 
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
@@ -146,10 +146,10 @@ export default function Home() {
   };
 
   const allJobs = [
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 años)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 años)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 aÃ±os)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 aÃ±os)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 aÃ±os)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 aÃ±os)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
   ];
 
   const filteredJobs = allJobs.filter(job => {
@@ -159,7 +159,7 @@ export default function Home() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#D6D6D6]">
+    <div className="flex flex-col min-h-screen bg-gray-200">
       <Navbar />
 
       {/* Hero Section */}
@@ -168,7 +168,7 @@ export default function Home() {
           EMPLEO<br/>TATTOO<br/>ARGENTINA
         </h1>
         <p className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-12">
-          Conectando artistas con los mejores estudios del país.
+          Conectando artistas con los mejores estudios del paÃ­s.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
@@ -203,10 +203,10 @@ export default function Home() {
             {/* Double the array for seamless loop */}
             {[...brands, ...brands].map((brand, i) => (
               <div key={i} className="flex items-center">
-                <span className="font-sans text-xs tracking-widest uppercase text-[#666666] px-8">
+                <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground px-8">
                   {brand}
                 </span>
-                <span className="text-[#666666]/50">•</span>
+                <span className="text-muted-foreground/50">â€¢</span>
               </div>
             ))}
           </div>
@@ -250,7 +250,7 @@ export default function Home() {
                       <button 
                         onClick={() => setOpenDropdown(isOpen ? null : key)}
                         className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
-                          isActive ? 'text-black font-medium' : 'text-[#666666] hover:text-black font-normal'
+                          isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
                         }`}
                       >
                         <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
@@ -265,7 +265,7 @@ export default function Home() {
                                 key={opt}
                                 onClick={() => handleFilterSelect(key, opt)}
                                 className={`w-full text-left px-4 py-2 font-sans text-xs transition-colors flex items-center justify-between ${
-                                  isSelected ? 'bg-[#F4F4F4] font-medium' : 'bg-white hover:bg-[#F4F4F4] font-normal'
+                                  isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
                                 }`}
                               >
                                 <span className="text-black">{opt}</span>
@@ -281,7 +281,7 @@ export default function Home() {
               </div>
 
               {Object.keys(activeFilters).length > 0 && (
-              <div className="flex items-center justify-between px-4 py-4 bg-[#F4F4F4]">
+              <div className="flex items-center justify-between px-4 py-4 bg-gray-50">
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(activeFilters).map(([key, value]) => (
                     <div key={key} className="flex items-center bg-black text-white border border-black group cursor-pointer" onClick={() => removeFilter(key)}>
@@ -317,13 +317,13 @@ export default function Home() {
             </div>
             <div className="flex justify-center">
               <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
-                Cargar Más
+                Cargar MÃ¡s
               </button>
             </div>
           </>
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center">
-            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
+            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu bÃºsqueda.</p>
             <button onClick={clearFilters} className="font-sans text-xs tracking-widest uppercase border-b border-black text-black hover:text-black/70 transition-colors pb-1">
               LIMPIAR FILTROS
             </button>
@@ -337,13 +337,13 @@ export default function Home() {
           <div>
             <h2 className="font-serif text-3xl md:text-4xl tracking-tight mb-4">NO TE PIERDAS NADA</h2>
             <p className="font-sans text-muted-foreground text-sm max-w-md">
-              Recibe las últimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
+              Recibe las Ãºltimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
             </p>
           </div>
           <div>
             {isSubscribed ? (
               <p className="font-serif italic text-sm text-black">
-                ¡Listo! Te avisamos cuando haya novedades.
+                Â¡Listo! Te avisamos cuando haya novedades.
               </p>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
@@ -367,7 +367,7 @@ export default function Home() {
                         : 'bg-muted text-muted-foreground cursor-not-allowed'
                     }`}
                   >
-                    SUSCRIBIRSE →
+                    SUSCRIBIRSE â†’
                   </button>
                 </div>
                 {errors.email && (

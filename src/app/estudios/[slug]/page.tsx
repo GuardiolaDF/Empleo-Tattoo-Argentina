@@ -38,7 +38,7 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
       overlay = <div className="absolute inset-0 bg-black/80 z-0"></div>;
       break;
     case 'gray':
-      variantClasses = "bg-[#B5B5B5]";
+      variantClasses = "bg-gray-400";
       textClasses = "text-black";
       break;
   }

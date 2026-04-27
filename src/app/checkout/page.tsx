@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function CheckoutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F4F4F4]">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
         

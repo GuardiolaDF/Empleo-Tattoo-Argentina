@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ConfirmacionPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F4F4] px-4 py-12 space-y-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-12 space-y-8">
       <div className="bg-white w-full max-w-2xl border border-border">
         
         {/* Top Header */}
@@ -22,7 +22,7 @@ export default function ConfirmacionPage() {
           </h1>
 
           {/* Studio Info Card */}
-          <div className="bg-[#F4F4F4] p-8 flex justify-between items-start border border-transparent">
+          <div className="bg-gray-50 p-8 flex justify-between items-start border border-transparent">
             <div>
               <h2 className="font-serif text-3xl tracking-tight mb-1">Black Lung Studio</h2>
               <p className="font-sans text-sm text-muted-foreground">Tatuador Senior</p>

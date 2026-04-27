@@ -23,7 +23,7 @@ export default function JobListingPage() {
   }, [isModalOpen]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F4F4F4]">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-16 flex flex-col lg:flex-row gap-16 lg:gap-32">
@@ -126,7 +126,7 @@ export default function JobListingPage() {
             {/* Studio Profile block */}
             <div className="flex flex-col items-center">
               {/* Photo placeholder */}
-              <div className="w-full aspect-square bg-[#F4F4F4] border border-border flex items-center justify-center mb-6">
+              <div className="w-full aspect-square bg-gray-50 border border-border flex items-center justify-center mb-6">
                 <Store className="w-12 h-12 text-muted-foreground/30" strokeWidth={1} />
               </div>
               
@@ -153,7 +153,7 @@ export default function JobListingPage() {
               <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-6 block">Ubicación del Estudio</span>
               
               {/* Map Placeholder */}
-              <div className="w-full h-64 bg-[#D6D6D6] border border-border flex items-center justify-center relative overflow-hidden group">
+              <div className="w-full h-64 bg-gray-200 border border-border flex items-center justify-center relative overflow-hidden group">
                 <div className="w-3 h-3 bg-black z-10 relative shadow-md"></div>
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
               </div>

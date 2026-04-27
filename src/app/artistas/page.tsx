@@ -8,31 +8,31 @@ import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 
 const cardStyles = [
-  { bg: "bg-[#FFFFFF]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 1: white
-  { bg: "bg-[#1A1A1A]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 2: near black
-  { bg: "bg-[#F0F0F0]", text: "text-[#000000]", muted: "text-[#666666]" }, // Tone 3: light gray
-  { bg: "bg-[#2D2D2D]", text: "text-[#FFFFFF]", muted: "text-white/80" },   // Tone 4: dark gray
+  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 1: white
+  { bg: "bg-card-2", text: "text-background", muted: "text-white/80" },   // Tone 2: near black
+  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 3: light gray
+  { bg: "bg-card-4", text: "text-background", muted: "text-white/80" },   // Tone 4: dark gray
 ];
 
 const FILTROS = {
   puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
     "Encargado/a de local", "Mantenimiento"],
-  experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
-    "Avanzado (3-5 años)", "Senior (+5 años)"],
+  experiencia: ["Sin experiencia", "Intermedio (1-3 aÃ±os)", 
+    "Avanzado (3-5 aÃ±os)", "Senior (+5 aÃ±os)"],
   especialidad: ["Blackwork", "Realismo", "Traditional", 
-    "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
+    "Neo Traditional", "JaponÃ©s", "GeomÃ©trico", "Fineline", 
     "Dotwork", "Acuarela", "Lettering", "Cover up", 
     "Generalista", "Comercial", "Otro"],
   tipoEstudio: ["Privado", "Local comercial"],
   tipoRol: ["Alquiler de box", "Residente con porcentaje", 
     "Residente clientes propios"],
   ubicacion: ["CABA", "Zona Norte GBA", "Zona Sur GBA", 
-    "Zona Oeste GBA", "Buenos Aires provincia", "Córdoba", 
-    "Rosario", "Mendoza", "Tucumán", "Salta", "Jujuy",
+    "Zona Oeste GBA", "Buenos Aires provincia", "CÃ³rdoba", 
+    "Rosario", "Mendoza", "TucumÃ¡n", "Salta", "Jujuy",
     "Santiago del Estero", "Chaco", "Corrientes", "Misiones",
-    "Entre Ríos", "Santa Fe", "La Rioja", "Catamarca",
-    "San Juan", "San Luis", "La Pampa", "Neuquén",
-    "Río Negro", "Chubut", "Santa Cruz", 
+    "Entre RÃ­os", "Santa Fe", "La Rioja", "Catamarca",
+    "San Juan", "San Luis", "La Pampa", "NeuquÃ©n",
+    "RÃ­o Negro", "Chubut", "Santa Cruz", 
     "Tierra del Fuego", "Islas Malvinas"],
 };
 
@@ -42,7 +42,7 @@ const FILTER_LABELS: Record<string, string> = {
   especialidad: "ESPECIALIDAD",
   tipoEstudio: "TIPO DE ESTUDIO",
   tipoRol: "TIPO DE ROL",
-  ubicacion: "UBICACIÓN"
+  ubicacion: "UBICACIÃ“N"
 };
 
 interface JobCardProps {
@@ -106,10 +106,10 @@ export default function ArtistasPage() {
   const clearFilters = () => setActiveFilters({});
 
   const allJobs = [
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 años)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 años)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 aÃ±os)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 aÃ±os)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
+    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 aÃ±os)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
+    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 aÃ±os)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
   ];
 
   const filteredJobs = allJobs.filter(job => {
@@ -122,16 +122,16 @@ export default function ArtistasPage() {
     <div className="flex flex-col min-h-screen bg-white">
       
       {/* Top container with inherited gray background from Home hero */}
-      <div className="bg-[#D6D6D6]">
+      <div className="bg-gray-200">
         <Navbar />
 
         {/* SECTION 1 - Hero */}
         <section className="pt-24 pb-32 px-4 md:px-8 w-full flex flex-col items-center text-center">
           <h1 className="font-serif text-5xl md:text-[8rem] tracking-tighter leading-[0.85] mb-8 uppercase max-w-5xl">
-            ENCONTRÁ LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
+            ENCONTRÃ LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
           </h1>
           <p className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl">
-            La plataforma donde podés postularte y encontrar tu próximo estudio.
+            La plataforma donde podÃ©s postularte y encontrar tu prÃ³ximo estudio.
           </p>
           <a 
             href="#ofertas" 
@@ -145,16 +145,16 @@ export default function ArtistasPage() {
       {/* SECTION 2 - How it works */}
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <h2 className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground text-center mb-20">
-          Cómo Funciona
+          CÃ³mo Funciona
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
           <div className="flex flex-col text-center md:text-left space-y-6">
             <span className="font-serif text-7xl tracking-tighter text-muted-foreground/30 leading-none">01</span>
             <div>
-              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">Explorá Ofertas</h3>
+              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">ExplorÃ¡ Ofertas</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed">
-                Navegá el feed y filtrá por estilo, ubicación y modalidad de trabajo.
+                NavegÃ¡ el feed y filtrÃ¡ por estilo, ubicaciÃ³n y modalidad de trabajo.
               </p>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function ArtistasPage() {
             <div>
               <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">Postulate Directo</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed">
-                Contactá al estudio por WhatsApp o Instagram desde la misma oferta.
+                ContactÃ¡ al estudio por WhatsApp o Instagram desde la misma oferta.
               </p>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function ArtistasPage() {
           <div className="flex flex-col text-center md:text-left space-y-6">
             <span className="font-serif text-7xl tracking-tighter text-muted-foreground/30 leading-none">03</span>
             <div>
-              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">Encontrá Tu Lugar</h3>
+              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">EncontrÃ¡ Tu Lugar</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed">
                 Conectate con estudios que buscan exactamente tu perfil.
               </p>
@@ -220,7 +220,7 @@ export default function ArtistasPage() {
                       <button 
                         onClick={() => setOpenDropdown(isOpen ? null : key)}
                         className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
-                          isActive ? 'text-black font-medium' : 'text-[#666666] hover:text-black font-normal'
+                          isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
                         }`}
                       >
                         <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
@@ -235,7 +235,7 @@ export default function ArtistasPage() {
                                 key={opt}
                                 onClick={() => handleFilterSelect(key, opt)}
                                 className={`w-full text-left px-4 py-2 font-sans text-xs transition-colors flex items-center justify-between ${
-                                  isSelected ? 'bg-[#F4F4F4] font-medium' : 'bg-white hover:bg-[#F4F4F4] font-normal'
+                                  isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
                                 }`}
                               >
                                 <span className="text-black">{opt}</span>
@@ -251,7 +251,7 @@ export default function ArtistasPage() {
               </div>
 
               {Object.keys(activeFilters).length > 0 && (
-                <div className="flex items-center justify-between px-4 py-4 bg-[#F4F4F4]">
+                <div className="flex items-center justify-between px-4 py-4 bg-gray-50">
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(activeFilters).map(([key, value]) => (
                       <div key={key} className="flex items-center bg-black text-white border border-black group cursor-pointer" onClick={() => removeFilter(key)}>
@@ -287,13 +287,13 @@ export default function ArtistasPage() {
             </div>
             <div className="flex justify-center">
               <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
-                Cargar Más
+                Cargar MÃ¡s
               </button>
             </div>
           </>
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center">
-            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
+            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu bÃºsqueda.</p>
             <button onClick={clearFilters} className="font-sans text-xs tracking-widest uppercase border-b border-black text-black hover:text-black/70 transition-colors pb-1">
               LIMPIAR FILTROS
             </button>
@@ -307,7 +307,7 @@ export default function ArtistasPage() {
           <div>
             <h2 className="font-serif text-3xl md:text-4xl tracking-tight mb-4">NO TE PIERDAS NADA</h2>
             <p className="font-sans text-muted-foreground text-sm max-w-md">
-              Recibe las últimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
+              Recibe las Ãºltimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
             </p>
           </div>
           <div>
@@ -322,7 +322,7 @@ export default function ArtistasPage() {
                 type="submit" 
                 className="border-l border-border px-8 py-4 text-xs tracking-widest uppercase font-sans hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
               >
-                Suscribirme →
+                Suscribirme â†’
               </button>
             </form>
           </div>

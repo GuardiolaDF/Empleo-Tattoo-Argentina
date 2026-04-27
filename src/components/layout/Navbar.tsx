@@ -31,7 +31,7 @@ export function Navbar() {
               href={href} 
               aria-current={isActive ? "page" : undefined}
               className={`relative group transition-colors duration-200 font-normal focus:outline focus:outline-1 focus:outline-black focus:outline-offset-4 ${
-                isActive ? "text-[#000000]" : "text-[#666666] hover:text-[#000000]"
+                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <span className="relative pb-1">
