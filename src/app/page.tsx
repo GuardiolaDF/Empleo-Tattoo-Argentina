@@ -34,17 +34,24 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
-      <div className="relative z-10">
-        <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
-        <p className={`text-caption lowercase mb-2 ${style.muted}`}>busca</p>
-        <h2 className="text-h3 font-serif mb-2">{role}</h2>
-        <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
+      <div className="relative z-10 flex flex-col">
+        <h3 className="text-6xl md:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-12">{studioName}</h3>
+        
+        <div className="flex flex-col space-y-2">
+          <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>busca</span>
+          <h2 className="text-4xl font-serif font-normal leading-tight">{role}</h2>
+          <span className={`text-base font-serif italic ${style.muted}`}>{specialty}</span>
+        </div>
       </div>
-      <div className="relative z-10 flex items-center space-x-2 mt-8">
-        <MapPin className="w-3 h-3" />
-        <span className={`text-caption ${style.muted}`}>{location}</span>
+      
+      <div className="relative z-10 flex flex-col space-y-2 mt-12">
+        <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>en</span>
+        <div className="flex items-center space-x-2">
+          <MapPin className="w-4 h-4" />
+          <span className="text-sm font-sans font-normal">{location}</span>
+        </div>
       </div>
     </Link>
   );
@@ -163,14 +170,16 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col pt-[15vh] px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <h1 className="text-display-xl leading-[0.95] mb-6">
-          EMPLEO<br/>TATTOO<br/>ARGENTINA
-        </h1>
-        <p className="text-subtitle text-muted-foreground mb-8">
-          Conectando artistas con los mejores estudios del país.
-        </p>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+      <section className="flex flex-col justify-center px-4 md:px-8 max-w-7xl mx-auto w-full min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
+        <div className="flex flex-col">
+          <h1 className="text-display-xl leading-[0.95] mb-6">
+            EMPLEO<br/>TATTOO<br/>ARGENTINA
+          </h1>
+          <p className="text-subtitle text-muted-foreground mb-8">
+            Conectando artistas con los mejores estudios del país.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto mt-8">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
             Publicar
           </Link>

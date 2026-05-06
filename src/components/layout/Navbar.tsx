@@ -15,7 +15,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="w-full flex items-center justify-between py-8 px-4 md:px-8 bg-transparent">
+    <nav className="w-full flex items-center justify-between h-[var(--navbar-height)] px-4 md:px-8 bg-transparent">
       {/* Logo */}
       <Link href="/" className="text-h2 font-bold">
         ETA
