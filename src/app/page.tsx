@@ -163,8 +163,8 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-16 pb-24 px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col items-start">
-        <h1 className="text-display-2xl mb-8">
+      <section className="min-h-screen flex flex-col justify-center items-center text-center py-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <h1 className="text-display-xl mb-8">
           EMPLEO<br/>TATTOO<br/>ARGENTINA
         </h1>
         <p className="text-subtitle text-muted-foreground mb-12">
