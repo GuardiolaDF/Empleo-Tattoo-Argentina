@@ -13,10 +13,10 @@ import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 // --- Components ---
 
 const cardStyles = [
-  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 1: white
-  { bg: "bg-card-2", text: "text-background", muted: "text-white/80" },   // Tone 2: near black
-  { bg: "bg-card-4", text: "text-background", muted: "text-white/80" },   // Tone 4: dark gray
-  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted-foreground" }, // Tone 3: white
+  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted" }, // Tone 1: white
+  { bg: "bg-card-2", text: "text-white", muted: "text-gray-400" },   // Tone 2: near black
+  { bg: "bg-card-4", text: "text-white", muted: "text-gray-400" },   // Tone 4: dark gray
+  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted" }, // Tone 3: white
 ];
 
 interface JobCardProps {
@@ -44,7 +44,7 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
       </div>
       <div className="relative z-10 flex items-center space-x-2 mt-8">
         <MapPin className="w-3 h-3" />
-        <span className="text-caption">{location}</span>
+        <span className={`text-caption ${style.muted}`}>{location}</span>
       </div>
     </Link>
   );
