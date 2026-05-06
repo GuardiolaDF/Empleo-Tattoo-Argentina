@@ -163,14 +163,14 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col justify-center items-center text-center py-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <h1 className="text-display-xl mb-8">
+      <section className="min-h-screen flex flex-col pt-[15vh] px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <h1 className="text-display-xl leading-[0.95] mb-6">
           EMPLEO<br/>TATTOO<br/>ARGENTINA
         </h1>
-        <p className="text-subtitle text-muted-foreground mb-12">
+        <p className="text-subtitle text-muted-foreground mb-8">
           Conectando artistas con los mejores estudios del país.
         </p>
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
             Publicar
           </Link>
