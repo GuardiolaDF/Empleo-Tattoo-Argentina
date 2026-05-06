@@ -9,15 +9,15 @@ export default function AcademiaPage() {
       <Navbar />
 
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-24">
-        <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-8 block">
+        <span className="text-label-sm mb-8 block">
           Academia
         </span>
         
-        <h1 className="font-serif text-5xl md:text-7xl tracking-tighter uppercase mb-6 leading-none">
+        <h1 className="text-display-xl mb-6">
           Muy Pronto.
         </h1>
         
-        <p className="font-sans text-sm text-muted-foreground max-w-md mx-auto leading-relaxed mb-12">
+        <p className="text-body-sm text-muted-foreground max-w-md mx-auto mb-12">
           Estamos preparando algo especial para la comunidad del tatuaje. Cursos, recursos y más.
         </p>
         
@@ -26,7 +26,7 @@ export default function AcademiaPage() {
           className="inline-flex items-center justify-center space-x-3 border border-black bg-transparent text-black px-8 py-4 hover:bg-black/5 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="font-sans text-[10px] tracking-widest uppercase">Volver al inicio</span>
+          <span className="text-button">Volver al inicio</span>
         </Link>
       </main>
 

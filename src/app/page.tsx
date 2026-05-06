@@ -37,14 +37,14 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
       className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10">
-        <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
-        <p className={`font-sans text-sm tracking-widest uppercase mb-2 ${style.muted}`}>Busca</p>
-        <h2 className="font-serif text-5xl md:text-6xl tracking-tight mb-2 leading-[1.1]">{role}</h2>
-        <p className={`font-sans italic text-sm tracking-widest ${style.muted}`}>{specialty}</p>
+        <h3 className="text-label font-bold mb-6">{studioName}</h3>
+        <p className={`text-caption-sm mb-2 ${style.muted}`}>Busca</p>
+        <h2 className="text-h3 mb-2">{role}</h2>
+        <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
       </div>
       <div className="relative z-10 flex items-center space-x-2 mt-8">
         <MapPin className="w-4 h-4" />
-        <span className="font-sans text-sm tracking-wide">{location}</span>
+        <span className="text-caption">{location}</span>
       </div>
     </Link>
   );
@@ -164,14 +164,14 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="pt-16 pb-24 px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col items-start">
-        <h1 className="font-serif text-7xl md:text-[9rem] tracking-tighter leading-[0.85] mb-8">
+        <h1 className="text-display-2xl mb-8">
           EMPLEO<br/>TATTOO<br/>ARGENTINA
         </h1>
-        <p className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-12">
+        <p className="text-subtitle text-muted-foreground mb-12">
           Conectando artistas con los mejores estudios del país.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
+          <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
             Publicar
           </Link>
           <a 
@@ -183,7 +183,7 @@ export default function Home() {
                 block: 'start'
               });
             }}
-            className="bg-transparent text-black border border-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors w-full sm:w-auto text-center"
+            className="bg-transparent text-black border border-black px-12 py-4 text-button hover:bg-black/5 transition-colors w-full sm:w-auto text-center"
           >
             BUSCAR
           </a>
@@ -203,7 +203,7 @@ export default function Home() {
             {/* Quadruple the array for seamless loop on ultra-wide screens */}
             {[...brands, ...brands, ...brands, ...brands].map((brand, i) => (
               <div key={i} className="flex items-center">
-                <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground px-8">
+                <span className="text-label text-muted-foreground px-8">
                   {brand}
                 </span>
                 <span className="mx-6 text-muted">·</span>
@@ -223,12 +223,12 @@ export default function Home() {
         `}</style>
         <div className="flex flex-col mb-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
+            <h2 className="text-h2 uppercase">Puestos Vacantes</h2>
             <button 
               onClick={() => setFilterBarOpen(!filterBarOpen)}
               className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex"
             >
-              <span className="font-sans text-xs tracking-widest uppercase">Filtro</span>
+              <span className="text-button-sm">Filtro</span>
               <Settings2 className="w-4 h-4" />
             </button>
           </div>
@@ -253,7 +253,7 @@ export default function Home() {
                           isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
                         }`}
                       >
-                        <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
+                        <span className="text-label-sm truncate pr-2">{label}</span>
                         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
                       </button>
                       {isOpen && (
@@ -264,7 +264,7 @@ export default function Home() {
                               <button
                                 key={opt}
                                 onClick={() => handleFilterSelect(key, opt)}
-                                className={`w-full text-left px-4 py-2 font-sans text-xs transition-colors flex items-center justify-between ${
+                                className={`w-full text-left px-4 py-2 text-body-sm transition-colors flex items-center justify-between ${
                                   isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
                                 }`}
                               >
@@ -292,7 +292,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <button onClick={clearFilters} className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
+                 <button onClick={clearFilters} className="text-label-sm text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
                   Limpiar Filtros
                 </button>
               </div>
@@ -315,16 +315,16 @@ export default function Home() {
                 />
               ))}
             </div>
-            <div className="flex justify-center">
-              <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
+             <div className="flex justify-center">
+              <button className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors">
                 Cargar Más
               </button>
             </div>
           </>
         ) : (
-          <div className="py-24 flex flex-col items-center justify-center text-center">
-            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
-            <button onClick={clearFilters} className="font-sans text-xs tracking-widest uppercase border-b border-black text-black hover:text-black/70 transition-colors pb-1">
+           <div className="py-24 flex flex-col items-center justify-center text-center">
+            <p className="text-body-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
+            <button onClick={clearFilters} className="text-button-sm border-b border-black text-black hover:text-black/70 transition-colors pb-1">
               LIMPIAR FILTROS
             </button>
           </div>
@@ -334,9 +334,9 @@ export default function Home() {
       {/* Newsletter */}
       <section className="bg-white py-24 px-4 md:px-8 border-t border-border">
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="font-serif text-3xl md:text-4xl tracking-tight mb-4">NO TE PIERDAS NADA</h2>
-            <p className="font-sans text-muted-foreground text-sm max-w-md">
+           <div>
+            <h2 className="text-h2 mb-4">NO TE PIERDAS NADA</h2>
+            <p className="text-body-sm text-muted-foreground max-w-md">
               Recibe las últimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
             </p>
           </div>
@@ -352,7 +352,7 @@ export default function Home() {
                     <input 
                       {...register("email")}
                       placeholder="nombre@ejemplo.com"
-                      className="w-full px-6 py-4 bg-transparent outline-none font-sans text-sm placeholder:text-muted-foreground focus:bg-gray-50 transition-colors pr-12"
+                      className="w-full px-6 py-4 bg-transparent outline-none text-body placeholder:text-muted-foreground focus:bg-gray-50 transition-colors pr-12"
                     />
                     {emailValue && !errors.email && (
                       <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
@@ -361,7 +361,7 @@ export default function Home() {
                   <button 
                     type="submit" 
                     disabled={!isValid || !emailValue}
-                    className={`border-l ${errors.email ? 'border-red-500' : 'border-border'} px-8 py-4 text-xs tracking-widest uppercase font-sans transition-colors whitespace-nowrap ${
+                    className={`border-l ${errors.email ? 'border-red-500' : 'border-border'} px-8 py-4 text-button transition-colors whitespace-nowrap ${
                       isValid && emailValue
                         ? 'bg-black text-white hover:bg-black/90'
                         : 'bg-muted text-muted-foreground cursor-not-allowed'
@@ -371,7 +371,7 @@ export default function Home() {
                   </button>
                 </div>
                 {errors.email && (
-                  <span className="font-sans text-[10px] text-red-500 mt-2">{errors.email.message}</span>
+                  <span className="text-caption-sm text-red-500 mt-2">{errors.email.message}</span>
                 )}
               </form>
             )}

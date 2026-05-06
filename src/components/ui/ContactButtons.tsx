@@ -20,7 +20,7 @@ export function ContactButtons({ whatsapp, instagram }: ContactButtonsProps) {
         rel="noopener noreferrer"
         className="w-full border border-black bg-transparent text-black py-5 flex items-center justify-between px-6 hover:bg-black/5 transition-colors"
       >
-        <span className="font-sans text-[10px] tracking-[0.2em] uppercase">WhatsApp</span>
+        <span className="text-button">WhatsApp</span>
         <ArrowRight className="w-4 h-4" />
       </a>
       <a 
@@ -29,7 +29,7 @@ export function ContactButtons({ whatsapp, instagram }: ContactButtonsProps) {
         rel="noopener noreferrer"
         className="w-full border border-black bg-transparent text-black py-5 flex items-center justify-between px-6 hover:bg-black/5 transition-colors"
       >
-        <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Instagram Perfil</span>
+        <span className="text-button">Instagram Perfil</span>
         <ArrowRight className="w-4 h-4" />
       </a>
     </div>

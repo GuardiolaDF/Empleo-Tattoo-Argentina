@@ -50,15 +50,15 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
       {overlay}
       <div className={`relative z-10 ${textClasses}`}>
         {studioName && (
-          <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
+          <h3 className="text-h3 mb-6">{studioName}</h3>
         )}
-        <p className="font-sans text-sm tracking-widest uppercase mb-2 opacity-90">Busca</p>
-        <h2 className="font-serif text-5xl md:text-6xl tracking-tight mb-2 leading-[1.1]">{role}</h2>
-        <p className="font-sans italic text-sm tracking-widest opacity-80">{specialty}</p>
+        <p className="text-label-sm mb-2 opacity-90">Busca</p>
+        <h2 className="text-h2 mb-2">{role}</h2>
+        <p className="text-body-sm italic opacity-80">{specialty}</p>
       </div>
       <div className={`relative z-10 flex items-center space-x-2 mt-8 ${textClasses}`}>
         <MapPin className="w-4 h-4" />
-        <span className="font-sans text-sm tracking-wide">{location}</span>
+        <span className="text-label-sm">{location}</span>
       </div>
     </div>
   );
@@ -83,7 +83,7 @@ export default function PublicStudioProfilePage() {
           className="inline-flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Volver</span>
+          <span className="text-label-sm">Volver</span>
         </button>
       </div>
 
@@ -91,10 +91,10 @@ export default function PublicStudioProfilePage() {
         
         {/* SECTION 1 - Hero */}
         <section className="w-full bg-white text-center pb-12 border-b border-border">
-          <h1 className="font-serif text-6xl md:text-[7rem] tracking-tighter leading-[0.9] uppercase mb-8">
+          <h1 className="text-display-2xl mb-8">
             VOID TATTOO CLUB
           </h1>
-          <p className="font-sans text-xs tracking-widest text-muted-foreground uppercase">
+          <p className="text-label-sm text-muted-foreground">
             EST. 2018 | Palermo, Buenos Aires
           </p>
         </section>
@@ -106,17 +106,17 @@ export default function PublicStudioProfilePage() {
           <div className="flex-1 space-y-16">
             <div>
               <div className="flex items-center space-x-4 mb-8">
-                <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Sobre el Estudio</span>
+                <span className="text-label-sm text-muted-foreground">Sobre el Estudio</span>
                 <div className="flex-1 border-t border-border/50"></div>
               </div>
-              <p className="font-sans text-sm leading-loose text-foreground/90">
+              <p className="text-body leading-loose text-foreground/90">
                 Espacio privado especializado en Blackwork y Dotwork. Agenda gestionada, entorno silencioso y enfocado. Valoramos la consistencia técnica y una visión artística propia.
               </p>
             </div>
 
             <div>
               <div className="flex items-center space-x-4 mb-8">
-                <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Especialidades</span>
+                <span className="text-label-sm text-muted-foreground">Especialidades</span>
                 <div className="flex-1 border-t border-border/50"></div>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -136,7 +136,7 @@ export default function PublicStudioProfilePage() {
               <div className="w-full border-t border-border/50"></div>
 
               <div>
-                <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-6 block">Ubicación del Estudio</span>
+                <span className="text-label-sm text-muted-foreground mb-6 block">Ubicación del Estudio</span>
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m3!1d105073.44367015509!2d-58.50333830232497!3d-34.615662456488764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca3b4ef90cbd%3A0xa0b3812e88e88e87!2sBuenos%20Aires%2C%20CABA!5e0!3m2!1ses-419!2sar!4v1714088914000!5m2!1ses-419!2sar" 
                   width="100%" 
@@ -155,7 +155,7 @@ export default function PublicStudioProfilePage() {
         {/* SECTION 3 - Carrusel */}
         <section className="bg-muted p-8 md:p-16 lg:p-24 -mx-4 md:-mx-8">
           <div className="flex items-center space-x-4 mb-12 max-w-7xl mx-auto w-full">
-            <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Trabajos del Estudio</span>
+            <span className="text-label-sm text-muted-foreground">Trabajos del Estudio</span>
             <div className="flex-1 border-t border-border/50"></div>
           </div>
           <div className="max-w-7xl mx-auto w-full">
@@ -166,7 +166,7 @@ export default function PublicStudioProfilePage() {
         {/* SECTION 4 - Active listings */}
         <section>
           <div className="flex items-center space-x-4 mb-12">
-            <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Ofertas Activas</span>
+            <span className="text-label-sm text-muted-foreground">Ofertas Activas</span>
             <div className="flex-1 border-t border-border/50"></div>
           </div>
           

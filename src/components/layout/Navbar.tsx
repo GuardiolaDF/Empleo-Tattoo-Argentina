@@ -17,12 +17,12 @@ export function Navbar() {
   return (
     <nav className="w-full flex items-center justify-between py-8 px-4 md:px-8 bg-transparent">
       {/* Logo */}
-      <Link href="/" className="font-serif text-3xl font-bold tracking-tight">
+      <Link href="/" className="text-h2 font-bold">
         ETA
       </Link>
 
       {/* Desktop Links */}
-      <div className="hidden md:flex space-x-12 text-xs font-sans tracking-widest uppercase">
+      <div className="hidden md:flex space-x-12 text-nav">
         {navLinks.map(({ href, label }) => {
           const isActive = pathname.startsWith(href);
           return (
@@ -30,7 +30,7 @@ export function Navbar() {
               key={href}
               href={href} 
               aria-current={isActive ? "page" : undefined}
-              className={`relative group transition-colors duration-200 font-normal focus:outline focus:outline-1 focus:outline-black focus:outline-offset-4 ${
+              className={`relative group transition-colors duration-200 focus:outline focus:outline-1 focus:outline-black focus:outline-offset-4 ${
                 isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -49,7 +49,7 @@ export function Navbar() {
       <div className="flex items-center space-x-4">
         <Link 
           href="/publicar-empleo"
-          className="hidden md:block bg-primary text-primary-foreground px-6 py-3 text-xs tracking-widest uppercase font-sans hover:bg-black/90 transition-colors"
+          className="hidden md:block bg-primary text-primary-foreground px-6 py-3 text-button hover:bg-black/90 transition-colors"
         >
           Publicar Empleo
         </Link>

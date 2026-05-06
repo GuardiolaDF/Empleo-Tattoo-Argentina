@@ -6,7 +6,7 @@ interface SpecialtyPillProps {
 }
 
 export function SpecialtyPill({ label, variant = "default" }: SpecialtyPillProps) {
-  const baseClasses = "font-sans text-xs tracking-widest uppercase px-3 py-1.5 inline-flex items-center justify-center";
+  const baseClasses = "text-label-sm px-3 py-1.5 inline-flex items-center justify-center";
   const variantClasses = variant === "outline" 
     ? "bg-transparent text-black border border-black" 
     : "bg-black text-white";

@@ -63,14 +63,14 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
       className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10">
-        <h3 className="font-sans font-bold text-2xl md:text-3xl tracking-tight uppercase leading-none mb-6">{studioName}</h3>
-        <p className={`font-sans text-sm tracking-widest uppercase mb-2 ${style.muted}`}>Busca</p>
-        <h2 className="font-serif text-5xl md:text-6xl tracking-tight mb-2 leading-[1.1]">{role}</h2>
-        <p className={`font-sans italic text-sm tracking-widest ${style.muted}`}>{specialty}</p>
+        <h3 className="text-label font-bold mb-6">{studioName}</h3>
+        <p className={`text-caption-sm mb-2 ${style.muted}`}>Busca</p>
+        <h2 className="text-h3 mb-2">{role}</h2>
+        <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
       </div>
       <div className="relative z-10 flex items-center space-x-2 mt-8">
         <MapPin className="w-4 h-4" />
-        <span className="font-sans text-sm tracking-wide">{location}</span>
+        <span className="text-caption">{location}</span>
       </div>
     </Link>
   );
@@ -127,15 +127,15 @@ export default function ArtistasPage() {
 
         {/* SECTION 1 - Hero */}
         <section className="pt-24 pb-32 px-4 md:px-8 w-full flex flex-col items-center text-center">
-          <h1 className="font-serif text-5xl md:text-[8rem] tracking-tighter leading-[0.85] mb-8 uppercase max-w-5xl">
-            ENCONTRÃƒÂ LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
+          <h1 className="text-display-xl mb-8 max-w-5xl">
+            ENCONTRÃƒÂ  LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
           </h1>
-          <p className="font-serif italic text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl">
+          <p className="text-subtitle text-muted-foreground mb-12 max-w-2xl">
             La plataforma donde podÃƒÂ©s postularte y encontrar tu prÃƒÂ³ximo estudio.
           </p>
           <a 
             href="#ofertas" 
-            className="bg-black text-white px-12 py-5 text-xs tracking-widest uppercase font-sans hover:bg-black/90 transition-colors inline-flex items-center justify-center"
+            className="bg-black text-white px-12 py-5 text-button hover:bg-black/90 transition-colors inline-flex items-center justify-center"
           >
             Ver Ofertas &rarr;
           </a>
@@ -144,36 +144,36 @@ export default function ArtistasPage() {
 
       {/* SECTION 2 - How it works */}
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <h2 className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground text-center mb-20">
+        <h2 className="text-label text-center mb-20">
           CÃƒÂ³mo Funciona
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
           <div className="flex flex-col text-center md:text-left space-y-6">
-            <span className="font-serif text-7xl tracking-tighter text-muted-foreground/30 leading-none">01</span>
+            <span className="text-display-lg text-muted-foreground/30">01</span>
             <div>
-              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">ExplorÃƒÂ¡ Ofertas</h3>
-              <p className="font-sans text-sm text-muted-foreground leading-relaxed">
+              <h3 className="text-label mb-3">ExplorÃƒÂ¡ Ofertas</h3>
+              <p className="text-body-sm text-muted-foreground">
                 NavegÃƒÂ¡ el feed y filtrÃƒÂ¡ por estilo, ubicaciÃƒÂ³n y modalidad de trabajo.
               </p>
             </div>
           </div>
 
           <div className="flex flex-col text-center md:text-left space-y-6">
-            <span className="font-serif text-7xl tracking-tighter text-muted-foreground/30 leading-none">02</span>
+            <span className="text-display-lg text-muted-foreground/30">02</span>
             <div>
-              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">Postulate Directo</h3>
-              <p className="font-sans text-sm text-muted-foreground leading-relaxed">
+              <h3 className="text-label mb-3">Postulate Directo</h3>
+              <p className="text-body-sm text-muted-foreground">
                 ContactÃƒÂ¡ al estudio por WhatsApp o Instagram desde la misma oferta.
               </p>
             </div>
           </div>
 
           <div className="flex flex-col text-center md:text-left space-y-6">
-            <span className="font-serif text-7xl tracking-tighter text-muted-foreground/30 leading-none">03</span>
+            <span className="text-display-lg text-muted-foreground/30">03</span>
             <div>
-              <h3 className="font-sans text-sm font-bold tracking-[0.1em] uppercase mb-3">EncontrÃƒÂ¡ Tu Lugar</h3>
-              <p className="font-sans text-sm text-muted-foreground leading-relaxed">
+              <h3 className="text-label mb-3">EncontrÃƒÂ¡ Tu Lugar</h3>
+              <p className="text-body-sm text-muted-foreground">
                 Conectate con estudios que buscan exactamente tu perfil.
               </p>
             </div>
@@ -193,12 +193,12 @@ export default function ArtistasPage() {
         `}</style>
         <div className="flex flex-col mb-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-serif text-4xl md:text-5xl tracking-tighter font-bold uppercase">Puestos Vacantes</h2>
+            <h2 className="text-h2 uppercase">Puestos Vacantes</h2>
             <button 
               onClick={() => setFilterBarOpen(!filterBarOpen)}
               className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex"
             >
-              <span className="font-sans text-xs tracking-widest uppercase">Filtro</span>
+              <span className="text-button-sm">Filtro</span>
               <Settings2 className="w-4 h-4" />
             </button>
           </div>
@@ -223,7 +223,7 @@ export default function ArtistasPage() {
                           isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
                         }`}
                       >
-                        <span className="font-sans text-[10px] tracking-widest uppercase truncate pr-2">{label}</span>
+                        <span className="text-label-sm truncate pr-2">{label}</span>
                         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
                       </button>
                       {isOpen && (
@@ -234,7 +234,7 @@ export default function ArtistasPage() {
                               <button
                                 key={opt}
                                 onClick={() => handleFilterSelect(key, opt)}
-                                className={`w-full text-left px-4 py-2 font-sans text-xs transition-colors flex items-center justify-between ${
+                                className={`w-full text-left px-4 py-2 text-body-sm transition-colors flex items-center justify-between ${
                                   isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
                                 }`}
                               >
@@ -262,7 +262,7 @@ export default function ArtistasPage() {
                       </div>
                     ))}
                   </div>
-                  <button onClick={clearFilters} className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
+                  <button onClick={clearFilters} className="text-label-sm text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
                     Limpiar Filtros
                   </button>
                 </div>
@@ -286,15 +286,15 @@ export default function ArtistasPage() {
               ))}
             </div>
             <div className="flex justify-center">
-              <button className="border border-black text-black px-12 py-4 text-xs tracking-widest uppercase font-sans hover:bg-black/5 transition-colors">
+              <button className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors">
                 Cargar MÃƒÂ¡s
               </button>
             </div>
           </>
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center">
-            <p className="font-sans text-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu bÃƒÂºsqueda.</p>
-            <button onClick={clearFilters} className="font-sans text-xs tracking-widest uppercase border-b border-black text-black hover:text-black/70 transition-colors pb-1">
+            <p className="text-body-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu bÃƒÂºsqueda.</p>
+            <button onClick={clearFilters} className="text-button-sm border-b border-black text-black hover:text-black/70 transition-colors pb-1">
               LIMPIAR FILTROS
             </button>
           </div>
@@ -305,8 +305,8 @@ export default function ArtistasPage() {
       <section className="bg-white py-24 px-4 md:px-8 border-t border-border">
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="font-serif text-3xl md:text-4xl tracking-tight mb-4">NO TE PIERDAS NADA</h2>
-            <p className="font-sans text-muted-foreground text-sm max-w-md">
+            <h2 className="text-h2 mb-4">NO TE PIERDAS NADA</h2>
+            <p className="text-body-sm text-muted-foreground max-w-md">
               Recibe las ÃƒÂºltimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
             </p>
           </div>
@@ -315,12 +315,12 @@ export default function ArtistasPage() {
               <input 
                 type="email" 
                 placeholder="nombre@ejemplo.com"
-                className="flex-1 px-6 py-4 bg-transparent outline-none font-sans text-sm placeholder:text-muted-foreground focus:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-4 bg-transparent outline-none text-body placeholder:text-muted-foreground focus:bg-gray-50 transition-colors"
                 required
               />
               <button 
                 type="submit" 
-                className="border-l border-border px-8 py-4 text-xs tracking-widest uppercase font-sans hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
+                className="border-l border-border px-8 py-4 text-button hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
               >
                 Suscribirme Ã¢â€ â€™
               </button>

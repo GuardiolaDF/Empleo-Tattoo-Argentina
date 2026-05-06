@@ -33,10 +33,10 @@ export default function LoginPage() {
         {/* Header Section */}
         <div className="px-8 pt-12 pb-8 border-b border-border text-center md:text-left">
           <Link href="/" className="inline-block mb-8">
-            <h1 className="font-serif text-3xl font-bold tracking-tight">ETA</h1>
+            <h1 className="text-label font-bold">ETA</h1>
           </Link>
-          <h2 className="font-serif text-4xl tracking-tighter uppercase mb-2">Identificate</h2>
-          <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+          <h2 className="text-h2 uppercase mb-2">Identificate</h2>
+          <p className="text-label-sm">
             Para publicar y administrar tus búsquedas
           </p>
         </div>
@@ -52,13 +52,13 @@ export default function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              <span className="font-sans text-xs tracking-widest uppercase">Continuar con Google</span>
+              <span className="text-button">Continuar con Google</span>
             </button>
             <button className="w-full bg-black text-white py-4 flex items-center justify-center space-x-3 hover:bg-black/90 transition-colors">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
               </svg>
-              <span className="font-sans text-xs tracking-widest uppercase">Continuar con Facebook</span>
+              <span className="text-button">Continuar con Facebook</span>
             </button>
           </div>
 
@@ -68,14 +68,14 @@ export default function LoginPage() {
               <div className="w-full border-t border-border"></div>
             </div>
             <div className="relative bg-white px-4">
-              <span className="font-sans text-[10px] tracking-widest text-muted-foreground uppercase border border-border px-2 py-1">O</span>
+              <span className="text-label-sm border border-border px-2 py-1">O</span>
             </div>
           </div>
 
           {/* Magic Link Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex flex-col space-y-2">
-              <label htmlFor="email" className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+              <label htmlFor="email" className="text-label-sm text-muted-foreground">
                 Email Profesional
               </label>
               <input
@@ -83,10 +83,10 @@ export default function LoginPage() {
                 type="email"
                 placeholder="artista@estudio.com"
                 {...register("email")}
-                className={`border-b ${errors.email ? 'border-red-500' : 'border-border focus:border-black'} py-3 outline-none font-sans text-sm bg-transparent transition-colors`}
+                className={`border-b ${errors.email ? 'border-red-500' : 'border-border focus:border-black'} py-3 outline-none text-body bg-transparent transition-colors`}
               />
               {errors.email && (
-                <p className="font-sans text-[10px] text-red-500 tracking-wide mt-1">
+                <p className="text-caption-sm text-red-500 mt-1">
                   {errors.email.message}
                 </p>
               )}
@@ -96,7 +96,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-black text-white py-4 flex items-center justify-center space-x-2 hover:bg-black/90 transition-colors"
             >
-              <span className="font-sans text-xs tracking-widest uppercase">Enviar Link Mágico</span>
+              <span className="text-button">Enviar Link Mágico</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -104,7 +104,7 @@ export default function LoginPage() {
 
         {/* Footer Legal */}
         <div className="border-t border-border p-6 text-center">
-          <p className="font-sans text-[9px] tracking-[0.1em] text-muted-foreground uppercase">
+          <p className="text-caption-sm text-muted-foreground uppercase">
             Al ingresar, aceptás nuestros términos de servicio
           </p>
         </div>

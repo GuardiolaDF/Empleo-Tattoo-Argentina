@@ -175,57 +175,57 @@ export default function PerfilEstudioPage() {
         <aside className="w-full lg:w-64 bg-white border-r border-border flex flex-col justify-between py-12 flex-shrink-0">
           <div>
             <div className="px-8 mb-12 overflow-hidden w-full">
-              <h2 className="font-serif text-xl tracking-tight uppercase font-bold truncate max-w-full block">{liveNombre !== "Nombre de tu Estudio" ? liveNombre : "Tu Estudio"}</h2>
-              <p className="font-sans text-[10px] tracking-widest text-muted-foreground uppercase mt-1">Configuración</p>
+              <h2 className="text-h3 truncate max-w-full block">{liveNombre !== "Nombre de tu Estudio" ? liveNombre : "Tu Estudio"}</h2>
+              <p className="text-label-sm mt-1">Configuración</p>
             </div>
             
             <nav className="flex flex-col space-y-2">
               <Link href="/dashboard" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
                 <LayoutGrid className="w-4 h-4" />
-                <span className="font-sans text-[10px] tracking-widest uppercase">Active Listings</span>
+                <span className="text-nav">Active Listings</span>
               </Link>
               <Link href="#" className="flex items-center space-x-4 px-8 py-4 bg-black text-white">
                 <Settings className="w-4 h-4" />
-                <span className="font-sans text-[10px] tracking-widest uppercase">Perfil del Estudio</span>
+                <span className="text-nav">Perfil del Estudio</span>
               </Link>
               <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
                 <Briefcase className="w-4 h-4" />
-                <span className="font-sans text-[10px] tracking-widest uppercase">Dashboard</span>
+                <span className="text-nav">Dashboard</span>
               </Link>
               <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
                 <Users className="w-4 h-4" />
-                <span className="font-sans text-[10px] tracking-widest uppercase">Artist Applications</span>
+                <span className="text-nav">Artist Applications</span>
               </Link>
               <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
                 <BarChart className="w-4 h-4" />
-                <span className="font-sans text-[10px] tracking-widest uppercase">Studio Analytics</span>
+                <span className="text-nav">Studio Analytics</span>
               </Link>
             </nav>
           </div>
 
           <div className="px-8 flex flex-col space-y-6 mt-16 lg:mt-0">
             <button className="w-full bg-black text-white py-4 flex items-center justify-center hover:bg-black/90 transition-colors">
-              <span className="font-sans text-[10px] tracking-widest uppercase">New Portfolio Upload</span>
+              <span className="text-button">New Portfolio Upload</span>
             </button>
             <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
               <HelpCircle className="w-4 h-4" />
-              <span className="font-sans text-[10px] tracking-widest uppercase">Support</span>
+              <span className="text-nav">Support</span>
             </Link>
             <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
               <LogOut className="w-4 h-4" />
-              <span className="font-sans text-[10px] tracking-widest uppercase">Logout</span>
+              <span className="text-nav">Logout</span>
             </Link>
           </div>
         </aside>
 
         {/* Center Column: Form */}
         <section className="flex-1 p-8 md:p-16 lg:pr-12">
-          <h1 className="font-serif text-4xl md:text-5xl tracking-tight uppercase mb-12">Perfil del Estudio</h1>
+          <h1 className="text-display-xl mb-12">Perfil del Estudio</h1>
           
           {isSuccess && (
             <div className="bg-gray-100 border border-black p-6 mb-12 flex items-center space-x-4">
               <CheckCircle2 className="w-6 h-6 text-black" />
-              <span className="font-sans text-xs tracking-widest uppercase">Perfil actualizado correctamente.</span>
+              <span className="text-button">Perfil actualizado correctamente.</span>
             </div>
           )}
 
@@ -233,62 +233,62 @@ export default function PerfilEstudioPage() {
             
             {/* Section 01 */}
             <div className="space-y-8">
-              <h2 className="font-serif text-3xl tracking-tight border-b border-border pb-4">
+              <h2 className="text-h2 border-b border-border pb-4">
                 01. Información Básica
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col space-y-2 md:col-span-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Nombre del Estudio</label>
+                  <label className="text-label-sm text-muted-foreground">Nombre del Estudio</label>
                   <input 
                     {...register("nombre")}
                     placeholder="Ej. Ink & Concrete"
-                    className={`border ${errors.nombre ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white`}
+                    className={`border ${errors.nombre ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white`}
                   />
                   <div className="flex justify-between items-start mt-1">
-                    <span className="font-sans text-[10px] text-red-500">{errors.nombre ? errors.nombre.message : ""}</span>
-                    <span className="font-sans text-[10px] text-muted-foreground ml-auto">
+                    <span className="text-caption-sm text-red-500">{errors.nombre ? errors.nombre.message : ""}</span>
+                    <span className="text-caption-sm text-muted-foreground ml-auto">
                       {liveNombreRaw.length}/30
                     </span>
                   </div>
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Año de Fundación</label>
+                  <label className="text-label-sm text-muted-foreground">Año de Fundación</label>
                   <input 
                     {...register("anio")}
                     placeholder="Ej. 2015"
-                    className={`border ${errors.anio ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white`}
+                    className={`border ${errors.anio ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white`}
                   />
-                  {errors.anio && <span className="font-sans text-[10px] text-red-500">{errors.anio.message}</span>}
+                  {errors.anio && <span className="text-caption-sm text-red-500">{errors.anio.message}</span>}
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Ubicación</label>
+                  <label className="text-label-sm text-muted-foreground">Ubicación</label>
                   <input 
                     {...register("ubicacion")}
                     placeholder="Ej. Palermo, Buenos Aires"
-                    className={`border ${errors.ubicacion ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white`}
+                    className={`border ${errors.ubicacion ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white`}
                   />
-                  {errors.ubicacion && <span className="font-sans text-[10px] text-red-500">{errors.ubicacion.message}</span>}
+                  {errors.ubicacion && <span className="text-caption-sm text-red-500">{errors.ubicacion.message}</span>}
                 </div>
 
                 <div className="flex flex-col space-y-2 md:col-span-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Bio / Descripción</label>
+                  <label className="text-label-sm text-muted-foreground">Bio / Descripción</label>
                   <textarea 
                     {...register("bio")}
                     rows={4}
                     placeholder="Contá la historia de tu estudio..."
-                    className={`border ${errors.bio ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white resize-none`}
+                    className={`border ${errors.bio ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white resize-none`}
                   />
-                  {errors.bio && <span className="font-sans text-[10px] text-red-500">{errors.bio.message}</span>}
+                  {errors.bio && <span className="text-caption-sm text-red-500">{errors.bio.message}</span>}
                 </div>
               </div>
             </div>
 
             {/* Section 02 */}
             <div className="space-y-8">
-              <h2 className="font-serif text-3xl tracking-tight border-b border-border pb-4">
+              <h2 className="text-h2 border-b border-border pb-4">
                 02. Especialidades
               </h2>
               
@@ -299,12 +299,12 @@ export default function PerfilEstudioPage() {
                     onChange={(e) => setSpecialtyInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSpecialty(); } }}
                     placeholder="Añadir especialidad..."
-                    className="flex-1 border border-border px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white"
+                    className="flex-1 border border-border px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white"
                   />
                   <button 
                     type="button" 
                     onClick={handleAddSpecialty}
-                    className="bg-black text-white px-8 py-3 font-sans text-[10px] tracking-widest uppercase hover:bg-black/90 transition-colors"
+                    className="bg-black text-white px-8 py-3 text-button hover:bg-black/90 transition-colors"
                   >
                     Agregar +
                   </button>
@@ -327,35 +327,35 @@ export default function PerfilEstudioPage() {
 
             {/* Section 03 */}
             <div className="space-y-8">
-              <h2 className="font-serif text-3xl tracking-tight border-b border-border pb-4">
+              <h2 className="text-h2 border-b border-border pb-4">
                 03. Redes y Contacto
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col space-y-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Instagram</label>
+                  <label className="text-label-sm text-muted-foreground">Instagram</label>
                   <div className="relative flex">
-                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
+                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default text-body text-muted-foreground">
                       @
                     </div>
                     <div className="relative flex-1">
                       <input 
                         {...register("instagram")}
                         placeholder="tuestudio"
-                        className={`w-full border ${errors.instagram ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                        className={`w-full border ${errors.instagram ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white pr-10`}
                       />
                       {liveInstagram && liveInstagram.length > 0 && !errors.instagram && (
                         <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                       )}
                     </div>
                   </div>
-                  {errors.instagram && <span className="font-sans text-[10px] text-red-500">{errors.instagram.message}</span>}
+                  {errors.instagram && <span className="text-caption-sm text-red-500">{errors.instagram.message}</span>}
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Número de WhatsApp</label>
+                  <label className="text-label-sm text-muted-foreground">Número de WhatsApp</label>
                   <div className="relative flex">
-                    <div className="relative flex items-stretch bg-muted border border-r-0 border-border font-sans text-sm text-muted-foreground" ref={dropdownRef}>
+                    <div className="relative flex items-stretch bg-muted border border-r-0 border-border text-body text-muted-foreground" ref={dropdownRef}>
                       <button 
                         type="button"
                         onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
@@ -373,7 +373,7 @@ export default function PerfilEstudioPage() {
                                 setSelectedCountry(country);
                                 setIsCountryDropdownOpen(false);
                               }}
-                              className="w-full px-4 py-3 text-left hover:bg-black/5 transition-colors font-sans text-xs flex items-center gap-3 text-black border-b border-border/50 last:border-0"
+                              className="w-full px-4 py-3 text-left hover:bg-black/5 transition-colors text-body-sm flex items-center gap-3 text-black border-b border-border/50 last:border-0"
                             >
                               <span className="text-sm">{country.flag}</span> <span>{country.label}</span>
                             </button>
@@ -394,43 +394,43 @@ export default function PerfilEstudioPage() {
                           onChangeWhatsapp(e);
                         }}
                         placeholder="11 2222 3333"
-                        className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                        className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white pr-10`}
                       />
                       {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
                         <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                       )}
                     </div>
                   </div>
-                  {errors.whatsapp && <span className="font-sans text-[10px] text-red-500">{errors.whatsapp.message}</span>}
+                  {errors.whatsapp && <span className="text-caption-sm text-red-500">{errors.whatsapp.message}</span>}
                 </div>
 
                 <div className="flex flex-col space-y-2 md:col-span-2">
-                  <label className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground">Website (Opcional)</label>
+                  <label className="text-label-sm text-muted-foreground">Website (Opcional)</label>
                   <div className="relative flex">
-                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default font-sans text-sm text-muted-foreground">
+                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default text-body text-muted-foreground">
                       https://
                     </div>
                     <div className="relative flex-1">
                       <input 
                         {...register("website")}
                         placeholder="tuestudio.com (opcional)"
-                        className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none font-sans text-sm focus:border-black transition-colors bg-white pr-10`}
+                        className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white pr-10`}
                       />
                       {liveWebsite && liveWebsite.length > 0 && !errors.website && (
                         <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
                       )}
                     </div>
                   </div>
-                  {errors.website && <span className="font-sans text-[10px] text-red-500">{errors.website.message}</span>}
+                  {errors.website && <span className="text-caption-sm text-red-500">{errors.website.message}</span>}
                 </div>
               </div>
             </div>
 
             {/* Section 04 */}
             <div className="space-y-8">
-              <h2 className="font-serif text-3xl tracking-tight border-b border-border pb-4 flex justify-between items-end">
+              <h2 className="text-h2 border-b border-border pb-4 flex justify-between items-end">
                 <span>04. Fotos del Estudio</span>
-                <span className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground font-normal pb-1">{photos.length}/6 Fotos</span>
+                <span className="text-label-sm text-muted-foreground font-normal pb-1">{photos.length}/6 Fotos</span>
               </h2>
               
               <div className="flex flex-col space-y-6">
@@ -445,8 +445,8 @@ export default function PerfilEstudioPage() {
                   />
                   <div className="p-12 flex flex-col items-center justify-center text-center text-muted-foreground group-hover:text-black transition-colors">
                     <Upload className="w-6 h-6 mb-4" />
-                    <span className="font-sans text-[10px] tracking-[0.2em] uppercase">Subir Fotos</span>
-                    <span className="font-sans text-[10px] mt-2 opacity-50">Arrastra archivos o haz clic aquí (Max 6)</span>
+                    <span className="text-label-sm">Subir Fotos</span>
+                    <span className="text-caption-sm mt-2 opacity-50">Arrastra archivos o haz clic aquí (Max 6)</span>
                   </div>
                 </div>
 
@@ -475,7 +475,7 @@ export default function PerfilEstudioPage() {
                 type="submit" 
                 className="w-full bg-black text-white py-5 flex items-center justify-center hover:bg-black/90 transition-colors"
               >
-                <span className="font-sans text-xs tracking-widest uppercase">Guardar Cambios</span>
+                <span className="text-button">Guardar Cambios</span>
               </button>
             </div>
             
@@ -485,11 +485,11 @@ export default function PerfilEstudioPage() {
         {/* Right Panel: Preview */}
         <aside className="w-full lg:w-80 p-8 md:p-16 lg:pl-0 flex flex-col space-y-8 flex-shrink-0">
           
-          <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-muted-foreground border-b border-border pb-4 block">Vista Previa</span>
+          <span className="text-label-sm text-muted-foreground border-b border-border pb-4 block">Vista Previa</span>
           
           <div className="bg-white border border-border p-8 text-center flex flex-col items-center overflow-hidden w-full">
-            <h3 className="font-serif text-3xl tracking-tight uppercase mb-2 max-w-full break-words line-clamp-3">{liveNombre}</h3>
-            <p className="font-sans text-xs text-muted-foreground mb-6 max-w-full break-words line-clamp-3">{liveUbicacion}</p>
+            <h3 className="text-h2 uppercase mb-2 max-w-full break-words line-clamp-3">{liveNombre}</h3>
+            <p className="text-body-sm text-muted-foreground mb-6 max-w-full break-words line-clamp-3">{liveUbicacion}</p>
             
             <div className="flex flex-wrap justify-center gap-2 mb-8 w-full max-w-[200px]">
               {specialties.length > 0 ? specialties.slice(0, 3).map((spec) => (
@@ -505,7 +505,7 @@ export default function PerfilEstudioPage() {
           </div>
 
           <Link href="/estudios/mi-estudio" className="w-full bg-transparent border border-black text-black py-4 flex items-center justify-center hover:bg-black/5 transition-colors">
-            <span className="font-sans text-[10px] tracking-widest uppercase">Ver Perfil Público &rarr;</span>
+            <span className="text-button">Ver Perfil Público &rarr;</span>
           </Link>
 
         </aside>
