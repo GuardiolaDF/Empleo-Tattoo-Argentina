@@ -38,7 +38,7 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
     >
       <div className="relative z-10">
         <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
-        <p className={`text-caption-sm lowercase mb-2 ${style.muted}`}>busca</p>
+        <p className={`text-caption lowercase mb-2 ${style.muted}`}>busca</p>
         <h2 className="text-h3 font-serif mb-2">{role}</h2>
         <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
       </div>

@@ -52,7 +52,7 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
         {studioName && (
           <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
         )}
-        <p className="text-caption-sm lowercase mb-2 opacity-90">busca</p>
+        <p className="text-caption lowercase mb-2">busca</p>
         <h2 className="text-h3 font-serif mb-2">{role}</h2>
         <p className="text-body-sm italic opacity-80">{specialty}</p>
       </div>
