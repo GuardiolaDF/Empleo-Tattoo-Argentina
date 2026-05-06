@@ -63,13 +63,13 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
       className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10">
-        <h3 className="text-label font-bold mb-6">{studioName}</h3>
-        <p className={`text-caption-sm mb-2 ${style.muted}`}>Busca</p>
-        <h2 className="text-h3 mb-2">{role}</h2>
+        <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
+        <p className={`text-caption-sm lowercase mb-2 ${style.muted}`}>busca</p>
+        <h2 className="text-h3 font-serif mb-2">{role}</h2>
         <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
       </div>
       <div className="relative z-10 flex items-center space-x-2 mt-8">
-        <MapPin className="w-4 h-4" />
+        <MapPin className="w-3 h-3" />
         <span className="text-caption">{location}</span>
       </div>
     </Link>
@@ -128,10 +128,10 @@ export default function ArtistasPage() {
         {/* SECTION 1 - Hero */}
         <section className="pt-24 pb-32 px-4 md:px-8 w-full flex flex-col items-center text-center">
           <h1 className="text-display-xl mb-8 max-w-5xl">
-            ENCONTRÃƒÂ  LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
+            ENCONTRÁ LOS MEJORES<br/>ESTUDIOS DONDE TRABAJAR.
           </h1>
           <p className="text-subtitle text-muted-foreground mb-12 max-w-2xl">
-            La plataforma donde podÃƒÂ©s postularte y encontrar tu prÃƒÂ³ximo estudio.
+            La plataforma donde podés postularte y encontrar tu próximo estudio.
           </p>
           <a 
             href="#ofertas" 
@@ -145,16 +145,16 @@ export default function ArtistasPage() {
       {/* SECTION 2 - How it works */}
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <h2 className="text-label text-center mb-20">
-          CÃƒÂ³mo Funciona
+          Cómo Funciona
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
           <div className="flex flex-col text-center md:text-left space-y-6">
             <span className="text-display-lg text-muted-foreground/30">01</span>
             <div>
-              <h3 className="text-label mb-3">ExplorÃƒÂ¡ Ofertas</h3>
+              <h3 className="text-label mb-3">Explorá Ofertas</h3>
               <p className="text-body-sm text-muted-foreground">
-                NavegÃƒÂ¡ el feed y filtrÃƒÂ¡ por estilo, ubicaciÃƒÂ³n y modalidad de trabajo.
+                Navegá el feed y filtrá por estilo, ubicación y modalidad de trabajo.
               </p>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function ArtistasPage() {
             <div>
               <h3 className="text-label mb-3">Postulate Directo</h3>
               <p className="text-body-sm text-muted-foreground">
-                ContactÃƒÂ¡ al estudio por WhatsApp o Instagram desde la misma oferta.
+                Contactá al estudio por WhatsApp o Instagram desde la misma oferta.
               </p>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function ArtistasPage() {
           <div className="flex flex-col text-center md:text-left space-y-6">
             <span className="text-display-lg text-muted-foreground/30">03</span>
             <div>
-              <h3 className="text-label mb-3">EncontrÃƒÂ¡ Tu Lugar</h3>
+              <h3 className="text-label mb-3">Encontrá Tu Lugar</h3>
               <p className="text-body-sm text-muted-foreground">
                 Conectate con estudios que buscan exactamente tu perfil.
               </p>
@@ -287,13 +287,13 @@ export default function ArtistasPage() {
             </div>
             <div className="flex justify-center">
               <button className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors">
-                Cargar MÃƒÂ¡s
+                Cargar Más
               </button>
             </div>
           </>
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center">
-            <p className="text-body-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu bÃƒÂºsqueda.</p>
+            <p className="text-body-sm text-muted-foreground mb-4">No hay ofertas que coincidan con tu búsqueda.</p>
             <button onClick={clearFilters} className="text-button-sm border-b border-black text-black hover:text-black/70 transition-colors pb-1">
               LIMPIAR FILTROS
             </button>
@@ -307,7 +307,7 @@ export default function ArtistasPage() {
           <div>
             <h2 className="text-h2 mb-4">NO TE PIERDAS NADA</h2>
             <p className="text-body-sm text-muted-foreground max-w-md">
-              Recibe las ÃƒÂºltimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
+              Recibe las últimas ofertas de empleo y novedades del mundo del tattoo directamente en tu correo.
             </p>
           </div>
           <div>
@@ -322,7 +322,7 @@ export default function ArtistasPage() {
                 type="submit" 
                 className="border-l border-border px-8 py-4 text-button hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
               >
-                Suscribirme Ã¢â€ â€™
+                Suscribirme →
               </button>
             </form>
           </div>

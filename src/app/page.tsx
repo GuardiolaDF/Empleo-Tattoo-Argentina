@@ -37,13 +37,13 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
       className={`group block flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10">
-        <h3 className="text-label font-bold mb-6">{studioName}</h3>
-        <p className={`text-caption-sm mb-2 ${style.muted}`}>Busca</p>
-        <h2 className="text-h3 mb-2">{role}</h2>
+        <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
+        <p className={`text-caption-sm lowercase mb-2 ${style.muted}`}>busca</p>
+        <h2 className="text-h3 font-serif mb-2">{role}</h2>
         <p className={`text-body-sm italic ${style.muted}`}>{specialty}</p>
       </div>
       <div className="relative z-10 flex items-center space-x-2 mt-8">
-        <MapPin className="w-4 h-4" />
+        <MapPin className="w-3 h-3" />
         <span className="text-caption">{location}</span>
       </div>
     </Link>

@@ -50,15 +50,15 @@ function JobCard({ variant, studioName, role, specialty, location }: JobCardProp
       {overlay}
       <div className={`relative z-10 ${textClasses}`}>
         {studioName && (
-          <h3 className="text-h3 mb-6">{studioName}</h3>
+          <h3 className="text-label-sm font-bold uppercase tracking-wider mb-6">{studioName}</h3>
         )}
-        <p className="text-label-sm mb-2 opacity-90">Busca</p>
-        <h2 className="text-h2 mb-2">{role}</h2>
+        <p className="text-caption-sm lowercase mb-2 opacity-90">busca</p>
+        <h2 className="text-h3 font-serif mb-2">{role}</h2>
         <p className="text-body-sm italic opacity-80">{specialty}</p>
       </div>
       <div className={`relative z-10 flex items-center space-x-2 mt-8 ${textClasses}`}>
-        <MapPin className="w-4 h-4" />
-        <span className="text-label-sm">{location}</span>
+        <MapPin className="w-3 h-3" />
+        <span className="text-caption">{location}</span>
       </div>
     </div>
   );
