@@ -1,8 +1,31 @@
+"use client";
+
 import { Footer } from "@/components/layout/Footer";
 import { ArrowLeft, ArrowRight, CodeXml } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function CheckoutPage() {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handlePayment = async () => {
+    setIsProcessing(true);
+    try {
+      const res = await fetch("/api/create-payment", {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       
@@ -58,7 +81,7 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-2 border-b border-border">
               <div className="p-8 md:p-12 border-r border-border flex flex-col justify-center">
                 <span className="text-label-sm text-muted-foreground mb-2">Subtotal</span>
-                <span className="text-h2">$150</span>
+                <span className="text-h2">$ 20.000</span>
               </div>
               <div className="p-8 md:p-12 flex flex-col justify-center">
                 <span className="text-label-sm text-muted-foreground mb-2">Impuestos</span>
@@ -69,7 +92,7 @@ export default function CheckoutPage() {
             {/* Total row */}
             <div className="p-8 md:p-12 border-b border-border bg-gray-50/50">
               <span className="text-label-sm text-muted-foreground mb-2 block">Total</span>
-              <span className="text-display-lg">$150</span>
+              <span className="text-display-lg">$ 20.000</span>
             </div>
 
             {/* Mercado Pago area */}
@@ -85,10 +108,14 @@ export default function CheckoutPage() {
               
               <button 
                 type="button" 
-                className="w-full bg-black text-white py-5 flex items-center justify-center space-x-3 hover:bg-black/90 transition-colors"
+                disabled={isProcessing}
+                onClick={handlePayment}
+                className={`w-full bg-black text-white py-5 flex items-center justify-center space-x-3 transition-opacity duration-200 ease-editorial ${
+                  isProcessing ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+                }`}
               >
-                <span className="text-button">Pagar con Mercado Pago</span>
-                <ArrowRight className="w-4 h-4" />
+                <span className="text-button">{isProcessing ? "PROCESANDO..." : "PAGAR CON MERCADO PAGO"}</span>
+                {!isProcessing && <ArrowRight className="w-4 h-4" />}
               </button>
             </div>
 
