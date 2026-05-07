@@ -96,6 +96,10 @@
   --text-nav: 0.6875rem;
 
   --navbar-height: 100px;
+
+  --shadow-elevation-1: 0 8px 30px rgba(0,0,0,0.12); /* More visible for card hovers */
+  --shadow-elevation-2: 0 12px 40px rgba(0,0,0,0.18); /* For dropdowns */
+  --shadow-elevation-3: 0 30px 60px rgba(0,0,0,0.3); /* For modals */
 }
 
 @utility text-display-2xl {

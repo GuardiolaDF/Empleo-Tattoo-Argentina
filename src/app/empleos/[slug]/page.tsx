@@ -150,7 +150,7 @@ export default function JobListingPage() {
               <span className="text-label-sm text-muted-foreground mb-6 block">Ubicación del Estudio</span>
               
               <div className="w-full h-64 bg-gray-200 border border-border flex items-center justify-center relative overflow-hidden group">
-                <div className="w-3 h-3 bg-black z-10 relative shadow-md"></div>
+                <div className="w-3 h-3 bg-black z-10 relative"></div>
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
               </div>
               <p className="text-label-sm text-muted-foreground mt-4 text-center">
@@ -166,12 +166,14 @@ export default function JobListingPage() {
 
       {/* Apply Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
           <div 
-            className="absolute inset-0 bg-black/60" 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
             onClick={() => setIsModalOpen(false)}
           ></div>
-          <div className="relative bg-white w-full max-w-[480px] p-8 md:p-12 shadow-2xl">
+          <div className="relative bg-white w-full max-w-[480px] p-8 md:p-12 shadow-modal border border-border">
             {/* 1. Top row */}
             <div className="flex justify-between items-center mb-8">
               <span className="text-label-sm text-muted-foreground">Postularse</span>

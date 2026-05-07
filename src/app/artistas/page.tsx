@@ -60,7 +60,7 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-xl ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-card-hover border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
         <h3 className="text-6xl md:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-12">{studioName}</h3>
@@ -195,7 +195,8 @@ export default function ArtistasPage() {
       <div className="w-full border-t border-border"></div>
 
       {/* SECTION 3 - Job listings */}
-      <section id="ofertas" className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full bg-white">
+      <div className="w-full bg-gray-50">
+        <section id="ofertas" className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
         <style>{`
           @keyframes filterSlideIn {
             from { opacity: 0; transform: translateY(-8px); }
@@ -238,7 +239,7 @@ export default function ArtistasPage() {
                         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
                       </button>
                       {isOpen && (
-                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] max-h-[280px] overflow-y-auto z-30">
+                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-30">
                           {options.map((opt) => {
                             const isSelected = activeFilters[key] === opt;
                             return (
@@ -311,6 +312,7 @@ export default function ArtistasPage() {
           </div>
         )}
       </section>
+      </div>
 
       {/* SECTION 4 - Newsletter */}
       <section className="bg-white py-24 px-4 md:px-8 border-t border-border">

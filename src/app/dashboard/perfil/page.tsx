@@ -364,7 +364,7 @@ export default function PerfilEstudioPage() {
                         {selectedCountry.flag} +{selectedCountry.code}
                       </button>
                       {isCountryDropdownOpen && (
-                        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-black z-50 shadow-xl">
+                        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-border z-50 shadow-dropdown">
                           {COUNTRY_CODES.map((country) => (
                             <button
                               key={country.code}

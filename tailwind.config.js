@@ -26,6 +26,14 @@ module.exports = {
         'button-sm': ['var(--text-button-sm)', { letterSpacing: '0.1em' }],
         'nav': ['var(--text-nav)', { letterSpacing: '0.15em' }],
       },
+      boxShadow: {
+        'card-hover': 'var(--shadow-elevation-1)',
+        'dropdown': 'var(--shadow-elevation-2)',
+        'modal': 'var(--shadow-elevation-3)',
+      },
+      borderRadius: {
+        none: '0px',
+      },
     },
   },
   plugins: [],

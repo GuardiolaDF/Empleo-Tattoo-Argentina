@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ContactoPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-200 items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md p-8 md:p-12 shadow-2xl relative">
+      <div className="bg-white w-full max-w-md p-8 md:p-12 shadow-modal relative">
         <p className="text-label-sm mb-4">
           Contacto
         </p>
