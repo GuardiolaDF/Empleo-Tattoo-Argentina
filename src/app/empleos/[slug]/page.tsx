@@ -173,7 +173,7 @@ export default function JobListingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
             onClick={() => setIsModalOpen(false)}
           ></div>
-          <div className="relative bg-white w-full max-w-[480px] p-8 md:p-12 shadow-modal border border-border">
+          <div className="relative bg-white w-full max-w-[480px] p-8 md:p-12 shadow-modal border border-border animate-scale-in origin-center">
             {/* 1. Top row */}
             <div className="flex justify-between items-center mb-8">
               <span className="text-label-sm text-muted-foreground">Postularse</span>

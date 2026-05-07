@@ -34,6 +34,23 @@ module.exports = {
       borderRadius: {
         none: '0px',
       },
+      keyframes: {
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          from: { opacity: '0', transform: 'scale(0.98)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'scale-in': 'scaleIn 0.2s ease-out forwards',
+      },
+      transitionTimingFunction: {
+        'editorial': 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
     },
   },
   plugins: [],

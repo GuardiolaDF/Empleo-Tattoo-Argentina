@@ -34,7 +34,7 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-card-hover border border-border ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-300 ease-editorial hover:-translate-y-[2px] hover:shadow-card-hover border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
         <h3 className="text-6xl md:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-12">{studioName}</h3>
@@ -171,7 +171,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
-        <div className="flex flex-col items-start text-left">
+        <div className="flex flex-col items-start text-left opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <h1 className="text-display-xl leading-[0.9] mb-6">
             EMPLEO<br/>TATTOO<br/>ARGENTINA
           </h1>
@@ -179,8 +179,8 @@ export default function Home() {
             Conectando artistas con los mejores estudios del país.
           </p>
         </div>
-        <div className="flex flex-row justify-start gap-4 w-full mt-10">
-          <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
+        <div className="flex flex-row justify-start gap-4 w-full mt-10 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial w-full sm:w-auto text-center">
             Publicar
           </Link>
           <a 
@@ -192,7 +192,7 @@ export default function Home() {
                 block: 'start'
               });
             }}
-            className="bg-transparent text-black border border-black px-12 py-4 text-button hover:bg-black/5 transition-colors w-full sm:w-auto text-center"
+            className="bg-transparent text-black border border-black px-12 py-4 text-button hover:bg-black/5 transition-colors duration-200 ease-editorial w-full sm:w-auto text-center"
           >
             BUSCAR
           </a>
@@ -235,7 +235,7 @@ export default function Home() {
             <h2 className="text-h2 uppercase">Puestos Vacantes</h2>
             <button 
               onClick={() => setFilterBarOpen(!filterBarOpen)}
-              className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors hidden md:flex"
+              className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors duration-200 ease-editorial hidden md:flex"
             >
               <span className="text-button-sm">Filtro</span>
               <Settings2 className="w-4 h-4" />
@@ -244,9 +244,8 @@ export default function Home() {
 
           {filterBarOpen && (
             <div 
-              className="w-full bg-white relative z-20" 
+              className="w-full bg-white relative z-20 animate-scale-in origin-top" 
               ref={dropdownRef}
-              style={{ animation: 'filterSlideIn 300ms ease-out forwards' }}
             >
               <div className="grid grid-cols-2 md:grid-cols-6 border-b border-border">
                 {Object.entries(FILTROS).map(([key, options]) => {
@@ -258,15 +257,15 @@ export default function Home() {
                     <div key={key} className="relative">
                       <button 
                         onClick={() => setOpenDropdown(isOpen ? null : key)}
-                        className={`w-full flex items-center justify-between px-4 py-4 transition-colors ${
+                        className={`w-full flex items-center justify-between px-4 py-4 transition-colors duration-200 ease-editorial ${
                           isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
                         }`}
                       >
                         <span className="text-label-sm truncate pr-2">{label}</span>
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease-editorial ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
                       </button>
                       {isOpen && (
-                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-30">
+                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-30 animate-scale-in origin-top">
                           {options.map((opt) => {
                             const isSelected = activeFilters[key] === opt;
                             return (

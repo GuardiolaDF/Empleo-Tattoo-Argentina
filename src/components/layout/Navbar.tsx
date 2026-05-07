@@ -36,7 +36,7 @@ export function Navbar() {
             >
               <span className="relative pb-1">
                 {label}
-                <span className={`absolute bottom-0 left-1/2 h-px bg-black transition-all duration-300 ease-out -translate-x-1/2 ${
+                <span className={`absolute bottom-0 left-1/2 h-px bg-black transition-all duration-300 ease-editorial -translate-x-1/2 ${
                   isActive ? "w-full" : "w-0 group-hover:w-full"
                 }`} />
               </span>
@@ -49,7 +49,7 @@ export function Navbar() {
       <div className="flex items-center space-x-4">
         <Link 
           href="/publicar-empleo"
-          className="hidden md:block bg-primary text-primary-foreground px-6 py-3 text-button hover:bg-black/90 transition-colors"
+          className="hidden md:block bg-primary text-primary-foreground px-6 py-3 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial"
         >
           Publicar Empleo
         </Link>
