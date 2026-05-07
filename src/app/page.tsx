@@ -166,20 +166,20 @@ export default function Home() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="flex flex-col justify-center px-4 md:px-8 max-w-7xl mx-auto w-full min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
-        <div className="flex flex-col">
-          <h1 className="text-display-xl leading-[0.95] mb-6">
+      <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
+        <div className="flex flex-col items-start text-left">
+          <h1 className="text-display-xl leading-[0.9] mb-6">
             EMPLEO<br/>TATTOO<br/>ARGENTINA
           </h1>
-          <p className="text-subtitle text-muted-foreground mb-8">
+          <p className="text-subtitle text-muted-foreground leading-relaxed">
             Conectando artistas con los mejores estudios del país.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto mt-8">
+        <div className="flex flex-row justify-start gap-4 w-full mt-10">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:bg-black/90 transition-colors w-full sm:w-auto text-center">
             Publicar
           </Link>

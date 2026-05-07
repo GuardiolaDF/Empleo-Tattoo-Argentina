@@ -129,20 +129,20 @@ export default function ArtistasPage() {
     <div className="flex flex-col min-h-screen bg-white">
       
       {/* Top container with inherited gray background from Home hero */}
-      <div className="bg-gray-200">
+      <div className="bg-gray-50">
         <Navbar />
 
         {/* SECTION 1 - Hero */}
-        <section className="flex flex-col justify-center px-4 md:px-8 w-full items-center text-center min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12 max-w-[95vw] mx-auto">
-          <div className="flex flex-col items-center w-full">
-            <h1 className="text-display-xl leading-[0.95] mb-6 max-w-none uppercase">
+        <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
+          <div className="flex flex-col items-start text-left w-full">
+            <h1 className="text-display-xl leading-[0.9] mb-6 max-w-none uppercase">
               Tu próximo estudio<br className="hidden md:block" /> te está esperando.
             </h1>
-            <p className="text-subtitle text-muted-foreground mb-8 max-w-2xl">
+            <p className="text-subtitle text-muted-foreground leading-relaxed max-w-2xl">
               La plataforma donde podés postularte y encontrar tu próximo estudio.
             </p>
           </div>
-          <div className="mt-8">
+          <div className="flex flex-row justify-start gap-4 w-full mt-10">
             <a 
               href="#ofertas" 
               className="bg-black text-white px-12 py-5 text-button hover:bg-black/90 transition-colors inline-flex items-center justify-center"
