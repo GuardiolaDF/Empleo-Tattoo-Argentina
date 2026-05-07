@@ -34,7 +34,7 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   return (
     <Link 
       href="/empleos/tatuador-blackwork" 
-      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-300 ease-editorial hover:-translate-y-[2px] hover:shadow-card-hover border border-border ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
         <h3 className="text-6xl md:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-12">{studioName}</h3>
@@ -171,7 +171,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
-        <div className="flex flex-col items-start text-left opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-col items-start text-left">
           <h1 className="text-display-xl leading-[0.9] mb-6">
             EMPLEO<br/>TATTOO<br/>ARGENTINA
           </h1>
@@ -179,7 +179,7 @@ export default function Home() {
             Conectando artistas con los mejores estudios del país.
           </p>
         </div>
-        <div className="flex flex-row justify-start gap-4 w-full mt-10 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="flex flex-row justify-start gap-4 w-full mt-10">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial w-full sm:w-auto text-center">
             Publicar
           </Link>
@@ -230,8 +230,8 @@ export default function Home() {
             to { opacity: 1; transform: translateY(0); }
           }
         `}</style>
-        <div className="flex flex-col mb-12">
-          <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between">
             <h2 className="text-h2 uppercase">Puestos Vacantes</h2>
             <button 
               onClick={() => setFilterBarOpen(!filterBarOpen)}
@@ -242,11 +242,18 @@ export default function Home() {
             </button>
           </div>
 
-          {filterBarOpen && (
-            <div 
-              className="w-full bg-white relative z-20 animate-scale-in origin-top" 
-              ref={dropdownRef}
-            >
+          <div 
+            className="grid transition-[grid-template-rows] duration-400"
+            style={{ 
+              gridTemplateRows: filterBarOpen ? '1fr' : '0fr',
+              transitionTimingFunction: 'cubic-bezier(0.65, 0, 0.35, 1)'
+            }}
+          >
+            <div className="overflow-hidden">
+              <div 
+                className="w-full bg-white relative z-20" 
+                ref={dropdownRef}
+              >
               <div className="grid grid-cols-2 md:grid-cols-6 border-b border-border">
                 {Object.entries(FILTROS).map(([key, options]) => {
                   const isActive = !!activeFilters[key];
@@ -302,11 +309,12 @@ export default function Home() {
                 </div>
                  <button onClick={clearFilters} className="text-label-sm text-muted-foreground hover:text-black transition-colors whitespace-nowrap ml-4">
                   Limpiar Filtros
-                </button>
-              </div>
-            )}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {filteredJobs.length > 0 ? (
