@@ -215,18 +215,11 @@ export default function ArtistasPage() {
             </button>
           </div>
 
-          <div 
-            className="grid transition-[grid-template-rows] duration-400"
-            style={{ 
-              gridTemplateRows: filterBarOpen ? '1fr' : '0fr',
-              transitionTimingFunction: 'cubic-bezier(0.65, 0, 0.35, 1)'
-            }}
-          >
-            <div className="overflow-hidden">
-              <div 
-                className="w-full bg-white relative z-20" 
-                ref={dropdownRef}
-              >
+          {filterBarOpen && (
+            <div 
+              className="w-full bg-white relative z-20 animate-fade-in-up origin-top" 
+              ref={dropdownRef}
+            >
               <div className="grid grid-cols-2 md:grid-cols-6 border-b border-border">
                 {Object.entries(FILTROS).map(([key, options]) => {
                   const isActive = !!activeFilters[key];
@@ -245,7 +238,7 @@ export default function ArtistasPage() {
                         <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease-editorial ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
                       </button>
                       {isOpen && (
-                        <div className="absolute top-full left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-30 animate-scale-in origin-top">
+                        <div className="absolute top-full mt-1 left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-50 animate-scale-in origin-top">
                           {options.map((opt) => {
                             const isSelected = activeFilters[key] === opt;
                             return (
@@ -286,13 +279,12 @@ export default function ArtistasPage() {
                 </div>
               )}
             </div>
-          </div>
+          )}
         </div>
-      </div>
 
         {filteredJobs.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 mt-10">
               {filteredJobs.map((job, idx) => (
                 <JobCard 
                   key={idx}
