@@ -32,7 +32,7 @@ const JobSchema = new Schema<IJob>(
     paymentId: { type: String },
     userId: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, strict: 'throw' }
 );
 
 export default mongoose.models.Job || mongoose.model<IJob>('Job', JobSchema);

@@ -20,8 +20,44 @@ export async function GET() {
   }
 }
 
+// Simple in-memory rate limiter (LRU Cache style)
+// Note: In Vercel Edge/Serverless this resets on cold starts, which is fine for basic protection
+const rateLimit = new Map<string, { count: number; timestamp: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 3;
+
 export async function POST(request: Request) {
   try {
+    // 1. Rate Limiting Check
+    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    const now = Date.now();
+    const windowStart = now - RATE_LIMIT_WINDOW_MS;
+    
+    // Cleanup old entries (primitive garbage collection)
+    if (rateLimit.size > 1000) {
+      rateLimit.forEach((val, key) => {
+        if (val.timestamp < windowStart) rateLimit.delete(key);
+      });
+    }
+
+    const currentRate = rateLimit.get(ip) || { count: 0, timestamp: now };
+    
+    // Reset window if needed
+    if (currentRate.timestamp < windowStart) {
+      currentRate.count = 0;
+      currentRate.timestamp = now;
+    }
+
+    currentRate.count++;
+    rateLimit.set(ip, currentRate);
+
+    if (currentRate.count > MAX_REQUESTS_PER_WINDOW) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a minute.' },
+        { status: 429 }
+      );
+    }
+
     const session = await auth();
     // No exigimos auth estricto para evitar romper la UI si prueban sin login,
     // pero guardamos el userId si existe

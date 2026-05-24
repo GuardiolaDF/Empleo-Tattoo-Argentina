@@ -16,7 +16,7 @@ export async function POST(request: Request) {
           {
             id: 'publicacion_eta',
             title: 'Publicación de Oferta - ETA',
-            unit_price: 20000,
+            unit_price: 100, // TODO: Revertir para paso a PROD (Precio real: 20000)
             quantity: 1,
             currency_id: 'ARS',
           }

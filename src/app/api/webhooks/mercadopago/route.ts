@@ -4,9 +4,11 @@ import connectToDatabase from '@/lib/mongodb';
 import Job from '@/models/Job';
 import Subscriber from '@/models/Subscriber';
 import { Resend } from 'resend';
+import crypto from 'crypto';
 
 const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || '' });
 const resend = new Resend(process.env.RESEND_API_KEY);
+const WEBHOOK_SECRET = process.env.MERCADOPAGO_WEBHOOK_SECRET || '';
 
 async function processPayment(paymentId: string) {
   try {
@@ -61,10 +63,38 @@ async function processPayment(paymentId: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const signatureHeader = request.headers.get('x-signature');
+    const requestId = request.headers.get('x-request-id');
+    const bodyText = await request.text(); // Wait for raw text to validate HMAC
+    
     console.log('--- Webhook Received from Mercado Pago ---');
-    console.log(JSON.stringify(body, null, 2));
 
+    // HMAC SHA256 Validation
+    if (WEBHOOK_SECRET && signatureHeader && requestId) {
+      const parts = signatureHeader.split(',');
+      let ts = '';
+      let v1 = '';
+      
+      parts.forEach(part => {
+        const [key, value] = part.split('=');
+        if (key.trim() === 'ts') ts = value.trim();
+        if (key.trim() === 'v1') v1 = value.trim();
+      });
+
+      const manifest = `id:${requestId};request-id:${requestId};ts:${ts};`;
+      const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET);
+      hmac.update(manifest);
+      const computedHash = hmac.digest('hex');
+
+      if (computedHash !== v1) {
+        console.error("Webhook signature validation failed! Rejecting request.");
+        return new NextResponse("Unauthorized", { status: 401 });
+      }
+    } else {
+      console.warn("MercadoPago webhook secret not configured or headers missing. Bypassing signature validation.");
+    }
+
+    const body = JSON.parse(bodyText);
     const { type, data, action } = body;
 
     if (type === 'payment' || action === 'payment.created' || action === 'payment.updated') {
