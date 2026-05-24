@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
+import { NewsletterForm } from "@/components/ui/NewsletterForm";
 
 const cardStyles = [
   { bg: "bg-card-1", text: "text-foreground", muted: "text-muted" }, // Tone 1: white
@@ -46,6 +47,7 @@ const FILTER_LABELS: Record<string, string> = {
 };
 
 interface JobCardProps {
+  id: string;
   index: number;
   studioName?: string;
   role: string;
@@ -53,13 +55,13 @@ interface JobCardProps {
   location: string;
 }
 
-function JobCard({ index, studioName, role, specialty, location }: JobCardProps) {
+function JobCard({ id, index, studioName, role, specialty, location }: JobCardProps) {
   const pattern = [0, 1, 1, 2];
   const style = cardStyles[pattern[index % 4]];
 
   return (
     <Link 
-      href="/empleos/tatuador-blackwork" 
+      href={`/empleos/${id}`} 
       className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
@@ -83,10 +85,14 @@ function JobCard({ index, studioName, role, specialty, location }: JobCardProps)
   );
 }
 
+const ITEMS_PER_PAGE = 4;
+
 export default function ArtistasPage() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const [filterBarOpen, setFilterBarOpen] = useState(false);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -99,31 +105,67 @@ export default function ArtistasPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const res = await fetch('/api/jobs');
+        if (res.ok) {
+          const data = await res.json();
+          const mappedJobs = data.map((job: any) => {
+            const expMatch = job.description?.match(/Experiencia:\s*([^|]+)/);
+            const tipoMatch = job.description?.match(/Tipo de estudio:\s*([^|]+)/);
+            return {
+              id: job._id,
+              studioName: job.studioName,
+              role: job.title,
+              specialty: job.category,
+              location: job.location,
+              puesto: job.title,
+              experiencia: expMatch ? expMatch[1].trim() : "Sin definir",
+              especialidad: job.category,
+              tipoEstudio: tipoMatch ? tipoMatch[1].trim() : "Privado",
+              tipoRol: job.style,
+              ubicacion: job.location,
+            };
+          });
+          setJobs(mappedJobs);
+        }
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    }
+    fetchJobs();
+  }, []);
+
   const handleFilterSelect = (category: string, value: string) => {
     setActiveFilters(prev => ({ ...prev, [category]: value }));
     setOpenDropdown(null);
+    setVisibleCount(ITEMS_PER_PAGE); // Reset pagination on filter change
   };
 
   const removeFilter = (category: string) => {
     const newFilters = { ...activeFilters };
     delete newFilters[category];
     setActiveFilters(newFilters);
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const clearFilters = () => setActiveFilters({});
+  const clearFilters = () => {
+    setActiveFilters({});
+    setVisibleCount(ITEMS_PER_PAGE);
+  };
 
-  const allJobs = [
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 años)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 años)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
-  ];
-
-  const filteredJobs = allJobs.filter(job => {
+  const filteredJobs = jobs.filter(job => {
     return Object.entries(activeFilters).every(([key, value]) => {
+      if (key === 'ubicacion') {
+        return job[key]?.toLowerCase().includes(value.toLowerCase());
+      }
       return job[key as keyof typeof job] === value;
     });
   });
+
+  const visibleJobs = filteredJobs.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredJobs.length;
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -147,15 +189,15 @@ export default function ArtistasPage() {
               href="#ofertas" 
               className="bg-black text-white px-12 py-5 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial inline-flex items-center justify-center"
             >
-              Ver Ofertas &rarr;
+              Buscar Empleos &rarr;
             </a>
           </div>
         </section>
       </div>
 
       {/* SECTION 2 - How it works */}
-      <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <h2 className="text-label text-center mb-20">
+      <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <h2 className="text-label text-center mb-12">
           Cómo Funciona
         </h2>
         
@@ -164,7 +206,7 @@ export default function ArtistasPage() {
             <span className="text-display-lg text-muted-foreground/30">01</span>
             <div>
               <h3 className="text-label mb-3">Explorá Ofertas</h3>
-              <p className="text-body-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground max-w-[200px] mx-auto md:mx-0">
                 Navegá el feed y filtrá por estilo, ubicación y modalidad de trabajo.
               </p>
             </div>
@@ -174,7 +216,7 @@ export default function ArtistasPage() {
             <span className="text-display-lg text-muted-foreground/30">02</span>
             <div>
               <h3 className="text-label mb-3">Postulate Directo</h3>
-              <p className="text-body-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground max-w-[200px] mx-auto md:mx-0">
                 Contactá al estudio por WhatsApp o Instagram desde la misma oferta.
               </p>
             </div>
@@ -184,7 +226,7 @@ export default function ArtistasPage() {
             <span className="text-display-lg text-muted-foreground/30">03</span>
             <div>
               <h3 className="text-label mb-3">Encontrá Tu Lugar</h3>
-              <p className="text-body-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground max-w-[200px] mx-auto md:mx-0">
                 Conectate con estudios que buscan exactamente tu perfil.
               </p>
             </div>
@@ -285,9 +327,10 @@ export default function ArtistasPage() {
         {filteredJobs.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 mt-10">
-              {filteredJobs.map((job, idx) => (
+              {visibleJobs.map((job, idx) => (
                 <JobCard 
-                  key={idx}
+                  key={job.id || idx}
+                  id={job.id}
                   index={idx}
                   studioName={job.studioName}
                   role={job.role}
@@ -296,11 +339,16 @@ export default function ArtistasPage() {
                 />
               ))}
             </div>
-            <div className="flex justify-center">
-              <button className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors">
-                Cargar Más
-              </button>
-            </div>
+            {hasMore && (
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+                  className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors"
+                >
+                  Cargar Más
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <div className="py-24 flex flex-col items-center justify-center text-center">
@@ -323,20 +371,7 @@ export default function ArtistasPage() {
             </p>
           </div>
           <div>
-            <form className="flex flex-col sm:flex-row border border-border">
-              <input 
-                type="email" 
-                placeholder="nombre@ejemplo.com"
-                className="flex-1 px-6 py-4 bg-transparent outline-none text-body placeholder:text-muted-foreground focus:bg-gray-50 transition-colors"
-                required
-              />
-              <button 
-                type="submit" 
-                className="border-l border-border px-8 py-4 text-button hover:bg-muted transition-colors whitespace-nowrap bg-white text-black"
-              >
-                Suscribirme →
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
       </section>

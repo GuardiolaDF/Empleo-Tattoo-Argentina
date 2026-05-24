@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,18 +8,15 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import { 
-  LayoutGrid, 
-  Briefcase, 
-  Users, 
-  BarChart, 
-  Settings, 
-  HelpCircle, 
-  LogOut,
   Upload,
   X,
   CheckCircle2,
-  Check
+  Check,
+  Pencil
 } from "lucide-react";
 
 const profileSchema = z.object({
@@ -62,16 +59,24 @@ const COUNTRY_CODES = [
 export default function PerfilEstudioPage() {
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [specialtyInput, setSpecialtyInput] = useState("");
-  const [photos, setPhotos] = useState<{ id: string; file: File; preview: string }[]>([]);
+  const [photos, setPhotos] = useState<{ id: string; file?: File; preview: string; url?: string }[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [portadaUrl, setPortadaUrl] = useState<string | null>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [studioId, setStudioId] = useState<string | null>(null);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -105,6 +110,45 @@ export default function PerfilEstudioPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Load existing studio data if user is logged in
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    async function loadStudio() {
+      try {
+        const res = await fetch('/api/studio');
+        if (res.ok) {
+          const data = await res.json();
+          if (data) {
+            reset({
+              nombre: data.nombre || '',
+              anio: data.anio || '',
+              ubicacion: data.ubicacion || '',
+              bio: data.bio || '',
+              instagram: data.instagram?.replace('@', '') || '',
+              whatsapp: data.whatsapp || '',
+              website: data.website || '',
+            });
+            setSpecialties(data.especialidades || []);
+            if (data.fotos?.length > 0) {
+              setPhotos(data.fotos.map((url: string, i: number) => ({
+                id: `cloud-${i}`,
+                preview: url,
+                url: url,
+              })));
+            }
+            const country = COUNTRY_CODES.find(c => c.code === data.countryCode);
+            if (country) setSelectedCountry(country);
+            if (data._id) setStudioId(data._id);
+            if (data.portada) setPortadaUrl(data.portada);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading studio:', error);
+      }
+    }
+    loadStudio();
+  }, [status, reset]);
+
   const { onChange: onChangeWhatsapp, ...restWhatsapp } = register("whatsapp");
 
   // --- Handlers ---
@@ -120,23 +164,41 @@ export default function PerfilEstudioPage() {
     setSpecialties(specialties.filter((s) => s !== spec));
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
     
-    // Check limit
     if (photos.length + files.length > 6) {
       alert("Solo puedes subir un máximo de 6 fotos.");
       return;
     }
 
-    const newPhotos = files.map((file) => ({
-      id: Math.random().toString(36).substring(7),
-      file,
-      preview: URL.createObjectURL(file),
-    }));
+    // Upload each file to Cloudinary
+    for (const file of files) {
+      const tempId = Math.random().toString(36).substring(7);
+      const preview = URL.createObjectURL(file);
+      
+      // Add with local preview immediately
+      setPhotos(prev => [...prev, { id: tempId, file, preview }]);
 
-    setPhotos((prev) => [...prev, ...newPhotos]);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Replace preview with Cloudinary URL
+          setPhotos(prev => prev.map(p => 
+            p.id === tempId ? { ...p, url: data.url, preview: data.url } : p
+          ));
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+      }
+    }
   };
 
   const handleRemovePhoto = (idToRemove: string) => {
@@ -147,6 +209,36 @@ export default function PerfilEstudioPage() {
     });
   };
 
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setUploadingCover(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (uploadRes.ok) {
+        const { url } = await uploadRes.json();
+        // Save portada to studio
+        await fetch("/api/studio", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ portada: url }),
+        });
+        // Update local state
+        setPortadaUrl(url);
+      }
+    } catch (error) {
+      console.error("Cover upload error:", error);
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
   // Cleanup object URLs to avoid memory leaks
   useEffect(() => {
     return () => {
@@ -155,14 +247,56 @@ export default function PerfilEstudioPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = (data: ProfileFormValues) => {
-    const rawDigits = data.whatsapp.replace(/\D/g, '');
-    const prefix = selectedCountry.code === "54" ? "549" : selectedCountry.code;
-    const finalWhatsapp = `${prefix}${rawDigits}`;
-    const finalInstagram = `@${data.instagram}`;
-    console.log("Saving profile...", { ...data, whatsapp: finalWhatsapp, instagram: finalInstagram, specialties, photos });
-    setIsSuccess(true);
-    setTimeout(() => setIsSuccess(false), 5000); // hide success message after 5s
+  const onSubmit = async (data: ProfileFormValues) => {
+    // If not logged in, redirect to auth with callback
+    if (!session?.user) {
+      router.push('/auth/login?callbackUrl=/dashboard/perfil');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const rawDigits = data.whatsapp.replace(/\D/g, '');
+      const prefix = selectedCountry.code === "54" ? "549" : selectedCountry.code;
+      const finalWhatsapp = `${prefix}${rawDigits}`;
+      const finalInstagram = `@${data.instagram}`;
+      
+      const photoUrls = photos
+        .map(p => p.url || p.preview)
+        .filter(url => url.startsWith('http'));
+
+      const payload = {
+        nombre: data.nombre,
+        anio: data.anio,
+        ubicacion: data.ubicacion,
+        bio: data.bio,
+        instagram: finalInstagram,
+        whatsapp: finalWhatsapp,
+        countryCode: selectedCountry.code,
+        website: data.website || '',
+        especialidades: specialties,
+        fotos: photoUrls,
+      };
+
+      const res = await fetch('/api/studio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setIsSuccess(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => setIsSuccess(false), 5000);
+      } else {
+        alert('Error al guardar. Intenta nuevamente.');
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Error de conexión.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -171,52 +305,7 @@ export default function PerfilEstudioPage() {
 
       <main className="flex-1 w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row border-t border-border">
         
-        {/* Left Sidebar */}
-        <aside className="w-full lg:w-64 bg-white border-r border-border flex flex-col justify-between py-12 flex-shrink-0">
-          <div>
-            <div className="px-8 mb-12 overflow-hidden w-full">
-              <h2 className="text-h3 truncate max-w-full block">{liveNombre !== "Nombre de tu Estudio" ? liveNombre : "Tu Estudio"}</h2>
-              <p className="text-label-sm mt-1">Configuración</p>
-            </div>
-            
-            <nav className="flex flex-col space-y-2">
-              <Link href="/dashboard" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <LayoutGrid className="w-4 h-4" />
-                <span className="text-nav">Active Listings</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 bg-black text-white">
-                <Settings className="w-4 h-4" />
-                <span className="text-nav">Perfil del Estudio</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <Briefcase className="w-4 h-4" />
-                <span className="text-nav">Dashboard</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <Users className="w-4 h-4" />
-                <span className="text-nav">Artist Applications</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <BarChart className="w-4 h-4" />
-                <span className="text-nav">Studio Analytics</span>
-              </Link>
-            </nav>
-          </div>
-
-          <div className="px-8 flex flex-col space-y-6 mt-16 lg:mt-0">
-            <button className="w-full bg-black text-white py-4 flex items-center justify-center hover:bg-black/90 transition-colors">
-              <span className="text-button">New Portfolio Upload</span>
-            </button>
-            <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
-              <HelpCircle className="w-4 h-4" />
-              <span className="text-nav">Support</span>
-            </Link>
-            <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
-              <LogOut className="w-4 h-4" />
-              <span className="text-nav">Logout</span>
-            </Link>
-          </div>
-        </aside>
+        <DashboardSidebar studioName={liveNombre !== "Nombre de tu Estudio" ? liveNombre : undefined} />
 
         {/* Center Column: Form */}
         <section className="flex-1 p-8 md:p-16 lg:pr-12">
@@ -294,13 +383,27 @@ export default function PerfilEstudioPage() {
               
               <div className="flex flex-col space-y-6">
                 <div className="flex gap-4">
-                  <input 
+                  <select 
                     value={specialtyInput}
                     onChange={(e) => setSpecialtyInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSpecialty(); } }}
-                    placeholder="Añadir especialidad..."
-                    className="flex-1 border border-border px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white"
-                  />
+                    className="flex-1 border border-border px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white appearance-none"
+                  >
+                    <option value="" disabled>Seleccionar especialidad</option>
+                    <option value="Comercial">Comercial</option>
+                    <option value="Generalista">Generalista</option>
+                    <option value="Blackwork">Blackwork</option>
+                    <option value="Realismo">Realismo</option>
+                    <option value="Traditional">Traditional</option>
+                    <option value="Neo Traditional">Neo Traditional</option>
+                    <option value="Japonés">Japonés</option>
+                    <option value="Geométrico">Geométrico</option>
+                    <option value="Fineline">Fineline</option>
+                    <option value="Dotwork">Dotwork</option>
+                    <option value="Acuarela">Acuarela</option>
+                    <option value="Lettering">Lettering</option>
+                    <option value="Cover up">Cover up</option>
+                    <option value="Otro">Otro</option>
+                  </select>
                   <button 
                     type="button" 
                     onClick={handleAddSpecialty}
@@ -473,9 +576,10 @@ export default function PerfilEstudioPage() {
             <div className="pt-8 border-t border-border/50">
               <button 
                 type="submit" 
-                className="w-full bg-black text-white py-5 flex items-center justify-center hover:bg-black/90 transition-colors"
+                disabled={isSaving}
+                className={`w-full bg-black text-white py-5 flex items-center justify-center transition-colors ${isSaving ? 'opacity-50 cursor-not-allowed' : 'hover:bg-black/90'}`}
               >
-                <span className="text-button">Guardar Cambios</span>
+                <span className="text-button">{isSaving ? 'Guardando...' : session?.user ? 'Guardar Cambios' : 'Guardar e Identificarse'}</span>
               </button>
             </div>
             
@@ -499,14 +603,45 @@ export default function PerfilEstudioPage() {
               )}
             </div>
 
-            <div className="w-full h-32 bg-gray-100 flex items-center justify-center border border-border">
-              <span className="font-sans text-[8px] tracking-widest uppercase text-muted-foreground">Foto de Portada</span>
+            <div className="relative w-full h-32 bg-gray-100 flex items-center justify-center border border-border group overflow-hidden">
+              {portadaUrl ? (
+                <img src={portadaUrl} alt="Portada" className="absolute inset-0 w-full h-full object-cover z-0" />
+              ) : (
+                <span className="font-sans text-[8px] tracking-widest uppercase text-muted-foreground z-0">Foto de Portada</span>
+              )}
+              <button
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              >
+                {uploadingCover ? (
+                  <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <Pencil className="w-5 h-5" />
+                    <span className="text-[10px] tracking-widest uppercase">Subir Portada</span>
+                  </div>
+                )}
+              </button>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleCoverUpload}
+              />
             </div>
           </div>
 
-          <Link href="/estudios/mi-estudio" className="w-full bg-transparent border border-black text-black py-4 flex items-center justify-center hover:bg-black/5 transition-colors">
-            <span className="text-button">Ver Perfil Público &rarr;</span>
-          </Link>
+          {studioId ? (
+            <Link href={`/estudios/${studioId}`} className="w-full bg-transparent border border-black text-black py-4 flex items-center justify-center hover:bg-black/5 transition-colors">
+              <span className="text-button">Ver Perfil Público &rarr;</span>
+            </Link>
+          ) : (
+            <button disabled className="w-full bg-transparent border border-gray-300 text-gray-400 py-4 flex items-center justify-center cursor-not-allowed">
+              <span className="text-button">Guardá para ver Perfil Público</span>
+            </button>
+          )}
 
         </aside>
       </main>

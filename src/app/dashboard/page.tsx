@@ -1,182 +1,362 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { 
-  LayoutGrid, 
-  Briefcase, 
-  Users, 
-  BarChart, 
-  Settings, 
-  HelpCircle, 
-  LogOut 
-} from "lucide-react";
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
+import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Plus, Calendar, MapPin, Eye, Pencil, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
+interface JobListing {
+  _id: string;
+  title: string;
+  studioName: string;
+  location: string;
+  category: string;
+  status: "pending" | "active";
+  createdAt: string;
+}
+
+interface StudioData {
+  _id: string;
+  nombre: string;
+  anio: string;
+  ubicacion: string;
+  bio: string;
+  instagram: string;
+  especialidades: string[];
+  fotos: string[];
+  portada?: string;
+}
+
 export default function DashboardPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [jobs, setJobs] = useState<JobListing[]>([]);
+  const [studio, setStudio] = useState<StudioData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login?callbackUrl=/dashboard");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+
+    async function fetchData() {
+      try {
+        const [jobsRes, studioRes] = await Promise.all([
+          fetch("/api/my-jobs"),
+          fetch("/api/studio"),
+        ]);
+
+        if (jobsRes.ok) {
+          setJobs(await jobsRes.json());
+        }
+        if (studioRes.ok) {
+          const data = await studioRes.json();
+          if (data) setStudio(data);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [status]);
+
+  const activeJobs = jobs.filter((j) => j.status === "active");
+  const pendingJobs = jobs.filter((j) => j.status === "pending");
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const isWithin30Days = (dateStr: string) => {
+    const jobDate = new Date(dateStr);
+    const diffTime = new Date().getTime() - jobDate.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 30;
+  };
+
+  const coverImage = studio?.portada || studio?.fotos?.[0] || null;
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setUploadingCover(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (uploadRes.ok) {
+        const { url } = await uploadRes.json();
+        // Save portada to studio
+        await fetch("/api/studio", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ portada: url }),
+        });
+        setStudio((prev) => (prev ? { ...prev, portada: url } : prev));
+      }
+    } catch (error) {
+      console.error("Cover upload error:", error);
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-body text-muted-foreground">Cargando...</p>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
 
       <main className="flex-1 w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row border-t border-border">
-        
-        {/* Left Sidebar */}
-        <aside className="w-full lg:w-64 bg-white border-r border-border flex flex-col justify-between py-12 flex-shrink-0">
-          <div>
-            <div className="px-8 mb-12">
-              <h2 className="text-h3 uppercase">Ink & Concrete</h2>
-              <p className="text-label-sm mt-1">Est. 2015</p>
+        <DashboardSidebar studioName={studio?.nombre} />
+
+        {/* Main Content */}
+        <section className="flex-1 p-8 md:p-12 lg:p-16 min-w-0">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12 gap-4">
+            <div>
+              <h1 className="text-display-xl">Publicaciones</h1>
+              <p className="text-body-sm text-muted-foreground mt-2">
+                {activeJobs.length} activa{activeJobs.length !== 1 ? "s" : ""} ·{" "}
+                {pendingJobs.length} pendiente
+                {pendingJobs.length !== 1 ? "s" : ""}
+              </p>
             </div>
-            
-            <nav className="flex flex-col space-y-2">
-              <Link href="/dashboard" className="flex items-center space-x-4 px-8 py-4 bg-black text-white">
-                <LayoutGrid className="w-4 h-4" />
-                <span className="text-nav">Active Listings</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <Briefcase className="w-4 h-4" />
-                <span className="text-nav">Dashboard</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <Users className="w-4 h-4" />
-                <span className="text-nav">Artist Applications</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <BarChart className="w-4 h-4" />
-                <span className="text-nav">Studio Analytics</span>
-              </Link>
-              <Link href="#" className="flex items-center space-x-4 px-8 py-4 text-muted-foreground hover:text-black transition-colors">
-                <Settings className="w-4 h-4" />
-                <span className="text-nav">Account Settings</span>
-              </Link>
-            </nav>
           </div>
 
-          <div className="px-8 flex flex-col space-y-6 mt-16 lg:mt-0">
-            <button className="w-full bg-black text-white py-4 flex items-center justify-center hover:bg-black/90 transition-colors">
-              <span className="text-button">New Portfolio Upload</span>
-            </button>
-            <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
-              <HelpCircle className="w-4 h-4" />
-              <span className="text-nav">Support</span>
-            </Link>
-            <Link href="#" className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors">
-              <LogOut className="w-4 h-4" />
-              <span className="text-nav">Logout</span>
-            </Link>
-          </div>
-        </aside>
-
-        {/* Center Column: Mis Anuncios */}
-        <section className="flex-1 p-8 md:p-16">
-          <h1 className="text-display-xl mb-12">Mis Anuncios</h1>
-          
-          <div className="bg-white border border-border">
-            
-            {/* Listing 1 (Active) */}
-            <div className="p-8 md:p-12 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-              <div>
-                <span className="text-label-sm text-muted-foreground mb-3 block">24 Oct 2024</span>
-                <h3 className="text-h3 mb-4 max-w-md">Artista Residente Blackwork/Tradicional</h3>
-                <div className="flex items-center space-x-4">
-                  <span className="bg-black text-white px-2 py-1 text-caption-sm">Activo</span>
-                  <span className="text-label-sm text-muted-foreground">Madrid, Centro</span>
-                </div>
+          {jobs.length === 0 ? (
+            <div className="bg-white border border-border p-16 flex flex-col items-center justify-center text-center">
+              <div className="w-16 h-16 bg-gray-100 flex items-center justify-center mb-8">
+                <Plus className="w-6 h-6 text-muted-foreground" />
               </div>
-              <div className="flex flex-row md:flex-col gap-4 text-right">
-                <button className="text-label-sm hover:underline">Editar</button>
-                <button className="text-label-sm text-muted-foreground hover:text-black transition-colors">Pausar</button>
-              </div>
+              <h3 className="text-h3 mb-4">Sin publicaciones</h3>
+              <p className="text-body-sm text-muted-foreground mb-8 max-w-sm">
+                Todavía no publicaste ningún aviso. Creá tu primera búsqueda
+                laboral y empezá a recibir postulantes.
+              </p>
+              <Link
+                href="/publicar-empleo"
+                className="bg-black text-white px-10 py-4 text-button hover:bg-black/90 transition-colors"
+              >
+                Publicar Aviso
+              </Link>
             </div>
+          ) : (
+            <div className="bg-white border border-border">
+              {/* Active Jobs */}
+              {activeJobs.length > 0 && (
+                <>
+                  <div className="px-8 py-4 border-b border-border bg-gray-50">
+                    <span className="text-label-sm text-muted-foreground uppercase tracking-wider">
+                      Activas ({activeJobs.length})
+                    </span>
+                  </div>
+                  {activeJobs.map((job) => (
+                    <div
+                      key={job._id}
+                      className="px-8 py-8 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-50/50 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="bg-black text-white px-2 py-0.5 text-caption-sm">
+                            Activo
+                          </span>
+                          <span className="text-label-sm text-muted-foreground flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(job.createdAt)}
+                          </span>
+                        </div>
+                        <h3 className="text-h3 mb-2 truncate">
+                          {job.title} — {job.studioName}
+                        </h3>
+                        <div className="flex items-center gap-4 text-label-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {job.location}
+                          </span>
+                          <span>{job.category}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        {isWithin30Days(job.createdAt) && (
+                          <Link
+                            href={`/dashboard/editar-empleo/${job._id}`}
+                            className="text-label-sm text-black hover:text-black/70 transition-colors flex items-center gap-1 border border-border px-4 py-2 hover:bg-gray-50"
+                          >
+                            <Pencil className="w-3 h-3" />
+                            Editar
+                          </Link>
+                        )}
+                        <Link
+                          href={`/empleos/${job._id}`}
+                          className="text-label-sm text-muted-foreground hover:text-black transition-colors flex items-center gap-1"
+                        >
+                          <Eye className="w-3 h-3" />
+                          Ver
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
 
-            {/* Listing 2 (Active) */}
-            <div className="p-8 md:p-12 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-              <div>
-                <span className="text-label-sm text-muted-foreground mb-3 block">15 Sep 2024</span>
-                <h3 className="text-h3 mb-4 max-w-md">Guest Spot Noviembre 2024</h3>
-                <div className="flex items-center space-x-4">
-                  <span className="bg-black text-white px-2 py-1 text-caption-sm">Activo</span>
-                  <span className="text-label-sm text-muted-foreground">Barcelona, Gòtic</span>
-                </div>
-              </div>
-              <div className="flex flex-row md:flex-col gap-4 text-right">
-                <button className="text-label-sm hover:underline">Editar</button>
-                <button className="text-label-sm text-muted-foreground hover:text-black transition-colors">Pausar</button>
-              </div>
+              {/* Pending Jobs */}
+              {pendingJobs.length > 0 && (
+                <>
+                  <div className="px-8 py-4 border-b border-border bg-gray-50">
+                    <span className="text-label-sm text-muted-foreground uppercase tracking-wider">
+                      Pendientes de Pago ({pendingJobs.length})
+                    </span>
+                  </div>
+                  {pendingJobs.map((job) => (
+                    <div
+                      key={job._id}
+                      className="px-8 py-8 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 opacity-60"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="border border-border text-muted-foreground bg-gray-50 px-2 py-0.5 text-caption-sm">
+                            Pendiente
+                          </span>
+                          <span className="text-label-sm text-muted-foreground flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(job.createdAt)}
+                          </span>
+                        </div>
+                        <h3 className="text-h3 mb-2 truncate text-muted-foreground">
+                          {job.title} — {job.studioName}
+                        </h3>
+                        <div className="flex items-center gap-4 text-label-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {job.location}
+                          </span>
+                        </div>
+                      </div>
+                      <Link
+                        href={`/checkout/${job._id}`}
+                        className="text-label-sm hover:underline transition-colors"
+                      >
+                        Completar Pago →
+                      </Link>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
-
-            {/* Listing 3 (Expired) */}
-            <div className="p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 opacity-60">
-              <div>
-                <span className="text-label-sm text-muted-foreground mb-3 block">02 Ene 2024</span>
-                <h3 className="text-h3 mb-4 max-w-md text-muted-foreground">Aprendiz de Estudio Full Time</h3>
-                <div className="flex items-center space-x-4">
-                  <span className="border border-border text-muted-foreground px-2 py-1 text-caption-sm bg-gray-50">Expirado</span>
-                </div>
-              </div>
-              <div className="flex flex-row md:flex-col gap-4 text-right">
-                <button className="text-label-sm text-muted-foreground hover:text-black transition-colors">Reactivar</button>
-              </div>
-            </div>
-
-          </div>
+          )}
         </section>
 
-        {/* Right Panel: Stats & Profile */}
-        <aside className="w-full lg:w-80 p-8 md:p-16 lg:pl-0 flex flex-col space-y-8 flex-shrink-0">
-          
-          {/* Vistas Totales */}
-          <div className="bg-white border border-border p-8 text-center">
-            <span className="text-label-sm text-muted-foreground mb-4 block">Vistas Totales</span>
-            <span className="text-display-lg">14.2k</span>
-          </div>
-
-          {/* Clics al Contacto */}
-          <div className="bg-white border border-border p-8 text-center">
-            <span className="text-label-sm text-muted-foreground mb-4 block">Clics al Contacto</span>
-            <span className="text-display-lg">892</span>
-          </div>
-
-          {/* Perfil del Estudio */}
-          <div className="bg-white border border-border p-8">
-            <h3 className="text-h3 mb-8 text-center">Perfil del Estudio</h3>
-            
-            <form className="flex flex-col space-y-6">
-              <div className="flex flex-col space-y-2">
-                <label className="text-label-sm text-muted-foreground">Nombre del Estudio</label>
-                <input 
-                  type="text" 
-                  defaultValue="VOID TATTOO CLUB"
-                  className="border-b border-border py-2 text-body uppercase outline-none focus:border-black transition-colors bg-transparent"
+        {/* Right Panel: Studio Preview */}
+        {studio && (
+          <aside className="w-full lg:w-80 border-l border-border bg-white flex-shrink-0">
+            {/* Cover Image */}
+            <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden group">
+              {coverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coverImage}
+                  alt="Portada del estudio"
+                  className="w-full h-full object-cover"
                 />
-              </div>
-
-              <div className="flex flex-col space-y-2">
-                <label className="text-label-sm text-muted-foreground">Ubicación</label>
-                <input 
-                  type="text" 
-                  defaultValue="MADRID, ESPAÑA"
-                  className="border-b border-border py-2 text-body uppercase outline-none focus:border-black transition-colors bg-transparent"
-                />
-              </div>
-
-              <div className="flex flex-col space-y-2">
-                <label className="text-label-sm text-muted-foreground">Instagram</label>
-                <input 
-                  type="text" 
-                  defaultValue="@VOIDTATTOOCLUB"
-                  className="border-b border-border py-2 text-body uppercase outline-none focus:border-black transition-colors bg-transparent"
-                />
-              </div>
-
-              <button 
-                type="button" 
-                className="w-full bg-black text-white py-4 mt-4 flex items-center justify-center hover:bg-black/90 transition-colors"
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-label-sm text-muted-foreground">
+                    Sin portada
+                  </span>
+                </div>
+              )}
+              {/* Edit button */}
+              <button
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                className="absolute bottom-3 right-3 w-9 h-9 bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
               >
-                <span className="text-button">Actualizar Datos</span>
+                {uploadingCover ? (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Pencil className="w-4 h-4" />
+                )}
               </button>
-            </form>
-          </div>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleCoverUpload}
+              />
+            </div>
 
-        </aside>
+            {/* Studio Info */}
+            <div className="p-8 space-y-6">
+              <div>
+                <h3 className="text-h3 mb-1">{studio.nombre}</h3>
+                <p className="text-label-sm text-muted-foreground">
+                  Est. {studio.anio} · {studio.ubicacion}
+                </p>
+              </div>
+
+              {studio.bio && (
+                <p className="text-body-sm text-foreground/80 leading-relaxed line-clamp-4">
+                  {studio.bio}
+                </p>
+              )}
+
+              {studio.especialidades?.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {studio.especialidades.map((spec) => (
+                    <SpecialtyPill
+                      key={spec}
+                      label={spec}
+                      variant="default"
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-border/50">
+                <Link
+                  href={`/estudios/${studio._id}`}
+                  className="flex items-center justify-center gap-2 w-full border border-black py-3 text-button hover:bg-black hover:text-white transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver Perfil Público
+                </Link>
+              </div>
+            </div>
+          </aside>
+        )}
       </main>
 
       <Footer />

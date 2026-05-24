@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
+import { NewsletterForm } from "@/components/ui/NewsletterForm";
 
 // --- Components ---
 
@@ -105,11 +106,14 @@ const newsletterSchema = z.object({
 
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 
+const ITEMS_PER_PAGE = 4;
+
 export default function Home() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const [filterBarOpen, setFilterBarOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -125,15 +129,20 @@ export default function Home() {
   const handleFilterSelect = (category: string, value: string) => {
     setActiveFilters(prev => ({ ...prev, [category]: value }));
     setOpenDropdown(null);
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const removeFilter = (category: string) => {
     const newFilters = { ...activeFilters };
     delete newFilters[category];
     setActiveFilters(newFilters);
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const clearFilters = () => setActiveFilters({});
+  const clearFilters = () => {
+    setActiveFilters({});
+    setVisibleCount(ITEMS_PER_PAGE);
+  };
 
   const {
     register,
@@ -152,15 +161,50 @@ export default function Home() {
     setIsSubscribed(true);
   };
 
-  const allJobs = [
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Realismo", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Realismo", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Blackwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Avanzado (3-5 años)", especialidad: "Blackwork", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" },
-    { studioName: "VOID TATTOO CLUB", role: "Tatuador", specialty: "Dotwork", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Senior (+5 años)", especialidad: "Dotwork", tipoEstudio: "Privado", tipoRol: "Alquiler de box", ubicacion: "CABA" },
-    { studioName: "BLACK PANTER", role: "Tatuador/a", specialty: "Fineline", location: "Palermo, Buenos Aires", puesto: "Tatuador/a", experiencia: "Intermedio (1-3 años)", especialidad: "Fineline", tipoEstudio: "Privado", tipoRol: "Residente con porcentaje", ubicacion: "CABA" }
-  ];
+  const [jobs, setJobs] = useState<any[]>([]);
 
-  const filteredJobs = allJobs.filter(job => {
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const res = await fetch('/api/jobs');
+        if (res.ok) {
+          const data = await res.json();
+          // Mapeamos los datos de la base de datos al formato del frontend
+          const mappedJobs = data.map((job: any) => {
+            // Extraer info de la descripción: "Horario: ... | Experiencia: ... | Tipo de estudio: ..."
+            const expMatch = job.description?.match(/Experiencia:\s*([^|]+)/);
+            const tipoMatch = job.description?.match(/Tipo de estudio:\s*([^|]+)/);
+            
+            return {
+              id: job._id,
+              studioName: job.studioName,
+              role: job.title,
+              specialty: job.category,
+              location: job.location,
+              puesto: job.title,
+              experiencia: expMatch ? expMatch[1].trim() : "Sin definir",
+              especialidad: job.category,
+              tipoEstudio: tipoMatch ? tipoMatch[1].trim() : "Privado",
+              tipoRol: job.style,
+              // La ubicación real para el filtro, la simplificamos por ahora a lo que diga location o "CABA" si no hay match
+              ubicacion: job.location, 
+            };
+          });
+          setJobs(mappedJobs);
+        }
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    }
+    fetchJobs();
+  }, []);
+
+  const filteredJobs = jobs.filter(job => {
     return Object.entries(activeFilters).every(([key, value]) => {
+      // Para texto libre como ubicación, hacemos una búsqueda parcial para que los filtros funcionen mejor
+      if (key === 'ubicacion') {
+        return job[key]?.toLowerCase().includes(value.toLowerCase());
+      }
       return job[key as keyof typeof job] === value;
     });
   });
@@ -181,7 +225,7 @@ export default function Home() {
         </div>
         <div className="flex flex-row justify-start gap-4 w-full mt-10">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial w-full sm:w-auto text-center">
-            Publicar
+            Publicar Aviso
           </Link>
           <a 
             href="#ofertas"
@@ -194,7 +238,7 @@ export default function Home() {
             }}
             className="bg-transparent text-black border border-black px-12 py-4 text-button hover:bg-black/5 transition-colors duration-200 ease-editorial w-full sm:w-auto text-center"
           >
-            BUSCAR
+            BUSCAR EMPLEOS
           </a>
         </div>
       </section>
@@ -312,9 +356,9 @@ export default function Home() {
       {filteredJobs.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 mt-10">
-              {filteredJobs.map((job, idx) => (
+              {filteredJobs.slice(0, visibleCount).map((job, idx) => (
                 <JobCard 
-                  key={idx}
+                  key={job.id || idx}
                   index={idx}
                   studioName={job.studioName}
                   role={job.role}
@@ -323,11 +367,16 @@ export default function Home() {
                 />
               ))}
             </div>
-             <div className="flex justify-center">
-              <button className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors">
-                Cargar Más
-              </button>
-            </div>
+            {visibleCount < filteredJobs.length && (
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+                  className="border border-black text-black px-12 py-4 text-button hover:bg-black/5 transition-colors"
+                >
+                  Cargar Más
+                </button>
+              </div>
+            )}
           </>
         ) : (
            <div className="py-24 flex flex-col items-center justify-center text-center">
@@ -349,40 +398,7 @@ export default function Home() {
             </p>
           </div>
           <div>
-            {isSubscribed ? (
-              <p className="font-serif italic text-sm text-black">
-                ¡Listo! Te avisamos cuando haya novedades.
-              </p>
-            ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-                <div className={`flex flex-col sm:flex-row border ${errors.email ? 'border-red-500' : 'border-border'}`}>
-                  <div className="relative flex-1">
-                    <input 
-                      {...register("email")}
-                      placeholder="nombre@ejemplo.com"
-                      className="w-full px-6 py-4 bg-transparent outline-none text-body placeholder:text-muted-foreground focus:bg-gray-50 transition-colors pr-12"
-                    />
-                    {emailValue && !errors.email && (
-                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
-                    )}
-                  </div>
-                  <button 
-                    type="submit" 
-                    disabled={!isValid || !emailValue}
-                    className={`border-l ${errors.email ? 'border-red-500' : 'border-border'} px-8 py-4 text-button transition-colors whitespace-nowrap ${
-                      isValid && emailValue
-                        ? 'bg-black text-white hover:bg-black/90'
-                        : 'bg-muted text-muted-foreground cursor-not-allowed'
-                    }`}
-                  >
-                    SUSCRIBIRSE →
-                  </button>
-                </div>
-                {errors.email && (
-                  <span className="text-caption-sm text-red-500 mt-2">{errors.email.message}</span>
-                )}
-              </form>
-            )}
+            <NewsletterForm />
           </div>
         </div>
       </section>

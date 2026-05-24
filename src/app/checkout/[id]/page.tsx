@@ -1,30 +1,70 @@
 "use client";
 
 import { Footer } from "@/components/layout/Footer";
-import { ArrowLeft, ArrowRight, CodeXml } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [job, setJob] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const router = useRouter();
+  const id = params.id as string;
+
+  useEffect(() => {
+    if (!id) return;
+    async function fetchJob() {
+      try {
+        const res = await fetch(`/api/jobs/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setJob(data.job);
+        }
+      } catch (error) {
+        console.error("Error fetching job:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchJob();
+  }, [id]);
 
   const handlePayment = async () => {
     setIsProcessing(true);
     try {
       const res = await fetch("/api/create-payment", {
         method: "POST",
-        body: JSON.stringify({}),
+        body: JSON.stringify({ jobId: id }),
       });
       const data = await res.json();
+      
+      if (!res.ok) {
+        console.error("MP Fetch Error:", data);
+        alert("Error al crear pago. Revisa la consola.");
+        return;
+      }
+
       if (data.init_point) {
         window.location.href = data.init_point;
       }
     } catch (error) {
-      console.error(error);
+      console.error("Fetch Exception:", error);
+      alert("Error de red al crear pago. Revisa la consola.");
     } finally {
       setIsProcessing(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-body text-muted-foreground">Cargando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -33,10 +73,10 @@ export default function CheckoutPage() {
         
         {/* Left Column: Summary Info */}
         <div className="flex flex-col">
-          <Link href="/publicar-empleo" className="flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-24">
+          <button onClick={() => router.back()} className="flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-24 self-start">
             <ArrowLeft className="w-4 h-4" />
             <span className="text-nav">Volver</span>
-          </Link>
+          </button>
           
           <h1 className="text-display-xl mb-16 uppercase">
             RESUMEN
@@ -51,7 +91,7 @@ export default function CheckoutPage() {
                 Ítem
               </span>
               <p className="text-subtitle">
-                Publicación de Oferta — 30 días
+                Publicación de Oferta — Editable por 30 días
               </p>
             </div>
           </div>
@@ -67,8 +107,8 @@ export default function CheckoutPage() {
             {/* Mini Preview Card */}
             <div className="bg-white border border-border p-6 w-full max-w-xs transform -rotate-2 hover:rotate-0 transition-transform duration-300">
               <span className="text-caption-sm text-muted-foreground mb-2 block">Oferta de Empleo</span>
-              <h3 className="text-h3 mb-1">Tatuador</h3>
-              <p className="text-body-sm text-muted-foreground">en Black Lung Studio</p>
+              <h3 className="text-h3 mb-1 break-words line-clamp-2">{job?.title || "Sin título"}</h3>
+              <p className="text-body-sm text-muted-foreground break-words line-clamp-1">en {job?.studioName || "Estudio"}</p>
             </div>
           </div>
         </div>
@@ -77,34 +117,14 @@ export default function CheckoutPage() {
         <div className="flex items-center">
           <div className="bg-white border border-border w-full">
             
-            {/* Subtotal & Taxes row */}
-            <div className="grid grid-cols-2 border-b border-border">
-              <div className="p-8 md:p-12 border-r border-border flex flex-col justify-center">
-                <span className="text-label-sm text-muted-foreground mb-2">Subtotal</span>
-                <span className="text-h2">$ 20.000</span>
-              </div>
-              <div className="p-8 md:p-12 flex flex-col justify-center">
-                <span className="text-label-sm text-muted-foreground mb-2">Impuestos</span>
-                <span className="text-h2 text-muted-foreground">$0.00</span>
-              </div>
-            </div>
-            
             {/* Total row */}
             <div className="p-8 md:p-12 border-b border-border bg-gray-50/50">
-              <span className="text-label-sm text-muted-foreground mb-2 block">Total</span>
+              <span className="text-label-sm text-muted-foreground mb-2 block">Total a Pagar</span>
               <span className="text-display-lg">$ 20.000</span>
             </div>
 
             {/* Mercado Pago area */}
             <div className="p-8 md:p-12">
-              
-              {/* MP Container Placeholder */}
-              <div className="border border-dashed border-border p-8 mb-8 flex flex-col items-center justify-center text-center text-muted-foreground">
-                <CodeXml className="w-6 h-6 mb-4 opacity-50" />
-                <span className="text-label-sm max-w-[200px]">
-                  Generar contenedor para Smart Checkout de Mercado Pago
-                </span>
-              </div>
               
               <button 
                 type="button" 

@@ -1,10 +1,12 @@
+"use client";
+
 import { Check } from "lucide-react";
 import Link from "next/link";
 
 export default function ConfirmacionPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-12 space-y-8">
-      <div className="bg-white w-full max-w-2xl border border-border">
+      <div className="bg-white w-full max-w-xl border border-border">
         
         {/* Top Header */}
         <div className="p-8 md:p-12 pb-6">
@@ -17,7 +19,7 @@ export default function ConfirmacionPage() {
             </div>
           </div>
 
-          <h1 className="text-display-xl mb-12 uppercase max-w-lg">
+          <h1 className="text-display-md mb-8 uppercase max-w-lg">
             Pago<br/>Confirmado.<br/>Oferta Activa.
           </h1>
 
@@ -80,15 +82,18 @@ export default function ConfirmacionPage() {
           <Link href="/" className="flex-1 bg-black text-white py-5 flex items-center justify-center hover:bg-black/90 transition-colors">
             <span className="text-button">Ver mi anuncio en el feed</span>
           </Link>
-          <button className="flex-1 bg-white border border-border text-black py-5 flex items-center justify-center hover:bg-gray-50 transition-colors">
-            <span className="text-button">Copiar link para Instagram</span>
+          <button 
+            onClick={() => alert('¡Funcionalidad en desarrollo! Pronto podrás compartir tu anuncio directamente a Instagram.')}
+            className="flex-1 bg-white border border-border text-black py-5 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          >
+            <span className="text-button">Compartir en Instagram</span>
           </button>
         </div>
 
       </div>
 
       {/* NEW PROMINENT SECTION */}
-      <div className="bg-muted w-full max-w-2xl border border-black p-8 md:p-12 text-center">
+      <div className="bg-muted w-full max-w-xl border border-black p-8 md:p-12 text-center">
         <span className="text-label-sm text-muted-foreground mb-6 block">Siguiente Paso</span>
         <h2 className="text-h2 uppercase mb-4 font-bold">Creá el Perfil de tu Estudio</h2>
         <p className="text-body-sm text-foreground/80 mb-8 max-w-md mx-auto">

@@ -3,10 +3,8 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 
 // Zod Schema
@@ -23,17 +21,57 @@ const jobPostingSchema = z.object({
 
 type JobPostingFormValues = z.infer<typeof jobPostingSchema>;
 
-export default function PublicarEmpleoPage() {
+export default function EditarEmpleoPage() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<JobPostingFormValues>({
     resolver: zodResolver(jobPostingSchema),
   });
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const res = await fetch(`/api/jobs/${id}`);
+        if (!res.ok) throw new Error("Aviso no encontrado");
+        const data = await res.json();
+        const job = data.job;
+
+        // Parse existing description into form fields if possible
+        // Original format: Horario: X | Experiencia: Y | Tipo de estudio: Z
+        const descParts = job.description.split(" | ");
+        const horarioMatch = descParts[0]?.replace("Horario: ", "") || "";
+        const experienciaMatch = descParts[1]?.replace("Experiencia: ", "") || "";
+        const tipoMatch = descParts[2]?.replace("Tipo de estudio: ", "") || "";
+
+        reset({
+          nombreEstudio: job.studioName,
+          localizacion: job.location,
+          puesto: job.title,
+          especialidades: job.category,
+          modoTrabajo: job.style,
+          horario: horarioMatch,
+          experiencia: experienciaMatch,
+          tipoEstudio: tipoMatch,
+        });
+      } catch (err) {
+        setError("No pudimos cargar la información del aviso.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (id) fetchJob();
+  }, [id, reset]);
 
   const onSubmit = async (data: JobPostingFormValues, e?: React.BaseSyntheticEvent) => {
     if (e) e.preventDefault();
@@ -45,13 +83,11 @@ export default function PublicarEmpleoPage() {
         location: data.localizacion,
         description: `Horario: ${data.horario} | Experiencia: ${data.experiencia} | Tipo de estudio: ${data.tipoEstudio}`,
         category: data.especialidades,
-        style: data.modoTrabajo, // Reutilizando el schema propuesto
+        style: data.modoTrabajo,
       };
 
-      console.log("Datos a enviar:", payload);
-
-      const res = await fetch('/api/jobs', {
-        method: 'POST',
+      const res = await fetch(`/api/jobs/${id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -60,49 +96,59 @@ export default function PublicarEmpleoPage() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.error("Error API Jobs:", errorData);
-        alert("Hubo un error al guardar tu publicación. Revisa la consola.");
+        if (errorData.error === 'No longer editable') {
+            alert("Este aviso tiene más de 30 días y ya no se puede editar.");
+        } else {
+            alert("Hubo un error al guardar los cambios.");
+        }
         return;
       }
 
-      const responseData = await res.json();
-      if (responseData.id) {
-        router.push(`/checkout/${responseData.id}`);
-      }
+      router.push("/dashboard");
+      router.refresh();
     } catch (error) {
-      console.error("Network Error:", error);
       alert("Error de red al procesar tu solicitud.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <p className="text-body text-red-500">{error}</p>
+        <button onClick={() => router.back()} className="text-label hover:underline">Volver</button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* <Navbar /> */}
-
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-16 grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-16 lg:gap-32">
 
         {/* Left Column: Title */}
         <div className="top-16 self-start sticky">
           <button onClick={() => router.back()} className="inline-flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-12">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-nav">Volver</span>
+            <span className="text-nav">Volver al Dashboard</span>
           </button>
           <h1 className="text-display-xl mb-6">
-            Publicar<br />un Aviso
+            Editar<br />Aviso
           </h1>
           <p className="text-body-sm text-muted-foreground max-w-sm">
-            Publica tu vacante en la red más curada de profesionales del tatuaje.
+            Actualiza la información de tu búsqueda. Los cambios se reflejarán de inmediato.
           </p>
         </div>
 
         {/* Right Column: Form */}
-
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
 
           {/* Section 01 */}
-          <section className="space-y-8">
+          <section className="space-y-8 mb-16">
             <h2 className="text-h2 border-b border-border pb-4">
               01. Datos del Estudio
             </h2>
@@ -158,7 +204,7 @@ export default function PublicarEmpleoPage() {
           </section>
 
           {/* Section 02 */}
-          <section className="space-y-8">
+          <section className="space-y-8 mb-16">
             <h2 className="text-h2 border-b border-border pb-4">
               02. Datos del Rol
             </h2>
@@ -236,11 +282,8 @@ export default function PublicarEmpleoPage() {
           <section className="bg-muted p-8 md:p-12 space-y-8">
             <div className="flex justify-between items-center pb-6">
               <div>
-                <h2 className="text-h2 mb-2">03. Publicar</h2>
-                <p className="text-body-sm text-muted-foreground max-w-sm">Tu anuncio queda publicado de forma permanente. Podés editar la información durante los primeros 30 días. Incluye mención en newsletter.</p>
-              </div>
-              <div className="text-right">
-                <h3 className="text-display-lg">$ 20.000</h3>
+                <h2 className="text-h2 mb-2">03. Guardar Cambios</h2>
+                <p className="text-body-sm text-muted-foreground max-w-sm">Los cambios se actualizarán instantáneamente en tu aviso publicado.</p>
               </div>
             </div>
 
@@ -249,14 +292,12 @@ export default function PublicarEmpleoPage() {
               disabled={isSubmitting}
               className={`w-full bg-black text-white py-5 flex items-center justify-center transition-all duration-200 ease-editorial ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-black/90'}`}
             >
-              <span className="text-button">{isSubmitting ? "Enviando..." : "PUBLICAR AVISO"}</span>
+              <span className="text-button">{isSubmitting ? "Guardando..." : "GUARDAR CAMBIOS"}</span>
             </button>
           </section>
 
         </form>
       </main>
-
-      {/*  <Footer /> */}
     </div>
   );
 }

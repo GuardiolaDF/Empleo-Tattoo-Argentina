@@ -1,9 +1,15 @@
+"use client";
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function EstudiosPage() {
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <div className="bg-gray-50">
@@ -19,31 +25,49 @@ export default function EstudiosPage() {
               La plataforma de búsqueda técnica para tatuadores y perforadores en Argentina.
             </p>
           </div>
-          <div className="flex flex-row justify-start gap-4 w-full mt-10">
+          <div className="flex flex-col sm:flex-row justify-start gap-4 w-full mt-10">
             <Link 
               href="/publicar-empleo" 
-              className="bg-black text-white px-12 py-5 text-button hover:bg-black/90 transition-colors inline-block text-center"
+              className="bg-black text-white px-12 py-5 text-button hover:bg-black/90 transition-colors inline-block text-center flex-1 sm:flex-none"
             >
-              PUBLICAR UN EMPLEO
+              PUBLICAR AVISO
             </Link>
+            {!isLoggedIn && (
+              <Link 
+                href="/dashboard/perfil" 
+                className="bg-white text-black border border-black px-12 py-5 text-button hover:bg-gray-50 transition-colors inline-block text-center flex-1 sm:flex-none"
+              >
+                CREAR CUENTA
+              </Link>
+            )}
           </div>
         </section>
       </div>
 
       {/* Features Strip */}
-      <section className="border-y border-border py-24">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
-          <div className="flex flex-col space-y-8">
-            <span className="text-label-sm text-muted-foreground">01</span>
-            <h3 className="text-h3 uppercase">Audiencia<br/>Segmentada</h3>
+      <section className="border-y border-border py-12 px-4 md:px-8 max-w-7xl mx-auto w-full">
+        <h2 className="text-label text-center mb-12">
+          Beneficios
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
+          <div className="flex flex-col text-center md:text-left space-y-6">
+            <span className="text-display-lg text-muted-foreground/30">01</span>
+            <div>
+              <h3 className="text-h3 uppercase">Audiencia<br/>Segmentada</h3>
+            </div>
           </div>
-          <div className="flex flex-col space-y-8">
-            <span className="text-label-sm text-muted-foreground">02</span>
-            <h3 className="text-h3 uppercase">Gestión<br/>Directa</h3>
+          <div className="flex flex-col text-center md:text-left space-y-6">
+            <span className="text-display-lg text-muted-foreground/30">02</span>
+            <div>
+              <h3 className="text-h3 uppercase">Gestión<br/>Directa</h3>
+            </div>
           </div>
-          <div className="flex flex-col space-y-8">
-            <span className="text-label-sm text-muted-foreground">03</span>
-            <h3 className="text-h3 uppercase">Alcance<br/>Nacional</h3>
+          <div className="flex flex-col text-center md:text-left space-y-6">
+            <span className="text-display-lg text-muted-foreground/30">03</span>
+            <div>
+              <h3 className="text-h3 uppercase">Alcance<br/>Nacional</h3>
+            </div>
           </div>
         </div>
       </section>
@@ -80,7 +104,7 @@ export default function EstudiosPage() {
               href="/publicar-empleo" 
               className="bg-white text-black px-12 py-5 text-button hover:bg-gray-200 transition-colors inline-block w-full text-center"
             >
-              PUBLICAR UN EMPLEO
+              PUBLICAR AVISO
             </Link>
           </div>
         </div>
