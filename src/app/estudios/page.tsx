@@ -74,7 +74,7 @@ export default function EstudiosPage() {
 
       {/* Pricing Block */}
       <section className="py-32 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="bg-black text-white p-12 md:p-24 flex flex-col md:flex-row gap-16 md:gap-8 items-center justify-between">
+        <div className="bg-black text-white p-8 md:p-16 lg:p-24 flex flex-col md:flex-row gap-12 md:gap-8 items-center justify-between">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <p className="text-label-sm text-white/70 mb-4">Pago único por publicación</p>
             <h2 className="text-display-2xl text-white leading-none">$ 20.000</h2>
@@ -110,8 +110,7 @@ export default function EstudiosPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 px-4 md:px-8 max-w-3xl mx-auto w-full mb-24">
+      <section className="py-16 md:py-24 px-4 md:px-8 max-w-3xl mx-auto w-full mb-16 md:mb-24">
         <h3 className="text-label-lg mb-12 text-center md:text-left">Preguntas Frecuentes</h3>
         
         <div className="flex flex-col space-y-8">

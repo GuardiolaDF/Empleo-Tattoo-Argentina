@@ -25,10 +25,10 @@ export function DashboardSidebar({ studioName }: DashboardSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full lg:w-64 bg-white border-r border-border flex flex-col justify-between py-12 flex-shrink-0">
-      <div>
+    <aside className="w-full lg:w-64 bg-white lg:border-r border-border flex lg:flex-col lg:justify-between flex-shrink-0 border-b lg:border-b-0 lg:py-12">
+      <div className="w-full lg:w-auto">
         {/* Studio Name */}
-        <div className="px-8 mb-12 overflow-hidden w-full">
+        <div className="hidden lg:block px-8 mb-12 overflow-hidden w-full">
           <h2 className="text-h3 truncate max-w-full block">
             {studioName || "Tu Estudio"}
           </h2>
@@ -36,21 +36,25 @@ export function DashboardSidebar({ studioName }: DashboardSidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col space-y-1">
+        <nav
+          className="flex lg:flex-col lg:space-y-1 overflow-x-auto lg:overflow-x-visible"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          <style>{`nav::-webkit-scrollbar { display: none; }`}</style>
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center space-x-4 px-8 py-4 transition-colors ${
+                className={`flex flex-col lg:flex-row items-center lg:items-center justify-center lg:justify-start px-4 lg:px-8 py-3 lg:py-4 min-w-[80px] lg:min-w-0 gap-1 lg:gap-0 lg:space-x-4 whitespace-nowrap lg:whitespace-normal transition-colors ${
                   isActive
                     ? "bg-black text-white"
                     : "text-muted-foreground hover:text-black hover:bg-gray-50"
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                <span className="text-nav">{label}</span>
+                <Icon className="w-5 h-5 lg:w-4 lg:h-4" />
+                <span className="text-[10px] lg:text-nav">{label}</span>
               </Link>
             );
           })}
@@ -58,7 +62,7 @@ export function DashboardSidebar({ studioName }: DashboardSidebarProps) {
       </div>
 
       {/* Bottom Section */}
-      <div className="px-8 flex flex-col space-y-4 mt-16 lg:mt-0">
+      <div className="hidden lg:flex px-8 flex-col space-y-4">
         <Link
           href="/contacto"
           className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors"

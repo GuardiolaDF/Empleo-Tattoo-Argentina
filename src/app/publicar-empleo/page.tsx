@@ -84,12 +84,12 @@ export default function PublicarEmpleoPage() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-16 grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-16 lg:gap-32">
 
         {/* Left Column: Title */}
-        <div className="top-16 self-start sticky">
+        <div className="lg:top-32 self-start lg:sticky z-10 bg-white pb-4 lg:pb-0">
           <button onClick={() => router.back()} className="inline-flex items-center space-x-2 text-muted-foreground hover:text-black transition-colors mb-12">
             <ArrowLeft className="w-4 h-4" />
             <span className="text-nav">Volver</span>
           </button>
-          <h1 className="text-display-xl mb-6">
+          <h1 className="text-display-lg lg:text-display-xl mb-6">
             Publicar<br />un Aviso
           </h1>
           <p className="text-body-sm text-muted-foreground max-w-sm">

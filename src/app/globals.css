@@ -75,12 +75,12 @@
   --gray-900:        #1A1A1A;
 
   /* Typography Design System Tokens */
-  --text-display-2xl: 8rem;
-  --text-display-xl: 6rem;
-  --text-display-lg: 4.5rem;
-  --text-h1: 3rem;
-  --text-h2: 2.25rem;
-  --text-h3: 1.5rem;
+  --text-display-2xl: clamp(2.5rem, 8vw + 1rem, 8rem);
+  --text-display-xl: clamp(2.25rem, 6vw + 0.5rem, 6rem);
+  --text-display-lg: clamp(1.75rem, 4.5vw + 0.5rem, 4.5rem);
+  --text-h1: clamp(1.75rem, 3vw + 0.5rem, 3rem);
+  --text-h2: clamp(1.375rem, 2vw + 0.5rem, 2.25rem);
+  --text-h3: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem);
   --text-subtitle: 1.25rem;
   --text-body-lg: 1.125rem;
   --text-body: 1rem;
@@ -95,7 +95,7 @@
   --text-button-sm: 0.6875rem;
   --text-nav: 0.6875rem;
 
-  --navbar-height: 100px;
+  --navbar-height: 72px;
 
   --shadow-elevation-1: 0 8px 30px rgba(0,0,0,0.12); /* More visible for card hovers */
   --shadow-elevation-2: 0 12px 40px rgba(0,0,0,0.18); /* For dropdowns */
@@ -238,4 +238,10 @@
 @keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --navbar-height: 100px;
+  }
 }

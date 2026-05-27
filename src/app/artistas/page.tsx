@@ -62,19 +62,19 @@ function JobCard({ id, index, studioName, role, specialty, location }: JobCardPr
   return (
     <Link 
       href={`/empleos/${id}`} 
-      className={`group flex flex-col p-8 md:p-12 justify-between aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-6 sm:p-8 md:p-12 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
-        <h3 className="text-6xl md:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-12">{studioName}</h3>
+        <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-6 sm:mb-12">{studioName}</h3>
         
         <div className="flex flex-col space-y-2">
           <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>busca</span>
-          <h2 className="text-4xl font-serif font-normal leading-tight">{role}</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight">{role}</h2>
           <span className={`text-base font-serif italic ${style.muted}`}>{specialty}</span>
         </div>
       </div>
       
-      <div className="relative z-10 flex flex-col space-y-2 mt-12">
+      <div className="relative z-10 flex flex-col space-y-2 mt-6 sm:mt-12">
         <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>en</span>
         <div className="flex items-center space-x-2">
           <MapPin className="w-4 h-4" />
@@ -250,7 +250,7 @@ export default function ArtistasPage() {
             <h2 className="text-h2 uppercase">Puestos Vacantes</h2>
             <button 
               onClick={() => setFilterBarOpen(!filterBarOpen)}
-              className="flex items-center space-x-2 border border-black px-6 py-2 hover:bg-black/5 transition-colors duration-200 ease-editorial hidden md:flex"
+              className="flex items-center space-x-2 border border-black px-4 sm:px-6 py-2 hover:bg-black/5 transition-colors duration-200 ease-editorial"
             >
               <span className="text-button-sm">Filtro</span>
               <Settings2 className="w-4 h-4" />
@@ -262,7 +262,7 @@ export default function ArtistasPage() {
               className="w-full bg-white relative z-20 animate-fade-in-up origin-top" 
               ref={dropdownRef}
             >
-              <div className="grid grid-cols-2 md:grid-cols-6 border-b border-border">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-b border-border">
                 {Object.entries(FILTROS).map(([key, options]) => {
                   const isActive = !!activeFilters[key];
                   const isOpen = openDropdown === key;
