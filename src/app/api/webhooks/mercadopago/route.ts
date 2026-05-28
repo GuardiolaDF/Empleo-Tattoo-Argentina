@@ -100,7 +100,7 @@ export async function POST(request: Request) {
     if (type === 'payment' || action === 'payment.created' || action === 'payment.updated') {
       const paymentId = data?.id;
       if (paymentId) {
-        processPayment(paymentId);
+        await processPayment(paymentId);
       }
     }
 
