@@ -5,6 +5,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const jobId = body.jobId ? String(body.jobId) : 'no_id_provided';
+
+    // Obtener la URL base dinámicamente para los callbacks de MP
+    const protocol = request.headers.get("x-forwarded-proto") || "https";
+    const host = request.headers.get("host") || "www.empleotattoo.com.ar";
+    const baseUrl = `${protocol}://${host}`;
     const token = process.env.MERCADOPAGO_ACCESS_TOKEN || '';
     console.log("Token detectado:", !!token);
     const client = new MercadoPagoConfig({ accessToken: token });
@@ -22,12 +27,12 @@ export async function POST(request: Request) {
           }
         ],
         back_urls: {
-          success: 'https://drainage-unburned-headlock.ngrok-free.dev/confirmacion',
-          failure: 'https://drainage-unburned-headlock.ngrok-free.dev/confirmacion',
-          pending: 'https://drainage-unburned-headlock.ngrok-free.dev/confirmacion',
+          success: `${baseUrl}/confirmacion`,
+          failure: `${baseUrl}/confirmacion`,
+          pending: `${baseUrl}/confirmacion`,
         },
         auto_return: 'approved',
-        notification_url: 'https://drainage-unburned-headlock.ngrok-free.dev/api/webhooks/mercadopago',
+        notification_url: `${baseUrl}/api/webhooks/mercadopago`,
         external_reference: jobId,
       }
     });
