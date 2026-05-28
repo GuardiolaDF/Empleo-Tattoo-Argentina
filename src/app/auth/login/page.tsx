@@ -11,6 +11,7 @@ import { Suspense } from "react";
 
 const loginSchema = z.object({
   email: z.string().min(1, { message: "El email es requerido" }).email({ message: "Ingresa un correo electrónico válido" }),
+  password: z.string().min(1, { message: "La contraseña es requerida" }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -27,10 +28,30 @@ function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    // Placeholder for magic link logic
-    console.log("Magic link requested for:", data.email);
-    alert(`Link mágico enviado a: ${data.email}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (data: LoginFormValues) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+        callbackUrl,
+      });
+
+      if (result?.error) {
+        setError("Credenciales inválidas. Por favor intenta de nuevo.");
+      } else if (result?.url) {
+        window.location.href = result.url;
+      }
+    } catch (err) {
+      setError("Ocurrió un error inesperado.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,13 +84,6 @@ function LoginForm() {
               </svg>
               <span className="text-button">Continuar con Google</span>
             </button>
-            <button className="w-full bg-black text-white py-4 flex items-center justify-center space-x-3 hover:bg-black/90 transition-colors opacity-50 cursor-not-allowed" disabled>
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-              </svg>
-              <span className="text-button">Continuar con Facebook</span>
-            </button>
-            <p className="text-caption-sm text-muted-foreground text-center">Facebook próximamente</p>
           </div>
 
           {/* Divider */}
@@ -82,11 +96,17 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Magic Link Form */}
+          {/* Email/Password Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 text-red-600 text-body-sm">
+                {error}
+              </div>
+            )}
+            
             <div className="flex flex-col space-y-2">
               <label htmlFor="email" className="text-label-sm text-muted-foreground">
-                Email Profesional
+                Email
               </label>
               <input
                 id="email"
@@ -102,14 +122,39 @@ function LoginForm() {
               )}
             </div>
 
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="password" className="text-label-sm text-muted-foreground">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                {...register("password")}
+                className={`border-b ${errors.password ? 'border-red-500' : 'border-border focus:border-black'} py-3 outline-none text-body bg-transparent transition-colors`}
+              />
+              {errors.password && (
+                <p className="text-caption-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-black text-white py-4 flex items-center justify-center space-x-2 hover:bg-black/90 transition-colors"
+              disabled={isLoading}
+              className={`w-full bg-black text-white py-4 flex items-center justify-center space-x-2 transition-colors ${isLoading ? "opacity-70 cursor-wait" : "hover:bg-black/90"}`}
             >
-              <span className="text-button">Enviar Link Mágico</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-button">{isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}</span>
+              {!isLoading && <ArrowRight className="w-4 h-4" />}
             </button>
           </form>
+
+          <div className="mt-8 text-center">
+            <Link href="/auth/register" className="text-label-sm text-muted-foreground hover:text-black transition-colors">
+              ¿No tienes cuenta? Regístrate
+            </Link>
+          </div>
         </div>
 
         {/* Footer Legal */}
