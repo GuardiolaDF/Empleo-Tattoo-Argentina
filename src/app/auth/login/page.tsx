@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 const loginSchema = z.object({
   email: z.string().min(1, { message: "El email es requerido" }).email({ message: "Ingresa un correo electrónico válido" }),
