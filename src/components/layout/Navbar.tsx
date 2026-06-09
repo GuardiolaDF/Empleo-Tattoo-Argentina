@@ -107,7 +107,7 @@ export function Navbar() {
                   className="w-full px-4 py-3 text-left text-body-sm hover:bg-gray-50 transition-colors flex items-center gap-3 border-b border-border/50"
                 >
                   <User className="w-4 h-4" />
-                  Mi Estudio
+                  Panel de Estudio
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
@@ -124,7 +124,7 @@ export function Navbar() {
             href="/auth/login"
             className="hidden md:block border border-border px-4 py-2 text-nav text-muted-foreground hover:text-foreground hover:bg-black/5 transition-colors"
           >
-            Ingresar
+            Acceso Estudios
           </Link>
         )}
 
@@ -218,7 +218,7 @@ export function Navbar() {
                     className="flex items-center gap-3 py-3 text-body-sm text-foreground"
                   >
                     <User className="w-5 h-5" />
-                    Mi Estudio
+                    Panel de Estudio
                   </Link>
                   <button
                     onClick={() => {
@@ -237,7 +237,7 @@ export function Navbar() {
                   onClick={closeMobileMenu}
                   className="w-full text-center border border-border px-4 py-3 text-nav text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Ingresar
+                  Acceso Estudios
                 </Link>
               )}
             </div>

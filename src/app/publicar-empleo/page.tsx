@@ -5,8 +5,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 
 // Zod Schema
@@ -25,15 +26,53 @@ type JobPostingFormValues = z.infer<typeof jobPostingSchema>;
 
 export default function PublicarEmpleoPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingStudio, setIsFetchingStudio] = useState(true);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<JobPostingFormValues>({
     resolver: zodResolver(jobPostingSchema),
   });
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login?callbackUrl=/publicar-empleo");
+    } else if (status === "authenticated") {
+      // Fetch studio data to prefill
+      async function fetchStudio() {
+        try {
+          const res = await fetch('/api/studio');
+          if (res.ok) {
+            const data = await res.json();
+            if (data) {
+              reset({
+                nombreEstudio: data.name || "",
+                localizacion: data.address || "",
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching studio:", error);
+        } finally {
+          setIsFetchingStudio(false);
+        }
+      }
+      fetchStudio();
+    }
+  }, [status, router, reset]);
+
+  if (status === "loading" || (status === "authenticated" && isFetchingStudio)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-body text-muted-foreground">Cargando...</p>
+      </div>
+    );
+  }
 
   const onSubmit = async (data: JobPostingFormValues, e?: React.BaseSyntheticEvent) => {
     if (e) e.preventDefault();

@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { JobCard } from "@/components/ui/JobCard";
 
 export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -105,10 +106,16 @@ export default function CheckoutPage() {
             </div>
             
             {/* Mini Preview Card */}
-            <div className="bg-white border border-border p-6 w-full max-w-xs transform -rotate-2 hover:rotate-0 transition-transform duration-300">
-              <span className="text-caption-sm text-muted-foreground mb-2 block">Oferta de Empleo</span>
-              <h3 className="text-h3 mb-1 break-words line-clamp-2">{job?.title || "Sin título"}</h3>
-              <p className="text-body-sm text-muted-foreground break-words line-clamp-1">en {job?.studioName || "Estudio"}</p>
+            <div className="w-full max-w-[280px] transform -rotate-2 hover:rotate-0 transition-transform duration-300 origin-top-left scale-75 sm:scale-100">
+              <div className="pointer-events-none">
+                <JobCard 
+                  index={0}
+                  studioName={job?.studioName || "Estudio"}
+                  role={job?.title || "Sin título"}
+                  specialty={job?.category || "Especialidad"}
+                  location={job?.location || "Ubicación"}
+                />
+              </div>
             </div>
           </div>
         </div>
