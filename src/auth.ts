@@ -6,6 +6,7 @@ import clientPromise from "@/lib/mongoClient";
 import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     Google({
