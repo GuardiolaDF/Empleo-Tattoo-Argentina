@@ -60,8 +60,14 @@ export default function CheckoutPage() {
 
       if (data.isFree) {
         setAppliedCoupon({ code: couponCode.toUpperCase(), discountPercent: 100, isFree: true });
-        setCouponMessage({ type: "success", text: "¡Cupón del 100% de descuento aplicado con éxito!" });
+        setCouponMessage({ type: "success", text: "¡Cupón del 100% aplicado! Redirigiendo a la confirmación..." });
+        if (data.redirectUrl) {
+          setTimeout(() => {
+            router.push(data.redirectUrl);
+          }, 1000);
+        }
       } else {
+
         setAppliedCoupon({ code: couponCode.toUpperCase(), discountPercent: data.discountPercent, isFree: false });
         setCouponMessage({ type: "success", text: data.message });
       }

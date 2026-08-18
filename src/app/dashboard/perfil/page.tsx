@@ -532,39 +532,75 @@ export default function PerfilEstudioPage() {
             {/* Section 04 */}
             <div className="space-y-8">
               <h2 className="text-h2 border-b border-border pb-4 flex justify-between items-end">
-                <span>04. Fotos del Estudio</span>
+                <span>04. Fotos del Estudio y Portada</span>
                 <span className="text-label-sm text-muted-foreground font-normal pb-1">{photos.length}/6 Fotos</span>
               </h2>
               
-              <div className="flex flex-col space-y-6">
-                <div className="relative w-full border border-dashed border-border bg-white hover:bg-gray-50 transition-colors cursor-pointer group">
+              {/* Foto de Portada (Optimizado para Móvil y Desktop) */}
+              <div className="flex flex-col space-y-3">
+                <label className="text-label-sm text-muted-foreground font-medium">Foto de Portada del Estudio</label>
+                <div className="relative w-full h-40 bg-gray-100 flex items-center justify-center border border-border overflow-hidden group">
+                  {portadaUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={portadaUrl} alt="Portada" className="absolute inset-0 w-full h-full object-cover z-0" />
+                  ) : (
+                    <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground z-0">Sin Foto de Portada</span>
+                  )}
+                  <label
+                    htmlFor="cover-photo-input"
+                    className="absolute inset-0 bg-black/60 text-white flex flex-col items-center justify-center cursor-pointer opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                  >
+                    {uploadingCover ? (
+                      <span className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <Pencil className="w-5 h-5" />
+                        <span className="text-xs font-bold uppercase tracking-wider">{portadaUrl ? "Cambiar Portada" : "Subir Foto de Portada"}</span>
+                      </div>
+                    )}
+                  </label>
+                  <input
+                    id="cover-photo-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleCoverUpload}
+                  />
+                </div>
+              </div>
+
+              {/* Galería de Fotos */}
+              <div className="flex flex-col space-y-4">
+                <label className="text-label-sm text-muted-foreground font-medium">Galería de Fotos del Local (Máx. 6)</label>
+                <label htmlFor="gallery-photo-input" className="relative w-full border border-dashed border-border bg-white hover:bg-gray-50 transition-colors cursor-pointer group block">
                   <input 
+                    id="gallery-photo-input"
                     type="file" 
                     multiple 
                     accept="image/*"
                     onChange={handlePhotoUpload}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    className="hidden"
                     disabled={photos.length >= 6}
                   />
-                  <div className="p-12 flex flex-col items-center justify-center text-center text-muted-foreground group-hover:text-black transition-colors">
-                    <Upload className="w-6 h-6 mb-4" />
-                    <span className="text-label-sm">Subir Fotos</span>
-                    <span className="text-caption-sm mt-2 opacity-50">Arrastra archivos o haz clic aquí (Max 6)</span>
+                  <div className="p-8 md:p-12 flex flex-col items-center justify-center text-center text-muted-foreground group-hover:text-black transition-colors">
+                    <Upload className="w-6 h-6 mb-3" />
+                    <span className="text-label-sm font-bold">Subir Fotos</span>
+                    <span className="text-caption-sm mt-1 opacity-70">Tocá aquí para seleccionar de tu galería o cámara (Máx 6)</span>
                   </div>
-                </div>
+                </label>
 
                 {photos.length > 0 && (
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {photos.map((photo) => (
-                      <div key={photo.id} className="relative w-32 h-32 flex-shrink-0 border border-border group bg-white">
+                      <div key={photo.id} className="relative w-28 h-28 md:w-32 md:h-32 flex-shrink-0 border border-border group bg-white">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photo.preview} alt="Preview" className="w-full h-full object-cover" />
                         <button 
                           type="button"
                           onClick={() => handleRemovePhoto(photo.id)}
-                          className="absolute top-2 right-2 bg-black text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 bg-black text-white p-1.5 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          <X className="w-3 h-3" />
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}
@@ -572,6 +608,7 @@ export default function PerfilEstudioPage() {
                 )}
               </div>
             </div>
+
 
             <div className="pt-8 border-t border-border/50">
               <button 

@@ -45,13 +45,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Este cupón ha alcanzado el límite máximo de 10 usos' }, { status: 400 });
     }
 
-    // Verificar si este usuario ya utilizó un cupón anteriormente (Límite 1 por cuenta registrada)
-    const userAlreadyUsed = await Coupon.findOne({ usedBy: session.user.id });
-    if (userAlreadyUsed) {
-      return NextResponse.json({ error: 'Ya has utilizado un cupón de descuento en tu cuenta. Límite: 1 cupón por usuario.' }, { status: 400 });
-    }
-
-
     // 2. Verificar que el anuncio exista y sea del usuario autenticado
     const job = await Job.findById(jobId);
     if (!job) {
@@ -61,6 +54,23 @@ export async function POST(request: Request) {
     if (job.userId && job.userId !== session.user.id) {
       return NextResponse.json({ error: 'No tienes permiso sobre este anuncio' }, { status: 403 });
     }
+
+    // Si el anuncio YA fue activado previamente con este cupón para esta sesión, retornar éxito directo (Idempotencia)
+    if (job.status === 'active' && job.paymentId && job.paymentId.includes(cleanCode)) {
+      return NextResponse.json({
+        success: true,
+        isFree: true,
+        message: '¡Tu anuncio ya está activo!',
+        redirectUrl: '/confirmacion'
+      }, { status: 200 });
+    }
+
+    // Verificar si este usuario ya utilizó un cupón anteriormente en OTRO anuncio diferente
+    const userAlreadyUsed = await Coupon.findOne({ usedBy: session.user.id });
+    if (userAlreadyUsed && !coupon.usedBy.includes(session.user.id)) {
+      return NextResponse.json({ error: 'Ya has utilizado un cupón de descuento en tu cuenta. Límite: 1 cupón por usuario.' }, { status: 400 });
+    }
+
 
     // 3. Aplicación atómica en MongoDB (Previene condiciones de carrera o sobrepaso de límite)
     const updatedCoupon = await Coupon.findOneAndUpdate(

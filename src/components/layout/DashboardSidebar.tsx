@@ -62,22 +62,23 @@ export function DashboardSidebar({ studioName }: DashboardSidebarProps) {
       </div>
 
       {/* Bottom Section */}
-      <div className="hidden lg:flex px-8 flex-col space-y-4">
+      <div className="flex px-4 lg:px-8 py-4 lg:py-0 border-t border-border lg:border-t-0 flex-row lg:flex-col justify-between items-center lg:items-start space-x-4 lg:space-x-0 lg:space-y-4">
         <Link
           href="/contacto"
-          className="flex items-center space-x-4 text-muted-foreground hover:text-black transition-colors"
+          className="flex items-center space-x-2 lg:space-x-4 text-muted-foreground hover:text-black transition-colors"
         >
           <HelpCircle className="w-4 h-4" />
-          <span className="text-nav">Soporte</span>
+          <span className="text-caption-sm lg:text-nav">Soporte</span>
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="flex items-center space-x-4 text-muted-foreground hover:text-red-600 transition-colors"
+          className="flex items-center space-x-2 lg:space-x-4 text-muted-foreground hover:text-red-600 transition-colors"
         >
           <LogOut className="w-4 h-4" />
-          <span className="text-nav">Cerrar Sesión</span>
+          <span className="text-caption-sm lg:text-nav">Cerrar Sesión</span>
         </button>
       </div>
     </aside>
+
   );
 }
