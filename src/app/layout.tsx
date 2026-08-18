@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Bodoni_Moda } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import "./globals.css";
 
