@@ -201,45 +201,82 @@ export default function Home() {
         }}
       />
       <Navbar />
-      <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
+      <section className="flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12 gap-12">
+        {/* Columna Izquierda: Título y CTAs */}
         <motion.div 
-          className="flex flex-col items-start text-left"
+          className="flex flex-col items-start text-left max-w-xl"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           <motion.h1 
             variants={itemVariants}
-            className="text-display-xl leading-[0.9] mb-6"
+            className="text-display-xl leading-[0.9] mb-6 uppercase"
           >
             EMPLEO<br/>TATTOO<br/>ARGENTINA
           </motion.h1>
           <motion.p 
             variants={itemVariants}
-            className="text-subtitle text-muted-foreground leading-relaxed"
+            className="text-subtitle text-muted-foreground leading-relaxed mb-8"
           >
             Conectando artistas con los mejores estudios del país.
           </motion.p>
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 w-full">
+            <Link href="/publicar-empleo" className="bg-black text-white border border-black px-10 py-4 text-button hover:bg-black/90 transition-colors duration-200 ease-editorial w-full sm:w-auto text-center shadow-md">
+              Publicar Aviso
+            </Link>
+            <a 
+              href="#ofertas"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('ofertas')?.scrollIntoView({ 
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }}
+              className="bg-transparent text-black border border-black px-10 py-4 text-button hover:bg-black/5 transition-colors duration-200 ease-editorial w-full sm:w-auto text-center"
+            >
+              BUSCAR EMPLEOS
+            </a>
+          </motion.div>
         </motion.div>
-        <div className="flex flex-row justify-start gap-4 w-full mt-10">
-          <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial w-full sm:w-auto text-center">
-            Publicar Aviso
-          </Link>
-          <a 
-            href="#ofertas"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('ofertas')?.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-              });
-            }}
-            className="bg-transparent text-black border border-black px-12 py-4 text-button hover:bg-black/5 transition-colors duration-200 ease-editorial w-full sm:w-auto text-center"
-          >
-            BUSCAR EMPLEOS
-          </a>
-        </div>
+
+        {/* Columna Derecha: Tarjeta Promocional de Lanzamiento */}
+        <motion.div 
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full lg:w-auto"
+        >
+          <div className="bg-white border-2 border-black p-8 md:p-10 max-w-md shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden group hover:translate-y-[-2px] transition-transform">
+            <div className="inline-flex items-center space-x-2 bg-black text-white px-3 py-1 text-xs font-bold uppercase tracking-wider mb-4 rounded-full">
+              <span>🔥 LANZAMIENTO OFICIAL — 75% OFF</span>
+            </div>
+            
+            <h3 className="text-2xl md:text-3xl font-extrabold uppercase tracking-tight mb-3 text-black leading-tight">
+              OFERTA ESPECIAL DE BIENVENIDA
+            </h3>
+            
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+              Aprovechá la tarifa promocional para publicar tu búsqueda de tatuadores, perforadores o staff del estudio.
+            </p>
+
+            <div className="flex items-baseline space-x-3 mb-6 border-t border-border pt-4">
+              <span className="text-muted-foreground line-through text-lg">$ 20.000</span>
+              <span className="text-4xl font-black text-black">$ 5.000</span>
+              <span className="text-xs text-muted-foreground font-semibold uppercase">ARS</span>
+            </div>
+
+            <Link 
+              href="/publicar-empleo"
+              className="w-full bg-black text-white py-4 px-6 flex items-center justify-center space-x-2 font-bold uppercase text-xs sm:text-sm hover:bg-black/90 transition-colors shadow-sm tracking-wider"
+            >
+              <span>PUBLICAR AHORA CON DESCUENTO</span>
+            </Link>
+          </div>
+        </motion.div>
       </section>
+
 
       {/* Logo Bar */}
       <section className="bg-white py-10 w-full border-y border-border overflow-hidden">
