@@ -32,8 +32,10 @@ const JobSchema = new Schema<IJob>(
     paymentId: { type: String },
     userId: { type: String },
   },
+  { timestamps: true, strict: 'throw' }
+);
+
 JobSchema.index({ status: 1, createdAt: -1 });
 JobSchema.index({ userId: 1 });
 
 export default mongoose.models.Job || mongoose.model<IJob>('Job', JobSchema);
-
