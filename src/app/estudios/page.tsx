@@ -74,11 +74,19 @@ export default function EstudiosPage() {
 
       {/* Pricing Block */}
       <section className="py-32 px-4 md:px-8 max-w-7xl mx-auto w-full">
-        <div className="bg-black text-white p-8 md:p-16 lg:p-24 flex flex-col md:flex-row gap-12 md:gap-8 items-center justify-between">
+        <div className="bg-black text-white p-8 md:p-16 lg:p-24 flex flex-col md:flex-row gap-12 md:gap-8 items-center justify-between relative">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <p className="text-label-sm text-white/70 mb-4">Pago único por publicación</p>
-            <h2 className="text-display-2xl text-white leading-none">$ 20.000</h2>
+            <div className="inline-flex items-center space-x-2 bg-white text-black px-3 py-1 text-xs font-bold uppercase tracking-wider mb-4 rounded-full">
+              <span>🔥 LANZAMIENTO OFICIAL — 75% OFF</span>
+            </div>
+            <p className="text-label-sm text-white/70 mb-3">Pago único por publicación</p>
+            <div className="flex items-baseline space-x-4">
+              <span className="text-2xl text-white/40 line-through">$ 20.000</span>
+              <h2 className="text-display-2xl text-white font-black leading-none">$ 5.000</h2>
+              <span className="text-xs text-white/70 font-semibold uppercase">ARS</span>
+            </div>
           </div>
+
           
           <div className="flex flex-col items-center md:items-start space-y-8">
             <ul className="space-y-4 text-body-sm text-white/90">
