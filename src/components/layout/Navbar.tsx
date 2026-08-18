@@ -5,13 +5,25 @@ import { usePathname } from "next/navigation";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 
 export function Navbar() {
   const pathname = usePathname() || "";
   const { data: session } = useSession();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() || 0;
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
@@ -49,7 +61,15 @@ export function Navbar() {
 
   return (
     <>
-    <nav className="w-full flex items-center justify-between h-[var(--navbar-height)] px-4 md:px-8 bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-border/50">
+    <motion.nav 
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" }
+      }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.35, ease: "easeInOut" }}
+      className="w-full flex items-center justify-between h-[var(--navbar-height)] px-4 md:px-8 bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-border/50"
+    >
       {/* Logo */}
       <Link href="/" className="text-h2 font-bold">
         ETA
@@ -137,7 +157,7 @@ export function Navbar() {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
-    </nav>
+    </motion.nav>
 
       {/* Mobile Drawer Overlay */}
       <div

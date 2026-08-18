@@ -10,8 +10,25 @@ import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 import { NewsletterForm } from "@/components/ui/NewsletterForm";
-
 import { JobCard } from "@/components/ui/JobCard";
+import { motion, AnimatePresence } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 40, opacity: 0 },
+  visible: { 
+    y: 0, 
+    opacity: 1, 
+    transition: { type: "spring" as const, stiffness: 100, damping: 20 }
+  }
+};
 
 const FILTROS = {
   puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
@@ -165,19 +182,45 @@ export default function Home() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <main className="flex flex-col min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Empleo Tattoo Argentina",
+            "url": "https://empleotattoo.com.ar",
+            "description": "Directorio de empleos para estudios de tatuaje en Argentina.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://empleotattoo.com.ar/?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
       <Navbar />
-
-      {/* Hero Section */}
       <section className="flex flex-col justify-center w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 min-h-[calc(100svh-var(--navbar-height))] md:min-h-[calc(100vh-var(--navbar-height))] py-12">
-        <div className="flex flex-col items-start text-left">
-          <h1 className="text-display-xl leading-[0.9] mb-6">
+        <motion.div 
+          className="flex flex-col items-start text-left"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h1 
+            variants={itemVariants}
+            className="text-display-xl leading-[0.9] mb-6"
+          >
             EMPLEO<br/>TATTOO<br/>ARGENTINA
-          </h1>
-          <p className="text-subtitle text-muted-foreground leading-relaxed">
+          </motion.h1>
+          <motion.p 
+            variants={itemVariants}
+            className="text-subtitle text-muted-foreground leading-relaxed"
+          >
             Conectando artistas con los mejores estudios del país.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
         <div className="flex flex-row justify-start gap-4 w-full mt-10">
           <Link href="/publicar-empleo" className="bg-black text-white border border-black px-12 py-4 text-button hover:opacity-90 transition-opacity duration-200 ease-editorial w-full sm:w-auto text-center">
             Publicar Aviso
@@ -241,50 +284,62 @@ export default function Home() {
             </button>
           </div>
 
-          {filterBarOpen && (
-            <div 
-              className="w-full bg-white relative z-20 animate-fade-in-up origin-top" 
-              ref={dropdownRef}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-b border-border">
-                {Object.entries(FILTROS).map(([key, options]) => {
-                  const isActive = !!activeFilters[key];
-                  const isOpen = openDropdown === key;
-                  const label = FILTER_LABELS[key];
+          <AnimatePresence>
+            {filterBarOpen && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-full bg-white relative z-20 origin-top overflow-hidden" 
+                ref={dropdownRef}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 border-b border-border">
+                  {Object.entries(FILTROS).map(([key, options]) => {
+                    const isActive = !!activeFilters[key];
+                    const isOpen = openDropdown === key;
+                    const label = FILTER_LABELS[key];
 
-                  return (
-                    <div key={key} className="relative">
-                      <button 
-                        onClick={() => setOpenDropdown(isOpen ? null : key)}
-                        className={`w-full flex items-center justify-between px-4 py-4 transition-colors duration-200 ease-editorial ${
-                          isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
-                        }`}
-                      >
-                        <span className="text-label-sm truncate pr-2">{label}</span>
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease-editorial ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
-                      </button>
-                      {isOpen && (
-                        <div className="absolute top-full mt-1 left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-50 animate-scale-in origin-top">
-                          {options.map((opt) => {
-                            const isSelected = activeFilters[key] === opt;
-                            return (
-                              <button
-                                key={opt}
-                                onClick={() => handleFilterSelect(key, opt)}
-                                className={`w-full text-left px-4 py-2 text-body-sm transition-colors flex items-center justify-between ${
-                                  isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
-                                }`}
-                              >
-                                <span className="text-black">{opt}</span>
-                                {isSelected && <Check className="w-4 h-4 text-black" />}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                    return (
+                      <div key={key} className="relative">
+                        <button 
+                          onClick={() => setOpenDropdown(isOpen ? null : key)}
+                          className={`w-full flex items-center justify-between px-4 py-4 transition-colors duration-200 ease-editorial ${
+                            isActive ? 'text-black font-medium' : 'text-muted-foreground hover:text-black font-normal'
+                          }`}
+                        >
+                          <span className="text-label-sm truncate pr-2">{label}</span>
+                          <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ease-editorial ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+                        </button>
+                        <AnimatePresence>
+                          {isOpen && (
+                            <motion.div 
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className="absolute top-full mt-1 left-0 w-full min-w-[200px] bg-white shadow-dropdown max-h-[280px] overflow-y-auto z-50 origin-top"
+                            >
+                              {options.map((opt) => {
+                                const isSelected = activeFilters[key] === opt;
+                                return (
+                                  <button
+                                    key={opt}
+                                    onClick={() => handleFilterSelect(key, opt)}
+                                    className={`w-full text-left px-4 py-2 text-body-sm transition-colors flex items-center justify-between ${
+                                      isSelected ? 'bg-gray-50 font-medium' : 'bg-white hover:bg-gray-50 font-normal'
+                                    }`}
+                                  >
+                                    <span className="text-black">{opt}</span>
+                                    {isSelected && <Check className="w-4 h-4 text-black" />}
+                                  </button>
+                                );
+                              })}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
               </div>
 
               {Object.keys(activeFilters).length > 0 && (
@@ -304,8 +359,9 @@ export default function Home() {
                   </button>
                 </div>
               )}
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
       {filteredJobs.length > 0 ? (
@@ -361,6 +417,6 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
-    </div>
+    </main>
   );
 }

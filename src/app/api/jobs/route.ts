@@ -2,15 +2,36 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Job from '@/models/Job';
 import { auth } from '@/auth';
+import { createJobSchema } from '@/lib/schemas';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectToDatabase();
     
-    // Solo mostramos los empleos activos, ordenados por los más recientes
-    const jobs = await Job.find({ status: 'active' }).sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '20', 10)));
+    const skip = (page - 1) * limit;
+
+    // Solo mostramos empleos activos paginados y optimizados con lean()
+    const [jobs, total] = await Promise.all([
+      Job.find({ status: 'active' })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Job.countDocuments({ status: 'active' })
+    ]);
     
-    return NextResponse.json(jobs, { status: 200 });
+    return NextResponse.json({
+      jobs,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    }, { status: 200 });
   } catch (error) {
     console.error('Job Fetch Error:', error);
     return NextResponse.json(
@@ -20,11 +41,10 @@ export async function GET() {
   }
 }
 
-// Simple in-memory rate limiter (LRU Cache style)
-// Note: In Vercel Edge/Serverless this resets on cold starts, which is fine for basic protection
+// Rate limiter en memoria
 const rateLimit = new Map<string, { count: number; timestamp: number }>();
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 3;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minuto
+const MAX_REQUESTS_PER_WINDOW = 5;
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +53,6 @@ export async function POST(request: Request) {
     const now = Date.now();
     const windowStart = now - RATE_LIMIT_WINDOW_MS;
     
-    // Cleanup old entries (primitive garbage collection)
     if (rateLimit.size > 1000) {
       rateLimit.forEach((val, key) => {
         if (val.timestamp < windowStart) rateLimit.delete(key);
@@ -42,7 +61,6 @@ export async function POST(request: Request) {
 
     const currentRate = rateLimit.get(ip) || { count: 0, timestamp: now };
     
-    // Reset window if needed
     if (currentRate.timestamp < windowStart) {
       currentRate.count = 0;
       currentRate.timestamp = now;
@@ -53,35 +71,49 @@ export async function POST(request: Request) {
 
     if (currentRate.count > MAX_REQUESTS_PER_WINDOW) {
       return NextResponse.json(
-        { error: 'Too many requests. Please try again in a minute.' },
+        { error: 'Demasiadas solicitudes. Por favor reintenta en un minuto.' },
         { status: 429 }
       );
     }
 
     const session = await auth();
-    // No exigimos auth estricto para evitar romper la UI si prueban sin login,
-    // pero guardamos el userId si existe
-    const userId = session?.user?.id;
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Debes iniciar sesión para publicar una oferta' },
+        { status: 401 }
+      );
+    }
 
-    // Establecer la conexión a la BD
     await connectToDatabase();
-
-    // Parsear el body de la petición
     const body = await request.json();
 
-    // Instanciar un nuevo documento Job y guardarlo
-    const jobData = userId ? { ...body, userId } : body;
-    const job = new Job(jobData);
+    // 2. Validación de Esquema con Zod
+    const validation = createJobSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Datos del anuncio inválidos', details: validation.error.format() },
+        { status: 400 }
+      );
+    }
+
+    // 3. Crear documento sanitizado
+    const safeJobData = {
+      ...validation.data,
+      status: 'pending', // Siempre pendiente hasta confirmación de pago por webhook
+      userId: session.user.id
+    };
+
+    const job = new Job(safeJobData);
     await job.save();
 
-    // Retornar 201 Created con el ID insertado
     return NextResponse.json({ id: job._id }, { status: 201 });
   } catch (error) {
     console.error('Job Creation Error:', error);
-    // Retornar HTTP 500 en caso de fallo
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
     );
   }
 }
+
+

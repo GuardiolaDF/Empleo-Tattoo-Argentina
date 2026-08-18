@@ -70,7 +70,12 @@ export async function POST(request: Request) {
     console.log('--- Webhook Received from Mercado Pago ---');
 
     // HMAC SHA256 Validation
-    if (WEBHOOK_SECRET && signatureHeader && requestId) {
+    if (WEBHOOK_SECRET) {
+      if (!signatureHeader || !requestId) {
+        console.error("Webhook rejected: missing signature or request-id headers.");
+        return new NextResponse("Unauthorized - Missing Signature Headers", { status: 401 });
+      }
+
       const parts = signatureHeader.split(',');
       let ts = '';
       let v1 = '';
@@ -88,11 +93,16 @@ export async function POST(request: Request) {
 
       if (computedHash !== v1) {
         console.error("Webhook signature validation failed! Rejecting request.");
-        return new NextResponse("Unauthorized", { status: 401 });
+        return new NextResponse("Unauthorized - Invalid Signature", { status: 401 });
       }
     } else {
-      console.warn("MercadoPago webhook secret not configured or headers missing. Bypassing signature validation.");
+      if (process.env.NODE_ENV === 'production') {
+        console.error("CRITICAL: MercadoPago WEBHOOK_SECRET is missing in production! Rejecting request for security.");
+        return new NextResponse("Unauthorized - Server Configuration Error", { status: 401 });
+      }
+      console.warn("MercadoPago webhook secret not configured. Running in unverified dev mode.");
     }
+
 
     const body = JSON.parse(bodyText);
     const { type, data, action } = body;

@@ -30,6 +30,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
+import { updateJobSchema } from '@/lib/schemas';
+
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
@@ -40,6 +42,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await connectToDatabase();
     const { id: jobId } = await params;
     const body = await request.json();
+
+    const validation = updateJobSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Datos no válidos', details: validation.error.format() }, { status: 400 });
+    }
     
     // find job and make sure it belongs to this user
     const job = await Job.findById(jobId);
@@ -56,10 +63,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'No longer editable' }, { status: 403 });
     }
 
-    const updatedJob = await Job.findByIdAndUpdate(jobId, body, { new: true });
+    const updatedJob = await Job.findByIdAndUpdate(jobId, validation.data, { new: true });
     return NextResponse.json(updatedJob, { status: 200 });
   } catch (error) {
     console.error('Job Detail Update Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+

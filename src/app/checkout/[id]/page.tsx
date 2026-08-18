@@ -33,7 +33,74 @@ export default function CheckoutPage() {
     fetchJob();
   }, [id]);
 
+  const [couponCode, setCouponCode] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number; isFree: boolean } | null>(null);
+  const [couponMessage, setCouponMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleApplyCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return;
+
+    setIsApplyingCoupon(true);
+    setCouponMessage(null);
+
+    try {
+      const res = await fetch("/api/coupons/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode, jobId: id }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setCouponMessage({ type: "error", text: data.error || "Error al validar el cupón" });
+        return;
+      }
+
+      if (data.isFree) {
+        setAppliedCoupon({ code: couponCode.toUpperCase(), discountPercent: 100, isFree: true });
+        setCouponMessage({ type: "success", text: "¡Cupón del 100% de descuento aplicado con éxito!" });
+      } else {
+        setAppliedCoupon({ code: couponCode.toUpperCase(), discountPercent: data.discountPercent, isFree: false });
+        setCouponMessage({ type: "success", text: data.message });
+      }
+    } catch (error) {
+      console.error("Coupon Fetch Error:", error);
+      setCouponMessage({ type: "error", text: "Error de conexión al aplicar el cupón" });
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleFreeActivation = async () => {
+    if (!appliedCoupon?.isFree) return;
+    setIsProcessing(true);
+    try {
+      const res = await fetch("/api/coupons/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: appliedCoupon.code, jobId: id }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.redirectUrl) {
+        router.push(data.redirectUrl);
+      } else {
+        alert(data.error || "No se pudo activar el anuncio con el cupón.");
+      }
+    } catch (error) {
+      console.error("Free Activation Error:", error);
+      alert("Error al activar el aviso gratuito.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handlePayment = async () => {
+    if (appliedCoupon?.isFree) {
+      return handleFreeActivation();
+    }
     setIsProcessing(true);
     try {
       const res = await fetch("/api/create-payment", {
@@ -126,13 +193,53 @@ export default function CheckoutPage() {
             
             {/* Total row */}
             <div className="p-8 md:p-12 border-b border-border bg-gray-50/50">
-              <span className="text-label-sm text-muted-foreground mb-2 block">Total a Pagar</span>
-              <span className="text-display-lg">$ 20.000</span>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-label-sm text-muted-foreground block">Total a Pagar</span>
+                <span className="bg-black text-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full">
+                  {appliedCoupon?.isFree ? "🎁 CUPÓN 100% GRATIS" : "🔥 75% OFF LANZAMIENTO"}
+                </span>
+              </div>
+              <div className="flex items-baseline space-x-3">
+                {appliedCoupon?.isFree ? (
+                  <span className="text-display-lg font-bold text-green-600">$ 0 ARS</span>
+                ) : (
+                  <>
+                    <span className="text-body text-muted-foreground line-through">$ 20.000</span>
+                    <span className="text-display-lg font-bold">$ 5.000</span>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Mercado Pago area */}
+            {/* Cupón de Descuento */}
+            <div className="p-8 md:p-12 border-b border-border space-y-3">
+              <label className="text-label-sm text-muted-foreground block font-medium">¿Tienes un código promocional?</label>
+              <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                <input 
+                  type="text"
+                  placeholder="Ej. ETA100"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  disabled={appliedCoupon?.isFree}
+                  className="flex-1 border border-border px-4 py-2.5 outline-none text-body focus:border-black uppercase transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={isApplyingCoupon || !couponCode.trim() || appliedCoupon?.isFree}
+                  className="bg-black text-white px-5 py-2.5 text-button hover:bg-black/90 disabled:opacity-50 transition-opacity"
+                >
+                  {isApplyingCoupon ? "..." : "APLICAR"}
+                </button>
+              </form>
+              {couponMessage && (
+                <p className={`text-caption-sm ${couponMessage.type === "success" ? "text-green-600 font-semibold" : "text-red-500"}`}>
+                  {couponMessage.text}
+                </p>
+              )}
+            </div>
+
+            {/* Mercado Pago / Activación Gratuita */}
             <div className="p-8 md:p-12">
-              
               <button 
                 type="button" 
                 disabled={isProcessing}
@@ -141,7 +248,13 @@ export default function CheckoutPage() {
                   isProcessing ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
                 }`}
               >
-                <span className="text-button">{isProcessing ? "PROCESANDO..." : "PAGAR CON MERCADO PAGO"}</span>
+                <span className="text-button">
+                  {isProcessing 
+                    ? "PROCESANDO..." 
+                    : appliedCoupon?.isFree 
+                      ? "🚀 ACTIVAR MI ANUNCIO GRATIS AHORA" 
+                      : "PAGAR CON MERCADO PAGO"}
+                </span>
                 {!isProcessing && <ArrowRight className="w-4 h-4" />}
               </button>
             </div>
@@ -154,3 +267,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

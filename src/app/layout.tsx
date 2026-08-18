@@ -16,8 +16,42 @@ const bodoniModa = Bodoni_Moda({
 });
 
 export const metadata: Metadata = {
-  title: "Empleo Tattoo Argentina",
-  description: "Conectando estudios y artistas en toda la Argentina",
+  metadataBase: new URL("https://empleotattoo.com.ar"),
+  title: {
+    default: "Empleo Tattoo Argentina | Conectando estudios y artistas",
+    template: "%s | Empleo Tattoo Argentina"
+  },
+  description: "La plataforma líder en Argentina para conectar estudios de tatuaje con artistas del tatuaje, perforadores y profesionales del rubro.",
+  keywords: ["tatuaje", "empleo tatuaje", "tattoo artist", "tatuador", "estudio de tatuajes", "trabajo tatuador", "perforador", "body piercing", "Argentina"],
+  authors: [{ name: "Empleo Tattoo Argentina", url: "https://empleotattoo.com.ar" }],
+  creator: "Empleo Tattoo Argentina",
+  publisher: "Empleo Tattoo Argentina",
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    url: "https://empleotattoo.com.ar",
+    siteName: "Empleo Tattoo Argentina",
+    title: "Empleo Tattoo Argentina | Conectando estudios y artistas",
+    description: "Encontrá trabajo o a tu próximo residente en el principal directorio de empleos para estudios de tatuaje en toda Argentina.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Empleo Tattoo Argentina",
+      }
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Empleo Tattoo Argentina",
+    description: "Conectando estudios y artistas en toda la Argentina.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +67,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col font-sans text-foreground bg-background">
         <AuthProvider>{children}</AuthProvider>
         <Analytics />
-        {process.env.NEXT_PUBLIC_CLARITY_ID && (
+        {process.env.NEXT_PUBLIC_CLARITY_ID && /^[a-zA-Z0-9]+$/.test(process.env.NEXT_PUBLIC_CLARITY_ID) && (
           <Script id="clarity-script" strategy="afterInteractive">
             {`
               (function(c,l,a,r,i,t,y){
@@ -44,6 +78,7 @@ export default function RootLayout({
             `}
           </Script>
         )}
+
       </body>
     </html>
   );

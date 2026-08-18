@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import { motion } from "framer-motion";
 
 export const cardStyles = [
   { bg: "bg-card-1", text: "text-foreground", muted: "text-muted" }, // Tone 1: white
@@ -21,8 +24,17 @@ export function JobCard({ index, studioName, role, specialty, location }: JobCar
   const style = cardStyles[pattern[index % 4]];
 
   return (
-    <div 
-      className={`group flex flex-col p-6 sm:p-8 md:p-12 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text} w-full h-full`} 
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      whileHover={{ y: -8 }}
+      transition={{ 
+        duration: 0.4, 
+        ease: [0.4, 0, 0.2, 1],
+        y: { type: "spring", stiffness: 200, damping: 20 }
+      }}
+      className={`group flex flex-col p-6 sm:p-8 md:p-12 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden border border-border ${style.bg} ${style.text} w-full h-full`} 
     >
       <div className="relative z-10 flex flex-col">
         <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-6 sm:mb-12 truncate">{studioName}</h3>
@@ -41,6 +53,6 @@ export function JobCard({ index, studioName, role, specialty, location }: JobCar
           <span className="text-sm font-sans font-normal truncate">{location}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

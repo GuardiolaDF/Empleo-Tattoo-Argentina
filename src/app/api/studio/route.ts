@@ -24,6 +24,25 @@ export async function GET() {
   }
 }
 
+function getSafeStudioData(body: any) {
+  const { nombre, anio, ubicacion, bio, instagram, whatsapp, countryCode, website, especialidades, fotos, portada } = body || {};
+  return {
+    ...(nombre !== undefined && { nombre: String(nombre) }),
+    ...(anio !== undefined && { anio: String(anio) }),
+    ...(ubicacion !== undefined && { ubicacion: String(ubicacion) }),
+    ...(bio !== undefined && { bio: String(bio) }),
+    ...(instagram !== undefined && { instagram: String(instagram) }),
+    ...(whatsapp !== undefined && { whatsapp: String(whatsapp) }),
+    ...(countryCode !== undefined && { countryCode: String(countryCode) }),
+    ...(website !== undefined && { website: String(website) }),
+    ...(Array.isArray(especialidades) && { especialidades: especialidades.map(String) }),
+    ...(Array.isArray(fotos) && { fotos: fotos.map(String) }),
+    ...(portada !== undefined && { portada: String(portada) }),
+  };
+}
+
+import { studioSchema } from '@/lib/schemas';
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -33,6 +52,13 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
     const body = await request.json();
+    const validation = studioSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Datos del estudio no válidos', details: validation.error.format() }, { status: 400 });
+    }
+
+    const safeData = validation.data;
 
     // Check if studio already exists for this user
     const existing = await Studio.findOne({ userId: session.user.id });
@@ -40,13 +66,13 @@ export async function POST(request: Request) {
       // Update instead
       const updated = await Studio.findOneAndUpdate(
         { userId: session.user.id },
-        { ...body, userId: session.user.id },
+        { ...safeData, userId: session.user.id },
         { returnDocument: 'after' }
       );
       return NextResponse.json(updated, { status: 200 });
     }
 
-    const studio = new Studio({ ...body, userId: session.user.id });
+    const studio = new Studio({ ...safeData, userId: session.user.id });
     await studio.save();
 
     return NextResponse.json(studio, { status: 201 });
@@ -65,10 +91,15 @@ export async function PUT(request: Request) {
 
     await connectToDatabase();
     const body = await request.json();
+    const validation = studioSchema.partial().safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Datos del estudio no válidos', details: validation.error.format() }, { status: 400 });
+    }
 
     const updated = await Studio.findOneAndUpdate(
       { userId: session.user.id },
-      body,
+      validation.data,
       { returnDocument: 'after' }
     );
 
@@ -82,3 +113,5 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+

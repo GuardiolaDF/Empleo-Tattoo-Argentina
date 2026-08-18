@@ -272,16 +272,23 @@ export default function PublicarEmpleoPage() {
           </section>
 
           {/* Section 03 */}
-          <section className="bg-muted p-8 md:p-12 space-y-8">
-            <div className="flex justify-between items-center pb-6">
+          <section className="bg-muted p-8 md:p-12 space-y-8 relative">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 gap-4">
               <div>
                 <h2 className="text-h2 mb-2">03. Publicar</h2>
                 <p className="text-body-sm text-muted-foreground max-w-sm">Tu anuncio queda publicado de forma permanente. Podés editar la información durante los primeros 30 días. Incluye mención en newsletter.</p>
               </div>
-              <div className="text-right">
-                <h3 className="text-display-lg">$ 20.000</h3>
+              <div className="text-left md:text-right">
+                <div className="inline-flex items-center space-x-1.5 bg-black text-white px-3 py-1 text-xs font-semibold tracking-wide uppercase mb-2 rounded-full shadow-sm">
+                  <span>🔥 Lanzamiento Oficial — 75% OFF</span>
+                </div>
+                <div className="flex items-baseline space-x-3 md:justify-end">
+                  <span className="text-body text-muted-foreground line-through">$ 20.000</span>
+                  <h3 className="text-display-lg font-bold">$ 5.000</h3>
+                </div>
               </div>
             </div>
+
 
             <button
               type="submit"
