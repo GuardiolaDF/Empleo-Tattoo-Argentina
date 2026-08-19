@@ -15,14 +15,15 @@ async function processPayment(paymentId: string) {
     const payment = new Payment(client);
     const paymentData = await payment.get({ id: paymentId });
 
-    if (paymentData.status === 'approved' && paymentData.external_reference) {
+    if ((paymentData.status === 'approved' || paymentData.status === 'pending' || paymentData.status === 'in_process') && paymentData.external_reference) {
       await connectToDatabase();
       const updatedJob = await Job.findByIdAndUpdate(
         paymentData.external_reference,
         { status: 'active', paymentId: paymentId },
         { returnDocument: 'after' }
       );
-      console.log(`Job ${paymentData.external_reference} activated successfully. MP ID: ${paymentId}`);
+      console.log(`Job ${paymentData.external_reference} activated successfully (MP Status: ${paymentData.status}, ID: ${paymentId})`);
+
 
       // Automated Mass Email
       if (updatedJob) {
@@ -55,8 +56,16 @@ async function processPayment(paymentId: string) {
           console.error("Error sending automated emails:", emailError);
         }
       }
+    } else if ((paymentData.status === 'rejected' || paymentData.status === 'cancelled') && paymentData.external_reference) {
+      await connectToDatabase();
+      await Job.findByIdAndUpdate(
+        paymentData.external_reference,
+        { status: 'pending' }
+      );
+      console.log(`Job ${paymentData.external_reference} deactivated due to MP status: ${paymentData.status}`);
     }
   } catch (error) {
+
     console.error(`Error processing payment ${paymentId} in background:`, error);
   }
 }
