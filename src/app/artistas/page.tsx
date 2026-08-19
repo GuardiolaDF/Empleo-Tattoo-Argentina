@@ -62,28 +62,31 @@ function JobCard({ id, index, studioName, role, specialty, location }: JobCardPr
   return (
     <Link 
       href={`/empleos/${id}`} 
-      className={`group flex flex-col p-6 sm:p-8 md:p-12 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
+      className={`group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
     >
       <div className="relative z-10 flex flex-col">
-        <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-bold uppercase leading-[0.8] tracking-tighter mb-6 sm:mb-12">{studioName}</h3>
+        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2">
+          {studioName}
+        </h3>
         
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-1 sm:space-y-2">
           <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>busca</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight">{role}</h2>
-          <span className={`text-base font-serif italic ${style.muted}`}>{specialty}</span>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-normal leading-tight line-clamp-2">{role}</h2>
+          <span className={`text-sm sm:text-base font-serif italic ${style.muted} line-clamp-1`}>{specialty}</span>
         </div>
       </div>
       
-      <div className="relative z-10 flex flex-col space-y-2 mt-6 sm:mt-12">
+      <div className="relative z-10 flex flex-col space-y-1 sm:space-y-2 mt-4 sm:mt-6">
         <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>en</span>
         <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4" />
-          <span className="text-sm font-sans font-normal">{location}</span>
+          <MapPin className="w-4 h-4 flex-shrink-0" />
+          <span className="text-xs sm:text-sm font-sans font-normal truncate">{location}</span>
         </div>
       </div>
     </Link>
   );
 }
+
 
 const ITEMS_PER_PAGE = 4;
 
