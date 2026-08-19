@@ -111,7 +111,9 @@ export default function ArtistasPage() {
         const res = await fetch('/api/jobs');
         if (res.ok) {
           const data = await res.json();
-          const mappedJobs = data.map((job: any) => {
+          const jobsList = Array.isArray(data) ? data : (data.jobs || []);
+          const mappedJobs = jobsList.map((job: any) => {
+
             const expMatch = job.description?.match(/Experiencia:\s*([^|]+)/);
             const tipoMatch = job.description?.match(/Tipo de estudio:\s*([^|]+)/);
             return {

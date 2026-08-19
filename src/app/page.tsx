@@ -141,8 +141,10 @@ export default function Home() {
         const res = await fetch('/api/jobs');
         if (res.ok) {
           const data = await res.json();
+          const jobsList = Array.isArray(data) ? data : (data.jobs || []);
           // Mapeamos los datos de la base de datos al formato del frontend
-          const mappedJobs = data.map((job: any) => {
+          const mappedJobs = jobsList.map((job: any) => {
+
             // Extraer info de la descripción: "Horario: ... | Experiencia: ... | Tipo de estudio: ..."
             const expMatch = job.description?.match(/Experiencia:\s*([^|]+)/);
             const tipoMatch = job.description?.match(/Tipo de estudio:\s*([^|]+)/);
