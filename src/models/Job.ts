@@ -10,6 +10,7 @@ export interface IJob extends Document {
   price?: number;
   status: 'pending' | 'active';
   paymentId?: string;
+  couponCode?: string;
   userId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -30,6 +31,7 @@ const JobSchema = new Schema<IJob>(
       default: 'pending',
     },
     paymentId: { type: String },
+    couponCode: { type: String },
     userId: { type: String },
   },
   { timestamps: true, strict: 'throw' }
@@ -37,5 +39,6 @@ const JobSchema = new Schema<IJob>(
 
 JobSchema.index({ status: 1, createdAt: -1 });
 JobSchema.index({ userId: 1 });
+JobSchema.index({ userId: 1, couponCode: 1, status: 1 });
 
 export default mongoose.models.Job || mongoose.model<IJob>('Job', JobSchema);

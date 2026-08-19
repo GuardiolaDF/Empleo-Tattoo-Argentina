@@ -24,7 +24,6 @@ export async function POST(request: Request) {
     // 1. Sembrar cupón de lanzamiento inicial si no existe ninguno
     let coupon = await Coupon.findOne({ code: cleanCode });
     
-    // Si la base de datos está limpia y el usuario intenta usar ETA100 o LANZAMIENTO100, creamos el cupón automáticamente de forma segura
     if (!coupon && (cleanCode === 'ETA100' || cleanCode === 'LANZAMIENTO100')) {
       coupon = new Coupon({
         code: cleanCode,
@@ -41,10 +40,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Código de cupón inválido o inactivo' }, { status: 404 });
     }
 
-    if (coupon.currentUses >= coupon.maxUses) {
-      return NextResponse.json({ error: 'Este cupón ha alcanzado el límite máximo de 10 usos' }, { status: 400 });
-    }
-
     // 2. Verificar que el anuncio exista y sea del usuario autenticado
     const job = await Job.findById(jobId);
     if (!job) {
@@ -55,8 +50,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No tienes permiso sobre este anuncio' }, { status: 403 });
     }
 
-    // Si el anuncio YA fue activado previamente con este cupón para esta sesión, retornar éxito directo (Idempotencia)
-    if (job.status === 'active' && job.paymentId && job.paymentId.includes(cleanCode)) {
+    // Si el anuncio YA fue activado previamente con este cupón para este mismo anuncio, retornar éxito directo (Idempotencia)
+    if (job.status === 'active' && (job.couponCode === cleanCode || (job.paymentId && job.paymentId.includes(cleanCode)))) {
       return NextResponse.json({
         success: true,
         isFree: true,
@@ -65,35 +60,46 @@ export async function POST(request: Request) {
       }, { status: 200 });
     }
 
-    // Verificar si este usuario ya utilizó un cupón anteriormente en OTRO anuncio diferente
-    const userAlreadyUsed = await Coupon.findOne({ usedBy: session.user.id });
-    if (userAlreadyUsed && !coupon.usedBy.includes(session.user.id)) {
-      return NextResponse.json({ error: 'Ya has utilizado un cupón de descuento en tu cuenta. Límite: 1 cupón por usuario.' }, { status: 400 });
+    // 3. Regla de Oro: Verificar si el usuario YA TIENE una publicación ACTIVA en la base de datos usando este cupón
+    const activeJobWithCoupon = await Job.findOne({
+      userId: session.user.id,
+      status: 'active',
+      _id: { $ne: jobId },
+      $or: [
+        { couponCode: cleanCode },
+        { paymentId: { $regex: cleanCode, $options: 'i' } }
+      ]
+    });
+
+    if (activeJobWithCoupon) {
+      return NextResponse.json({ 
+        error: `Ya utilizaste el cupón ${cleanCode} en tu anuncio activo ("${activeJobWithCoupon.studioName}"). Límite: 1 cupón por usuario.` 
+      }, { status: 400 });
     }
 
+    // 4. Verificar límite global de usos de la promoción (ej. 10 usos)
+    if (coupon.currentUses >= coupon.maxUses && !coupon.usedBy.includes(session.user.id)) {
+      return NextResponse.json({ error: 'Este cupón ha alcanzado el límite máximo de usos promocionales' }, { status: 400 });
+    }
 
-    // 3. Aplicación atómica en MongoDB (Previene condiciones de carrera o sobrepaso de límite)
+    // 5. Aplicación atómica en MongoDB
     const updatedCoupon = await Coupon.findOneAndUpdate(
       {
         _id: coupon._id,
-        active: true,
-        $expr: { $lt: ["$currentUses", "$maxUses"] }
+        active: true
       },
       {
         $inc: { currentUses: 1 },
-        $push: { usedBy: session.user.id }
+        $addToSet: { usedBy: session.user.id }
       },
       { returnDocument: 'after' }
     );
 
-    if (!updatedCoupon) {
-      return NextResponse.json({ error: 'El cupón se ha agotado justo ahora' }, { status: 400 });
-    }
-
-    // 4. Si el cupón es del 100%, activar el anuncio directamente sin ir a MercadoPago
-    if (updatedCoupon.discountPercent === 100) {
+    // 6. Si el cupón es del 100%, activar el anuncio directamente en el modelo Job
+    if (coupon.discountPercent === 100) {
       await Job.findByIdAndUpdate(jobId, {
         status: 'active',
+        couponCode: cleanCode,
         paymentId: `CUPON_${cleanCode}_${Date.now()}`
       });
 
@@ -108,8 +114,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       isFree: false,
-      discountPercent: updatedCoupon.discountPercent,
-      message: `¡Cupón de ${updatedCoupon.discountPercent}% aplicado!`
+      discountPercent: coupon.discountPercent,
+      message: `¡Cupón de ${coupon.discountPercent}% aplicado!`
     }, { status: 200 });
 
   } catch (error: any) {
