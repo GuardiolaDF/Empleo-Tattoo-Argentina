@@ -95,11 +95,18 @@ export default function PublicStudioProfilePage() {
     );
   }
 
-  const coverImage = studio.portada || studio.fotos?.[0] || null;
-  const carouselImages = studio.fotos.map((url, i) => ({
-    src: url,
-    alt: `${studio.nombre} - Trabajo ${i + 1}`,
-  }));
+  const rawCover = studio.portada || studio.fotos?.[0] || null;
+  const [coverUrl, coverHash] = rawCover ? rawCover.split('#pos=') : [null, null];
+  const coverPosition = coverHash ? coverHash.replace('_', ' ') : 'center';
+
+  const carouselImages = studio.fotos.map((url, i) => {
+    const [cleanUrl, hash] = url.split('#pos=');
+    return {
+      src: cleanUrl,
+      alt: `${studio.nombre} - Trabajo ${i + 1}`,
+      position: hash ? hash.replace('_', ' ') : 'center',
+    };
+  });
 
   const cleanInstagram = studio.instagram
     ?.replace("@", "")
@@ -109,14 +116,16 @@ export default function PublicStudioProfilePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Cover Image */}
-      {coverImage && (
+      {coverUrl && (
         <div className="w-full h-[40vh] md:h-[50vh] relative overflow-hidden bg-gray-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={coverImage}
+            src={coverUrl}
             alt={`Portada de ${studio.nombre}`}
             className="w-full h-full object-cover"
+            style={{ objectPosition: coverPosition }}
           />
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
           {/* Back button on cover */}
           <div className="absolute top-0 left-0 w-full max-w-7xl mx-auto px-4 md:px-8 py-8">

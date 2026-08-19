@@ -16,7 +16,8 @@ import {
   X,
   CheckCircle2,
   Check,
-  Pencil
+  Pencil,
+  Crop
 } from "lucide-react";
 
 const profileSchema = z.object({
@@ -56,10 +57,119 @@ const COUNTRY_CODES = [
   { code: "34", flag: "🇪🇸", label: "+34 España" },
 ];
 
+function FramingModal({
+  preview,
+  initialPosition,
+  onSave,
+  onClose,
+}: {
+  preview: string;
+  initialPosition: string;
+  onSave: (pos: string) => void;
+  onClose: () => void;
+}) {
+  const match = initialPosition.match(/(\d+)%/);
+  const initialY = match ? parseInt(match[1]) : 50;
+  const [posY, setPosY] = useState<number>(initialY);
+
+  const currentPosString = `center ${posY}%`;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md:p-8 animate-fade-in">
+      <div className="bg-white w-full max-w-xl p-6 md:p-8 shadow-modal border border-border flex flex-col gap-6 relative">
+        <div className="flex justify-between items-center border-b border-border pb-4">
+          <h3 className="text-h3 font-bold uppercase">Encuadrar Imagen</h3>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <p className="text-body-sm text-muted-foreground">
+          Ajustá la posición vertical para elegir exactamente qué parte de la foto querés dejar visible en la vista panorámica:
+        </p>
+
+        {/* Live Preview Box */}
+        <div className="relative w-full h-48 md:h-64 bg-gray-100 border border-border overflow-hidden rounded shadow-inner">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={preview}
+            alt="Vista Previa de Encuadre"
+            className="w-full h-full object-cover transition-all duration-150"
+            style={{ objectPosition: currentPosString }}
+          />
+          <div className="absolute top-2 left-2 bg-black/80 text-white text-[10px] uppercase font-bold px-3 py-1 rounded tracking-wider">
+            Vista Previa Panorámica ({posY}%)
+          </div>
+        </div>
+
+        {/* Quick Presets */}
+        <div className="flex flex-col gap-2">
+          <span className="text-label-sm text-muted-foreground">Posiciones Rápidas:</span>
+          <div className="grid grid-cols-5 gap-2">
+            {[
+              { label: "Arriba", val: 0 },
+              { label: "25%", val: 25 },
+              { label: "Centro", val: 50 },
+              { label: "75%", val: 75 },
+              { label: "Abajo", val: 100 },
+            ].map(({ label, val }) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setPosY(val)}
+                className={`py-2.5 text-xs font-bold uppercase border transition-colors ${
+                  posY === val ? "bg-black text-white border-black" : "bg-white text-black border-border hover:bg-gray-50"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Slider */}
+        <div className="flex flex-col gap-2 pt-2">
+          <div className="flex justify-between items-center text-xs text-muted-foreground">
+            <span>Ajuste Fino Vertical:</span>
+            <span className="font-bold text-black">{posY}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={posY}
+            onChange={(e) => setPosY(parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+          />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 pt-4 border-t border-border">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-3 border border-border text-button hover:bg-gray-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={() => onSave(currentPosString)}
+            className="px-6 py-3 bg-black text-white text-button hover:bg-black/90 transition-colors shadow-md"
+          >
+            Guardar Encuadre
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function PerfilEstudioPage() {
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [specialtyInput, setSpecialtyInput] = useState("");
-  const [photos, setPhotos] = useState<{ id: string; file?: File; preview: string; url?: string }[]>([]);
+  const [photos, setPhotos] = useState<{ id: string; file?: File; preview: string; url?: string; position?: string }[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
@@ -71,6 +181,14 @@ export default function PerfilEstudioPage() {
   const [studioId, setStudioId] = useState<string | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  // Framing Modal state
+  const [framingTarget, setFramingTarget] = useState<{
+    id?: string;
+    isCover?: boolean;
+    preview: string;
+    position: string;
+  } | null>(null);
 
   const {
     register,
@@ -130,11 +248,16 @@ export default function PerfilEstudioPage() {
             });
             setSpecialties(data.especialidades || []);
             if (data.fotos?.length > 0) {
-              setPhotos(data.fotos.map((url: string, i: number) => ({
-                id: `cloud-${i}`,
-                preview: url,
-                url: url,
-              })));
+              setPhotos(data.fotos.map((urlStr: string, i: number) => {
+                const [cleanUrl, hash] = urlStr.split('#pos=');
+                const pos = hash ? hash.replace('_', ' ') : 'center 50%';
+                return {
+                  id: `cloud-${i}`,
+                  preview: urlStr,
+                  url: urlStr,
+                  position: pos,
+                };
+              }));
             }
             const country = COUNTRY_CODES.find(c => c.code === data.countryCode);
             if (country) setSelectedCountry(country);
@@ -173,13 +296,11 @@ export default function PerfilEstudioPage() {
       return;
     }
 
-    // Upload each file to Cloudinary
     for (const file of files) {
       const tempId = Math.random().toString(36).substring(7);
       const preview = URL.createObjectURL(file);
       
-      // Add with local preview immediately
-      setPhotos(prev => [...prev, { id: tempId, file, preview }]);
+      setPhotos(prev => [...prev, { id: tempId, file, preview, position: 'center 50%' }]);
 
       try {
         const formData = new FormData();
@@ -190,7 +311,6 @@ export default function PerfilEstudioPage() {
         });
         if (res.ok) {
           const data = await res.json();
-          // Replace preview with Cloudinary URL
           setPhotos(prev => prev.map(p => 
             p.id === tempId ? { ...p, url: data.url, preview: data.url } : p
           ));
@@ -204,7 +324,9 @@ export default function PerfilEstudioPage() {
   const handleRemovePhoto = (idToRemove: string) => {
     setPhotos((prev) => {
       const photoToRemove = prev.find((p) => p.id === idToRemove);
-      if (photoToRemove) URL.revokeObjectURL(photoToRemove.preview);
+      if (photoToRemove && photoToRemove.preview.startsWith('blob:')) {
+        URL.revokeObjectURL(photoToRemove.preview);
+      }
       return prev.filter((p) => p.id !== idToRemove);
     });
   };
@@ -223,13 +345,6 @@ export default function PerfilEstudioPage() {
 
       if (uploadRes.ok) {
         const { url } = await uploadRes.json();
-        // Save portada to studio
-        await fetch("/api/studio", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ portada: url }),
-        });
-        // Update local state
         setPortadaUrl(url);
       }
     } catch (error) {
@@ -239,16 +354,43 @@ export default function PerfilEstudioPage() {
     }
   };
 
-  // Cleanup object URLs to avoid memory leaks
-  useEffect(() => {
-    return () => {
-      photos.forEach((p) => URL.revokeObjectURL(p.preview));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleOpenFraming = (photo: { id?: string; preview: string; url?: string; isCover?: boolean }) => {
+    const rawUrl = photo.url || photo.preview;
+    const [cleanUrl, hash] = rawUrl.split('#pos=');
+    const pos = hash ? hash.replace('_', ' ') : 'center 50%';
+    setFramingTarget({
+      id: photo.id,
+      isCover: photo.isCover,
+      preview: cleanUrl,
+      position: pos,
+    });
+  };
+
+  const handleSaveFraming = (newPosition: string) => {
+    if (!framingTarget) return;
+    const formattedPos = newPosition.replace(' ', '_');
+
+    if (framingTarget.isCover) {
+      const cleanUrl = (portadaUrl || '').split('#pos=')[0];
+      const newPortada = `${cleanUrl}#pos=${formattedPos}`;
+      setPortadaUrl(newPortada);
+    } else if (framingTarget.id) {
+      setPhotos((prev) =>
+        prev.map((p) => {
+          if (p.id === framingTarget.id) {
+            const rawUrl = p.url || p.preview;
+            const cleanUrl = rawUrl.split('#pos=')[0];
+            const updatedUrl = `${cleanUrl}#pos=${formattedPos}`;
+            return { ...p, url: updatedUrl, preview: updatedUrl, position: newPosition };
+          }
+          return p;
+        })
+      );
+    }
+    setFramingTarget(null);
+  };
 
   const onSubmit = async (data: ProfileFormValues) => {
-    // If not logged in, redirect to auth with callback
     if (!session?.user) {
       router.push('/auth/login?callbackUrl=/dashboard/perfil');
       return;
@@ -276,6 +418,7 @@ export default function PerfilEstudioPage() {
         website: data.website || '',
         especialidades: specialties,
         fotos: photoUrls,
+        portada: portadaUrl || '',
       };
 
       const res = await fetch('/api/studio', {
@@ -298,6 +441,10 @@ export default function PerfilEstudioPage() {
       setIsSaving(false);
     }
   };
+
+  const cleanCoverUrl = portadaUrl ? portadaUrl.split('#pos=')[0] : null;
+  const coverHash = portadaUrl ? portadaUrl.split('#pos=')[1] : null;
+  const coverPosition = coverHash ? coverHash.replace('_', ' ') : 'center 50%';
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -536,13 +683,30 @@ export default function PerfilEstudioPage() {
                 <span className="text-label-sm text-muted-foreground font-normal pb-1">{photos.length}/6 Fotos</span>
               </h2>
               
-              {/* Foto de Portada (Optimizado para Móvil y Desktop) */}
+              {/* Foto de Portada */}
               <div className="flex flex-col space-y-3">
-                <label className="text-label-sm text-muted-foreground font-medium">Foto de Portada del Estudio</label>
-                <div className="relative w-full h-40 bg-gray-100 flex items-center justify-center border border-border overflow-hidden group">
-                  {portadaUrl ? (
+                <div className="flex justify-between items-center">
+                  <label className="text-label-sm text-muted-foreground font-medium">Foto de Portada del Estudio</label>
+                  {portadaUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenFraming({ preview: portadaUrl, isCover: true })}
+                      className="text-xs font-bold text-black hover:underline flex items-center gap-1"
+                    >
+                      <Crop className="w-3.5 h-3.5" />
+                      <span>Encuadrar Portada</span>
+                    </button>
+                  )}
+                </div>
+                <div className="relative w-full h-44 bg-gray-100 flex items-center justify-center border border-border overflow-hidden group">
+                  {cleanCoverUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={portadaUrl} alt="Portada" className="absolute inset-0 w-full h-full object-cover z-0" />
+                    <img 
+                      src={cleanCoverUrl} 
+                      alt="Portada" 
+                      className="absolute inset-0 w-full h-full object-cover z-0" 
+                      style={{ objectPosition: coverPosition }}
+                    />
                   ) : (
                     <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground z-0">Sin Foto de Portada</span>
                   )}
@@ -590,25 +754,45 @@ export default function PerfilEstudioPage() {
                 </label>
 
                 {photos.length > 0 && (
-                  <div className="flex gap-4 overflow-x-auto pb-4">
-                    {photos.map((photo) => (
-                      <div key={photo.id} className="relative w-28 h-28 md:w-32 md:h-32 flex-shrink-0 border border-border group bg-white">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={photo.preview} alt="Preview" className="w-full h-full object-cover" />
-                        <button 
-                          type="button"
-                          onClick={() => handleRemovePhoto(photo.id)}
-                          className="absolute top-2 right-2 bg-black text-white p-1.5 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                    {photos.map((photo) => {
+                      const [cleanUrl, hash] = (photo.url || photo.preview).split('#pos=');
+                      const pos = photo.position || (hash ? hash.replace('_', ' ') : 'center 50%');
+
+                      return (
+                        <div key={photo.id} className="relative aspect-video border border-border group bg-gray-100 overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={cleanUrl} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover" 
+                            style={{ objectPosition: pos }}
+                          />
+                          <div className="absolute inset-0 bg-black/50 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenFraming(photo)}
+                              className="bg-white text-black p-2 rounded shadow hover:bg-gray-100 transition-colors"
+                              title="Encuadrar posición visible"
+                            >
+                              <Crop className="w-4 h-4" />
+                            </button>
+                            <button 
+                              type="button"
+                              onClick={() => handleRemovePhoto(photo.id)}
+                              className="bg-black text-white p-2 rounded shadow hover:bg-red-600 transition-colors"
+                              title="Eliminar foto"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
             </div>
-
 
             <div className="pt-8 border-t border-border/50">
               <button 
@@ -641,8 +825,14 @@ export default function PerfilEstudioPage() {
             </div>
 
             <div className="relative w-full h-32 bg-gray-100 flex items-center justify-center border border-border group overflow-hidden">
-              {portadaUrl ? (
-                <img src={portadaUrl} alt="Portada" className="absolute inset-0 w-full h-full object-cover z-0" />
+              {cleanCoverUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={cleanCoverUrl} 
+                  alt="Portada" 
+                  className="absolute inset-0 w-full h-full object-cover z-0" 
+                  style={{ objectPosition: coverPosition }}
+                />
               ) : (
                 <span className="font-sans text-[8px] tracking-widest uppercase text-muted-foreground z-0">Foto de Portada</span>
               )}
@@ -682,6 +872,16 @@ export default function PerfilEstudioPage() {
 
         </aside>
       </main>
+
+      {/* Framing Modal */}
+      {framingTarget && (
+        <FramingModal
+          preview={framingTarget.preview}
+          initialPosition={framingTarget.position}
+          onSave={handleSaveFraming}
+          onClose={() => setFramingTarget(null)}
+        />
+      )}
 
       <Footer />
     </div>
