@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useSession, signIn } from "next-auth/react";
+import { Suspense, useState, useEffect } from "react";
 
 const loginSchema = z.object({
   email: z.string().min(1, { message: "El email es requerido" }).email({ message: "Ingresa un correo electrónico válido" }),
@@ -18,7 +18,18 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard/perfil";
+  const router = useRouter();
+  const { data: session } = useSession();
+  const callbackUrl = searchParams.get("callbackUrl") || (session?.user?.role === "admin" ? "/admin" : "/dashboard/perfil");
+
+  useEffect(() => {
+    if (session?.user) {
+      if (session.user.role === "admin") {
+        router.push("/admin");
+      }
+    }
+  }, [session, router]);
+
 
   const {
     register,

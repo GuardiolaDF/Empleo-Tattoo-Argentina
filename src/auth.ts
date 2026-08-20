@@ -58,12 +58,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        const adminEmails = (process.env.ADMIN_EMAILS || "empleotattooargentina@gmail.com")
+          .split(",")
+          .map((e) => e.trim().toLowerCase());
+
+        const userEmail = (user.email || "").toLowerCase();
+        if (adminEmails.includes(userEmail)) {
+          token.role = "admin";
+        } else {
+          const client = await clientPromise;
+          const db = client.db();
+          const dbUser = await db.collection("users").findOne({ email: user.email });
+          token.role = dbUser?.role || "user";
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.id) {
-        session.user.id = token.id as string;
+      if (session.user) {
+        if (token.id) session.user.id = token.id as string;
+        session.user.role = (token.role as string) || "user";
       }
       return session;
     },
@@ -72,3 +86,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/auth/login",
   },
 });
+
