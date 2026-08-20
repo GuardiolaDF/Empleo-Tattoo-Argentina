@@ -4,14 +4,14 @@ import connectToDatabase from '@/lib/mongodb';
 import Studio from '@/models/Studio';
 import Job from '@/models/Job';
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
     if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await context.params;
     if (!id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 });
 
     await connectToDatabase();
