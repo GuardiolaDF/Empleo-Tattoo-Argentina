@@ -12,6 +12,7 @@ export interface IJob extends Document {
   paymentId?: string;
   couponCode?: string;
   userId?: string;
+  pricePaid?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +34,7 @@ const JobSchema = new Schema<IJob>(
     paymentId: { type: String },
     couponCode: { type: String },
     userId: { type: String },
+    pricePaid: { type: Number, default: 0 },
   },
   { timestamps: true, strict: 'throw' }
 );

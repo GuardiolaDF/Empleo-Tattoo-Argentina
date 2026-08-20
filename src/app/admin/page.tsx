@@ -49,11 +49,34 @@ export default async function AdminDashboardPage() {
     Job.find().sort({ createdAt: -1 }).limit(5).lean()
   ]);
 
-  // Cálculo de ratio de liquidez
+  // Cálculo de ratio de liquidez e ingresos
   const totalInteractions = whatsappClicks + instagramClicks;
   const avgInteractionsPerActiveJob = activeJobs > 0 
     ? (totalInteractions / activeJobs).toFixed(1) 
     : "0";
+
+  let totalRevenue = 0;
+  let monthlyRevenue = 0;
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  // Para evitar cargar todos los trabajos en memoria, hacemos agregaciones, pero para el MVP iterar un poco está bien.
+  // Como `activeJobs` solo nos da el COUNT (número), necesitamos hacer una consulta para calcular ingresos.
+  const activeJobsData = await Job.find({ status: "active" }).select("pricePaid couponCode createdAt updatedAt").lean();
+  
+  activeJobsData.forEach((job: any) => {
+    let amountPaid = job.pricePaid || 0;
+    if (!job.pricePaid && job.pricePaid !== 0) {
+      amountPaid = job.couponCode ? 0 : 5000;
+    }
+    totalRevenue += amountPaid;
+
+    const jobDate = new Date(job.updatedAt || job.createdAt);
+    if (jobDate.getMonth() === currentMonth && jobDate.getFullYear() === currentYear) {
+      monthlyRevenue += amountPaid;
+    }
+  });
 
   return (
     <div className="space-y-8">
@@ -120,18 +143,18 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Card 4: Interacciones B2P */}
+        {/* Card 4: Ingresos Financieros */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Clics de Contacto</span>
+            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Ingresos (ARS)</span>
             <div className="w-8 h-8 rounded-lg bg-orange-950/60 border border-orange-800/40 flex items-center justify-center text-orange-400">
               <MousePointerClick className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white">{totalInteractions}</p>
+            <p className="text-3xl font-extrabold text-white">${totalRevenue.toLocaleString("es-AR")}</p>
             <p className="text-xs text-zinc-400 mt-2">
-              ~{avgInteractionsPerActiveJob} contactos por aviso activo
+              <span className="text-orange-400 font-semibold">${monthlyRevenue.toLocaleString("es-AR")}</span> este mes
             </p>
           </div>
         </div>

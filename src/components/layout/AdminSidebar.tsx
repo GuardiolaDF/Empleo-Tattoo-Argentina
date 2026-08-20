@@ -25,6 +25,7 @@ const adminNavItems = [
   { href: "/admin/avisos", label: "Moderación de Avisos", icon: Briefcase },
   { href: "/admin/estudios", label: "Estudios Registrados", icon: Building2 },
   { href: "/admin/cupones", label: "Gestión de Cupones", icon: Ticket },
+  { href: "/admin/finanzas", label: "Control Financiero", icon: CreditCard },
   { href: "/admin/transacciones", label: "Pagos & Webhooks", icon: CreditCard },
   { href: "/admin/metricas", label: "Analítica & Salud B2B", icon: TrendingUp },
   { href: "/admin/recuperacion", label: "Checkouts Abandonados", icon: ShoppingCart },

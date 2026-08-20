@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Search, ExternalLink, MapPin, AtSign, MessageSquare, Briefcase, RefreshCw } from "lucide-react";
+import { Building2, Search, ExternalLink, MapPin, AtSign, MessageSquare, Briefcase, RefreshCw, PowerOff, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 interface Studio {
@@ -15,6 +15,7 @@ interface Studio {
   whatsapp: string;
   especialidades: string[];
   fotos: string[];
+  status?: string;
   jobCount: number;
   createdAt: string;
 }
@@ -36,6 +37,34 @@ export default function AdminEstudiosPage() {
       console.error("Error al cargar estudios:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSuspend = async (id: string, currentStatus: string) => {
+    if (!confirm(`¿Estás seguro de ${currentStatus === 'suspended' ? 'reactivar' : 'suspender'} este estudio?`)) return;
+    try {
+      const res = await fetch(`/api/admin/studios/${id}/suspend`, { method: "PATCH" });
+      if (res.ok) {
+        fetchStudios();
+      } else {
+        alert("Error al cambiar estado");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿ESTÁS SEGURO? Esta acción eliminará el estudio y todos sus avisos permanentemente. No se puede deshacer.")) return;
+    try {
+      const res = await fetch(`/api/admin/studios/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchStudios();
+      } else {
+        alert("Error al eliminar");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -152,14 +181,34 @@ export default function AdminEstudiosPage() {
                     </td>
 
                     <td className="px-6 py-4 text-right">
-                      <Link
-                        href={`/estudios/${studio._id}`}
-                        target="_blank"
-                        className="inline-flex items-center gap-1 p-2 text-zinc-400 hover:text-sky-400 transition-colors"
-                        title="Ver perfil público del estudio"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Link>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleSuspend(studio._id, studio.status || 'active')}
+                          className={`p-2 transition-colors rounded-lg border ${
+                            studio.status === 'suspended'
+                              ? 'bg-amber-950/50 text-amber-400 border-amber-900/50 hover:bg-amber-900/50'
+                              : 'text-zinc-400 border-transparent hover:bg-zinc-800 hover:text-amber-400'
+                          }`}
+                          title={studio.status === 'suspended' ? 'Reactivar estudio' : 'Suspender estudio'}
+                        >
+                          <PowerOff className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(studio._id)}
+                          className="p-2 text-zinc-400 border border-transparent rounded-lg hover:bg-zinc-800 hover:text-red-400 transition-colors"
+                          title="Eliminar estudio permanentemente"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <Link
+                          href={`/estudios/${studio._id}`}
+                          target="_blank"
+                          className="p-2 text-zinc-400 border border-transparent rounded-lg hover:bg-zinc-800 hover:text-sky-400 transition-colors"
+                          title="Ver perfil público del estudio"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -19,7 +19,7 @@ async function processPayment(paymentId: string) {
       await connectToDatabase();
       const updatedJob = await Job.findByIdAndUpdate(
         paymentData.external_reference,
-        { status: 'active', paymentId: paymentId },
+        { status: 'active', paymentId: paymentId, pricePaid: 5000 },
         { returnDocument: 'after' }
       );
       console.log(`Job ${paymentData.external_reference} activated successfully (MP Status: ${paymentData.status}, ID: ${paymentId})`);

@@ -13,6 +13,7 @@ export interface IStudio extends Document {
   especialidades: string[];
   fotos: string[]; // Cloudinary URLs
   portada?: string; // Cover image URL, separate from gallery
+  status: 'active' | 'suspended';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +32,11 @@ const StudioSchema = new Schema<IStudio>(
     especialidades: [{ type: String }],
     fotos: [{ type: String }],
     portada: { type: String },
+    status: {
+      type: String,
+      enum: ['active', 'suspended'],
+      default: 'active',
+    },
   },
   { timestamps: true }
 );
