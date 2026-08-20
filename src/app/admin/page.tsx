@@ -58,12 +58,13 @@ export default async function AdminDashboardPage() {
 
   // Para evitar cargar todos los trabajos en memoria, hacemos agregaciones, pero para el MVP iterar un poco está bien.
   // Como `activeJobs` solo nos da el COUNT (número), necesitamos hacer una consulta para calcular ingresos.
-  const activeJobsData = await Job.find({ status: "active" }).select("pricePaid couponCode createdAt updatedAt").lean();
+  const activeJobsData = await Job.find({ status: "active" }).select("pricePaid couponCode paymentId createdAt updatedAt").lean();
   
   activeJobsData.forEach((job: any) => {
     let amountPaid = job.pricePaid || 0;
     if (!job.pricePaid && job.pricePaid !== 0) {
-      amountPaid = job.couponCode ? 0 : 5000;
+      const isCoupon = job.couponCode || (job.paymentId && job.paymentId.toString().includes('CUPON'));
+      amountPaid = isCoupon ? 0 : 5000;
     }
     totalRevenue += amountPaid;
 

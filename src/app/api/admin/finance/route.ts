@@ -26,7 +26,8 @@ export async function GET() {
       
       // Retroactive calculation for jobs before pricePaid was added
       if (!job.pricePaid && job.pricePaid !== 0) {
-        if (!job.couponCode) {
+        const isCoupon = job.couponCode || (job.paymentId && job.paymentId.toString().includes('CUPON'));
+        if (!isCoupon) {
           amountPaid = 5000;
         } else {
           amountPaid = 0; // Assuming 100% discount coupons for MVP
