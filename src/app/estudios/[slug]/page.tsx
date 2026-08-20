@@ -155,7 +155,7 @@ export default function PublicStudioProfilePage() {
       )}
 
       {/* If no cover, show simple header */}
-      {!coverImage && (
+      {!coverUrl && (
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-12">
           <button
             onClick={() => {
