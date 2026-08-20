@@ -9,6 +9,8 @@ import {
   Building2,
   Ticket,
   CreditCard,
+  TrendingUp,
+  ShoppingCart,
   LogOut,
   ShieldCheck,
   Globe
@@ -24,7 +26,10 @@ const adminNavItems = [
   { href: "/admin/estudios", label: "Estudios Registrados", icon: Building2 },
   { href: "/admin/cupones", label: "Gestión de Cupones", icon: Ticket },
   { href: "/admin/transacciones", label: "Pagos & Webhooks", icon: CreditCard },
+  { href: "/admin/metricas", label: "Analítica & Salud B2B", icon: TrendingUp },
+  { href: "/admin/recuperacion", label: "Checkouts Abandonados", icon: ShoppingCart },
 ];
+
 
 export function AdminSidebar({ userEmail }: AdminSidebarProps) {
   const pathname = usePathname();
