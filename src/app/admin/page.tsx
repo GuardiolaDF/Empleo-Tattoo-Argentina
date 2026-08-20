@@ -49,12 +49,7 @@ export default async function AdminDashboardPage() {
     Job.find().sort({ createdAt: -1 }).limit(5).lean()
   ]);
 
-  // Cálculo de ratio de liquidez e ingresos
-  const totalInteractions = whatsappClicks + instagramClicks;
-  const avgInteractionsPerActiveJob = activeJobs > 0 
-    ? (totalInteractions / activeJobs).toFixed(1) 
-    : "0";
-
+  // Cálculo de ingresos
   let totalRevenue = 0;
   let monthlyRevenue = 0;
   const now = new Date();
