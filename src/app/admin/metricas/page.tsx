@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, Users, ShoppingCart, RefreshCw, Award, Activity, MessageSquare, Instagram, Eye } from "lucide-react";
+import { TrendingUp, Users, ShoppingCart, RefreshCw, Award, Activity, MessageSquare, AtSign, Eye } from "lucide-react";
 
 interface MetricsData {
   totalJobs: number;
@@ -140,7 +140,7 @@ export default function AdminMetricasPage() {
 
             <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800/80">
               <div className="flex items-center gap-3">
-                <Instagram className="w-5 h-5 text-pink-400" />
+                <AtSign className="w-5 h-5 text-pink-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Clics de Instagram</p>
                   <p className="text-xs text-zinc-400">Redirecciones al perfil social del estudio</p>

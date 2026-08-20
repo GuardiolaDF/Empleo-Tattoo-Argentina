@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Search, ExternalLink, MapPin, Instagram, MessageSquare, Briefcase, RefreshCw } from "lucide-react";
+import { Building2, Search, ExternalLink, MapPin, AtSign, MessageSquare, Briefcase, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 interface Studio {
@@ -133,7 +133,7 @@ export default function AdminEstudiosPage() {
                             rel="noreferrer"
                             className="inline-flex items-center gap-1 text-xs text-pink-400 hover:underline"
                           >
-                            <Instagram className="w-3.5 h-3.5" /> @{studio.instagram.replace("@", "")}
+                            <AtSign className="w-3.5 h-3.5" /> @{studio.instagram.replace("@", "")}
                           </a>
                         )}
                         {studio.whatsapp && (

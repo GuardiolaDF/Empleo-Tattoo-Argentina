@@ -13,7 +13,7 @@ import {
   Clock,
   ExternalLink,
   MessageSquare,
-  Instagram,
+  AtSign,
   Eye
 } from "lucide-react";
 
@@ -159,7 +159,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center justify-between p-3 bg-zinc-950 rounded-lg border border-zinc-800/60">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded bg-pink-950/80 text-pink-400 flex items-center justify-center">
-                  <Instagram className="w-4 h-4" />
+                  <AtSign className="w-4 h-4" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-white">Clics Instagram</p>
