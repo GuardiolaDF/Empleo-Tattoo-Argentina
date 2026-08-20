@@ -20,15 +20,17 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session } = useSession();
-  const callbackUrl = searchParams.get("callbackUrl") || (session?.user?.role === "admin" ? "/admin" : "/dashboard/perfil");
+  const callbackUrl = searchParams.get("callbackUrl") || "/auth/redirect";
 
   useEffect(() => {
     if (session?.user) {
       if (session.user.role === "admin") {
         router.push("/admin");
+      } else {
+        router.push(callbackUrl === "/auth/redirect" ? "/dashboard/perfil" : callbackUrl);
       }
     }
-  }, [session, router]);
+  }, [session, router, callbackUrl]);
 
 
   const {

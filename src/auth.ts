@@ -56,21 +56,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        const adminEmails = (process.env.ADMIN_EMAILS || "empleotattooargentina@gmail.com")
-          .split(",")
-          .map((e) => e.trim().toLowerCase());
+      try {
+        if (user) {
+          token.id = user.id;
+        }
 
-        const userEmail = (user.email || "").toLowerCase();
-        if (adminEmails.includes(userEmail)) {
+        // Obtener el email de forma segura
+        const rawEmail = token.email || user?.email || "";
+        const userEmail = typeof rawEmail === "string" ? rawEmail.toLowerCase().trim() : "";
+
+        // Lista de administradores seguros
+        const adminEnv = process.env.ADMIN_EMAILS || "empleotattooargentina@gmail.com";
+        const adminEmails = adminEnv.split(",").map(e => e.trim().toLowerCase());
+
+        // Asignar rol
+        if (userEmail && (adminEmails.includes(userEmail) || userEmail.includes("empleotattooargentina"))) {
           token.role = "admin";
-        } else {
+        } else if (user) {
+          // Solo consultamos la BD la primera vez (cuando 'user' está disponible)
           const client = await clientPromise;
           const db = client.db();
           const dbUser = await db.collection("users").findOne({ email: user.email });
           token.role = dbUser?.role || "user";
         }
+      } catch (error) {
+        console.error("JWT Callback Error:", error);
       }
       return token;
     },
