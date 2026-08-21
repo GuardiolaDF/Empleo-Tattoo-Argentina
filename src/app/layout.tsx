@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     description: "Encontrá trabajo o a tu próximo residente en el principal directorio de empleos para estudios de tatuaje en toda Argentina.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Empleo Tattoo Argentina",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Empleo Tattoo Argentina",
     description: "Conectando estudios y artistas en toda la Argentina.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

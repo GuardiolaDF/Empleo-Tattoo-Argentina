@@ -24,7 +24,7 @@ export async function generateMetadata(
         const title = `${studio.nombre} | Estudio de Tatuajes en ${studio.ubicacion}`;
         const description = studio.bio || `Descubre el perfil de ${studio.nombre}, ubicado en ${studio.ubicacion}. Explora sus trabajos y ofertas laborales en Empleo Tattoo Argentina.`;
         const url = `https://empleotattoo.com.ar/estudios/${slug}`;
-        const imageUrl = studio.portada || '/og-image.jpg';
+        const imageUrl = studio.portada || '/og-image.png';
 
         return {
           title,
