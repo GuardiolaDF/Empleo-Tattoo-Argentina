@@ -289,15 +289,16 @@ function EmpleosCatalogContent() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {visibleJobs.map((job, idx) => (
-                  <JobCard 
-                    key={job.id || idx}
-                    id={job.id}
-                    index={idx}
-                    studioName={job.studioName}
-                    role={job.role}
-                    specialty={job.specialty}
-                    location={job.location}
-                  />
+                  <Link key={job.id || idx} href={`/empleos/${job.id}`}>
+                    <JobCard 
+                      jobId={job.id}
+                      index={idx}
+                      studioName={job.studioName}
+                      role={job.role}
+                      specialty={job.specialty}
+                      location={job.location}
+                    />
+                  </Link>
                 ))}
               </div>
               {hasMore && (
