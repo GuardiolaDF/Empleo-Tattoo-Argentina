@@ -43,6 +43,7 @@ export async function generateMetadata(
       ogUrl.searchParams.set('role', job.title || '');
       ogUrl.searchParams.set('style', job.style || '');
       ogUrl.searchParams.set('location', job.location || '');
+      ogUrl.searchParams.set('ext', '.png');
       const imageUrl = ogUrl.toString();
 
       return {

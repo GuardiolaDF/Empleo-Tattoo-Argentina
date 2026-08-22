@@ -3,15 +3,22 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+let interBoldData: ArrayBuffer | null = null;
+let bodoniItalicData: ArrayBuffer | null = null;
+
 export async function GET(req: NextRequest) {
   try {
-    const interBoldData = await fetch(
-      new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Bold.ttf')
-    ).then((res) => res.arrayBuffer());
+    if (!interBoldData) {
+      interBoldData = await fetch(
+        new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Bold.ttf')
+      ).then((res) => res.arrayBuffer());
+    }
 
-    const bodoniItalicData = await fetch(
-      new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Italic.ttf')
-    ).then((res) => res.arrayBuffer());
+    if (!bodoniItalicData) {
+      bodoniItalicData = await fetch(
+        new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Italic.ttf')
+      ).then((res) => res.arrayBuffer());
+    }
 
     const { searchParams } = new URL(req.url);
     const studio = searchParams.get('studio')?.toUpperCase() || 'ESTUDIO';

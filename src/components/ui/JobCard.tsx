@@ -61,17 +61,17 @@ export function JobCard({ index, jobId, studioName, role, specialty, location }:
       }}
       className={`relative group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden border border-border ${style.bg} ${style.text} w-full h-full`} 
     >
-      {/* Share Button (Top-Left) */}
+      {/* Share Button (Top-Right) */}
       <button 
         onClick={handleShare}
-        className={`absolute top-4 left-4 p-2 z-20 rounded-full hover:bg-black/10 transition-colors ${style.text} opacity-0 group-hover:opacity-100 sm:opacity-100`}
+        className={`absolute top-4 right-4 p-2 z-20 rounded-full hover:bg-black/10 transition-colors ${style.text} opacity-0 group-hover:opacity-100 sm:opacity-100`}
         aria-label="Compartir"
       >
         <Share2 className="w-5 h-5" />
       </button>
 
-      <div className="relative z-10 flex flex-col mt-4 sm:mt-0">
-        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2 text-right sm:text-left">
+      <div className="relative z-10 flex flex-col mt-4 sm:mt-0 pr-10 sm:pr-12">
+        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2 text-left">
           {studioName}
         </h3>
         
