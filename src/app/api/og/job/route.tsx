@@ -81,152 +81,143 @@ export async function GET(req: NextRequest) {
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             width: '100%',
             height: '100%',
-            backgroundColor: '#e5e7eb',
+            backgroundColor: '#c4c4c4',
+            padding: '60px 80px',
             position: 'relative',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
+          {/* Dato 1: Studio */}
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '630px',
-              height: '630px',
-              justifyContent: 'center',
-              position: 'relative',
-              padding: '40px 0',
+              fontFamily: '"Inter"',
+              fontSize: 100,
+              fontWeight: 800,
+              color: 'black',
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+              marginBottom: 10,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
             }}
           >
-            {/* Dato 1: Studio */}
-            <div
-              style={{
-                fontFamily: '"Inter"',
-                fontSize: 56,
-                fontWeight: 800,
-                color: 'black',
-                lineHeight: 1,
-                letterSpacing: '-0.02em',
-                marginBottom: 10,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '100%',
-              }}
-            >
-              {studio}
-            </div>
+            {studio}
+          </div>
 
-            {/* Dato 2: Action */}
-            <div
-              style={{
-                fontFamily: '"Bodoni"',
-                fontSize: 48,
-                color: 'black',
-                lineHeight: 1,
-                marginBottom: 16,
-              }}
-            >
-              {action}
-            </div>
+          {/* Dato 2: Action */}
+          <div
+            style={{
+              fontFamily: '"Bodoni"',
+              fontSize: 48,
+              color: 'black',
+              lineHeight: 1,
+              marginBottom: 10,
+            }}
+          >
+            {action}
+          </div>
 
-            {/* Dato 3: Role */}
-            <div
-              style={{
-                fontFamily: '"Inter"',
-                fontSize: 76,
-                fontWeight: 800,
-                color: 'black',
-                lineHeight: 1,
-                letterSpacing: '-0.02em',
-                marginBottom: 10,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '100%',
-              }}
-            >
-              {role}
-            </div>
+          {/* Dato 3: Role */}
+          <div
+            style={{
+              fontFamily: '"Inter"',
+              fontSize: 100,
+              fontWeight: 800,
+              color: 'black',
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+              marginBottom: 10,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
+            }}
+          >
+            {role}
+          </div>
 
-            {/* Dato 4: en */}
-            <div
-              style={{
-                fontFamily: '"Bodoni"',
-                fontSize: 48,
-                color: 'black',
-                lineHeight: 1,
-                marginBottom: 16,
-              }}
-            >
-              en
-            </div>
+          {/* Dato 4: en */}
+          <div
+            style={{
+              fontFamily: '"Bodoni"',
+              fontSize: 48,
+              color: 'black',
+              lineHeight: 1,
+              marginBottom: 10,
+            }}
+          >
+            en
+          </div>
 
-            {/* Dato 5: Location */}
-            <div
-              style={{
-                fontFamily: '"Inter"',
-                fontSize: 60,
-                fontWeight: 800,
-                color: 'black',
-                lineHeight: 1,
-                letterSpacing: '-0.02em',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '100%',
-              }}
-            >
-              {formattedLocation}
-            </div>
+          {/* Dato 5: Location */}
+          <div
+            style={{
+              fontFamily: '"Inter"',
+              fontSize: 100,
+              fontWeight: 800,
+              color: 'black',
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
+            }}
+          >
+            {formattedLocation}
+          </div>
 
-            {/* Branding Logo (Bottom Right within Safe Area) */}
+          {/* Branding Logo & Line (Bottom) */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 60,
+              left: 80,
+              right: 80,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             <div
               style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
+                height: '4px',
+                backgroundColor: 'black',
+                flexGrow: 1,
+                marginRight: '32px',
+              }}
+            />
+            <div
+              style={{
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'baseline',
               }}
             >
-              <div
+              <span
                 style={{
-                  width: '300px',
-                  height: '2px',
-                  backgroundColor: 'black',
-                  marginRight: '16px',
-                }}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
+                  fontFamily: '"Inter"',
+                  fontWeight: 800,
+                  fontSize: 56,
+                  color: 'black',
+                  marginRight: '8px',
+                  letterSpacing: '-0.02em',
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: '"Inter"',
-                    fontWeight: 800,
-                    fontSize: 32,
-                    color: 'black',
-                    marginRight: '6px',
-                  }}
-                >
-                  ETA
-                </span>
-                <span
-                  style={{
-                    fontFamily: '"Bodoni"',
-                    fontSize: 32,
-                    color: 'black',
-                  }}
-                >
-                  Web
-                </span>
-              </div>
+                ETA
+              </span>
+              <span
+                style={{
+                  fontFamily: '"Bodoni"',
+                  fontSize: 56,
+                  color: 'black',
+                }}
+              >
+                Web
+              </span>
             </div>
           </div>
         </div>
