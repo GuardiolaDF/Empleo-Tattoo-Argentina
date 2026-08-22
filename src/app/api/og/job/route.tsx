@@ -3,17 +3,16 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-// We fetch fonts remotely to avoid needing local TTF files on Vercel Edge
-const interBold = fetch(
-  new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Bold.ttf')
-).then((res) => res.arrayBuffer());
-
-const bodoniItalic = fetch(
-  new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Italic.ttf')
-).then((res) => res.arrayBuffer());
-
 export async function GET(req: NextRequest) {
   try {
+    const interBoldData = await fetch(
+      new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Bold.ttf')
+    ).then((res) => res.arrayBuffer());
+
+    const bodoniItalicData = await fetch(
+      new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Italic.ttf')
+    ).then((res) => res.arrayBuffer());
+
     const { searchParams } = new URL(req.url);
     const studio = searchParams.get('studio')?.toUpperCase() || 'ESTUDIO';
     const role = searchParams.get('role')?.toUpperCase() || 'PUESTO';

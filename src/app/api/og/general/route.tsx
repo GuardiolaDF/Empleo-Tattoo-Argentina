@@ -3,18 +3,15 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-const bodoniRegular = fetch(
-  new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Regular.ttf')
-).then((res) => res.arrayBuffer());
-
-const interRegular = fetch(
-  new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Regular.ttf')
-).then((res) => res.arrayBuffer());
-
 export async function GET(req: NextRequest) {
   try {
-    const bodoniRegularData = await bodoniRegular;
-    const interRegularData = await interRegular;
+    const bodoniRegularData = await fetch(
+      new URL('https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/ttf/PlayfairDisplay-Regular.ttf')
+    ).then((res) => res.arrayBuffer());
+
+    const interRegularData = await fetch(
+      new URL('https://github.com/rsms/inter/releases/download/v3.19/Inter-Regular.ttf')
+    ).then((res) => res.arrayBuffer());
 
     return new ImageResponse(
       (
