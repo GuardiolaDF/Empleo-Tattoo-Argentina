@@ -180,13 +180,13 @@ export async function GET(req: NextRequest) {
         fonts: [
           {
             name: 'Inter',
-            data: interBoldData,
+            data: interBoldData as ArrayBuffer,
             style: 'normal',
             weight: 800,
           },
           {
             name: 'Bodoni',
-            data: bodoniItalicData,
+            data: bodoniItalicData as ArrayBuffer,
             style: 'normal',
             weight: 400,
           },

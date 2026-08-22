@@ -103,13 +103,13 @@ export async function GET(req: NextRequest) {
         fonts: [
           {
             name: 'Bodoni',
-            data: bodoniRegularData,
+            data: bodoniRegularData as ArrayBuffer,
             style: 'normal',
             weight: 400,
           },
           {
             name: 'Inter',
-            data: interRegularData,
+            data: interRegularData as ArrayBuffer,
             style: 'normal',
             weight: 400,
           },
