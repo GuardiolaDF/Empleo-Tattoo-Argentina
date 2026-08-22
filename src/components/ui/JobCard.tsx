@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const cardStyles = [
@@ -13,15 +13,39 @@ export const cardStyles = [
 
 export interface JobCardProps {
   index: number;
+  jobId?: string;
   studioName?: string;
   role: string;
   specialty: string;
   location: string;
 }
 
-export function JobCard({ index, studioName, role, specialty, location }: JobCardProps) {
+export function JobCard({ index, jobId, studioName, role, specialty, location }: JobCardProps) {
   const pattern = [0, 1, 1, 2];
   const style = cardStyles[pattern[index % 4]];
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!jobId) return;
+    
+    const url = `https://empleotattoo.com.ar/empleos/${jobId}`;
+    const title = `${role} en ${studioName || 'Estudio'} | Empleo Tattoo Argentina`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          url,
+        });
+      } catch (err) {
+        console.log("Error sharing:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("Enlace copiado al portapapeles.");
+    }
+  };
 
   return (
     <motion.div
@@ -34,10 +58,19 @@ export function JobCard({ index, studioName, role, specialty, location }: JobCar
         ease: [0.4, 0, 0.2, 1],
         y: { type: "spring", stiffness: 200, damping: 20 }
       }}
-      className={`group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden border border-border ${style.bg} ${style.text} w-full h-full`} 
+      className={`relative group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden border border-border ${style.bg} ${style.text} w-full h-full`} 
     >
-      <div className="relative z-10 flex flex-col">
-        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2">
+      {/* Share Button (Top-Left) */}
+      <button 
+        onClick={handleShare}
+        className={`absolute top-4 left-4 p-2 z-20 rounded-full hover:bg-black/10 transition-colors ${style.text} opacity-0 group-hover:opacity-100 sm:opacity-100`}
+        aria-label="Compartir"
+      >
+        <Share2 className="w-5 h-5" />
+      </button>
+
+      <div className="relative z-10 flex flex-col mt-4 sm:mt-0">
+        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2 text-right sm:text-left">
           {studioName}
         </h3>
         

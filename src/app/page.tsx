@@ -454,6 +454,7 @@ function HomeContent() {
                 <Link key={job.id || idx} href={`/empleos/${job.id}`}>
                   <JobCard 
                     index={idx}
+                    jobId={job.id}
                     studioName={job.studioName}
                     role={job.role}
                     specialty={job.specialty}

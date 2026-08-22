@@ -37,7 +37,13 @@ export async function generateMetadata(
       const title = `${job.title} en ${job.category} | ${studio?.nombre || job.studioName}`;
       const description = `Buscamos un ${job.title.toLowerCase()} especializado en ${job.category} para unirse a nuestro estudio ubicado en ${job.location}. Postúlate en Empleo Tattoo Argentina.`;
       const url = `https://empleotattoo.com.ar/empleos/${slug}`;
-      const imageUrl = studio?.portada || '/og-image.png';
+      
+      const ogUrl = new URL('https://empleotattoo.com.ar/api/og/job');
+      ogUrl.searchParams.set('studio', studio?.nombre || job.studioName || '');
+      ogUrl.searchParams.set('role', job.title || '');
+      ogUrl.searchParams.set('style', job.style || '');
+      ogUrl.searchParams.set('location', job.location || '');
+      const imageUrl = ogUrl.toString();
 
       return {
         title,
