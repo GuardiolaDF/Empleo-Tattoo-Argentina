@@ -8,10 +8,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { id: rawId } = await params;
+    let targetId = rawId;
+    if (rawId.length > 24) {
+      const match = rawId.match(/([a-fA-F0-9]{24})$/);
+      if (match) targetId = match[1];
+    }
     await connectToDatabase();
 
-    const studio = await Studio.findById(id);
+    const studio = await Studio.findById(targetId);
     if (!studio) {
       return NextResponse.json({ error: 'Estudio no encontrado' }, { status: 404 });
     }

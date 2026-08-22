@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
 
 interface CarouselImage {
@@ -85,11 +86,12 @@ export function StudioCarousel({ images }: StudioCarouselProps) {
               className="w-full h-full flex-shrink-0 relative group/img"
               onClick={() => setIsLightboxOpen(true)}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
+              <Image 
                 src={img.src} 
                 alt={img.alt} 
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-cover"
                 style={{ objectPosition: img.position || "center" }}
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
@@ -175,11 +177,13 @@ export function StudioCarousel({ images }: StudioCarouselProps) {
 
           {/* Main Uncropped Image Display */}
           <div className="relative max-w-full max-h-full flex items-center justify-center p-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={images[currentIndex].src}
               alt={images[currentIndex].alt}
-              className="max-h-[85vh] max-w-[90vw] object-contain select-none shadow-2xl transition-all duration-300"
+              width={1600}
+              height={1200}
+              unoptimized
+              className="max-h-[85vh] max-w-[90vw] w-auto h-auto object-contain select-none shadow-2xl transition-all duration-300"
             />
           </div>
 

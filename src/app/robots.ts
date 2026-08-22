@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard', '/auth', '/checkout', '/publicar-empleo'],
+      disallow: ['/dashboard', '/auth', '/checkout', '/publicar-empleo', '/api/*'],
     },
     sitemap: 'https://empleotattoo.com.ar/sitemap.xml',
   };

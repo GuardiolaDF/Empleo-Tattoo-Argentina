@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
@@ -284,11 +285,12 @@ export default function DashboardPage() {
             {/* Cover Image */}
             <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden group">
               {coverImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={coverImage}
                   alt="Portada del estudio"
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="320px"
+                  className="object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -313,7 +315,7 @@ export default function DashboardPage() {
                 ref={coverInputRef}
                 type="file"
                 accept="image/*"
-                className="hidden"
+                className="sr-only"
                 onChange={handleCoverUpload}
               />
             </div>

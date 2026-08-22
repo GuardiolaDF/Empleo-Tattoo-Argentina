@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, notFound } from 'next/navigation';
+import Image from 'next/image';
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ArrowLeft, Store, MessageCircle, ExternalLink, X } from "lucide-react";
@@ -56,19 +57,41 @@ export default function JobListingPage() {
   }
 
   if (!job) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <p className="text-h3 mb-4">Aviso no encontrado</p>
-        <button onClick={() => router.push("/artistas")} className="bg-black text-white px-8 py-4">Volver a Ofertas</button>
-      </div>
-    );
+    notFound();
   }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": `${job.title} ${job.category}`,
+    "description": `Buscamos un ${job.title?.toLowerCase()} especializado en ${job.category} para unirse a nuestro estudio ubicado en ${job.location}.`,
+    "datePosted": job.createdAt ? new Date(job.createdAt).toISOString() : new Date().toISOString(),
+    "employmentType": "FULL_TIME",
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": studio?.nombre || job.studioName,
+      "sameAs": studio?.instagram ? `https://instagram.com/${studio.instagram.replace('@','')}` : undefined,
+      "logo": studio?.portada || undefined
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": job.location,
+        "addressCountry": "AR"
+      }
+    }
+  };
 
   // Parses basic description
   const descriptionParts = job.description?.split('|') || [];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-16 flex flex-col lg:flex-row gap-16 lg:gap-32">
@@ -147,10 +170,15 @@ export default function JobListingPage() {
             
             {/* Studio Profile block */}
             <div className="flex flex-col items-center">
-              <div className="w-full aspect-square bg-gray-50 border border-border flex items-center justify-center mb-6 overflow-hidden">
+              <div className="w-full aspect-square bg-gray-50 border border-border flex items-center justify-center mb-6 overflow-hidden relative">
                 {studio?.portada ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={studio.portada} alt={studio.nombre} className="w-full h-full object-cover" />
+                  <Image 
+                    src={studio.portada} 
+                    alt={studio.nombre || "Estudio"} 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 320px" 
+                    className="object-cover" 
+                  />
                 ) : (
                   <Store className="w-12 h-12 text-muted-foreground/30" strokeWidth={1} />
                 )}

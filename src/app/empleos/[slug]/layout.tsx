@@ -16,13 +16,17 @@ export async function generateMetadata(
   
   try {
     await connectToDatabase();
-    // Replicating the fetch logic from the API to get job details
     let job = null;
     let studio = null;
     
-    // Slug might be an ID or a string slug. The API checks by ID first.
-    if (slug.length === 24) {
-      job = await Job.findById(slug).lean();
+    let targetId = slug;
+    if (slug.length > 24) {
+      const match = slug.match(/([a-fA-F0-9]{24})$/);
+      if (match) targetId = match[1];
+    }
+    
+    if (targetId.length === 24) {
+      job = await Job.findById(targetId).lean();
     }
     
     if (job) {
@@ -38,6 +42,9 @@ export async function generateMetadata(
       return {
         title,
         description,
+        alternates: {
+          canonical: url,
+        },
         openGraph: {
           title,
           description,
@@ -66,10 +73,13 @@ export async function generateMetadata(
     console.error("Error generating metadata for job:", error);
   }
 
-  // Fallback if not found or error
   return {
-    title: 'Aviso de Empleo | Empleo Tattoo Argentina',
-    description: 'Encuentra las mejores oportunidades laborales en la industria del tatuaje.',
+    title: 'Aviso no encontrado | Empleo Tattoo Argentina',
+    description: 'El aviso de empleo buscado no existe o ha expirado.',
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 

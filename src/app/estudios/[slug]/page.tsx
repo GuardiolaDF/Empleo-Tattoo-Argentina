@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, notFound } from "next/navigation";
+import Image from "next/image";
 import { ArrowLeft, MapPin, Calendar } from "lucide-react";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 import { StudioCarousel } from "@/components/ui/StudioCarousel";
@@ -79,20 +80,7 @@ export default function PublicStudioProfilePage() {
   }
 
   if (error || !studio) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-        <h1 className="text-display-xl mb-4">Estudio no encontrado</h1>
-        <p className="text-body-sm text-muted-foreground mb-8">
-          El estudio que buscás no existe o fue eliminado.
-        </p>
-        <button
-          onClick={() => router.push("/artistas")}
-          className="bg-black text-white px-8 py-4 text-button hover:bg-black/90 transition-colors"
-        >
-          Ver Ofertas
-        </button>
-      </div>
-    );
+    notFound();
   }
 
   const rawCover = studio.portada || studio.fotos?.[0] || null;
@@ -118,11 +106,13 @@ export default function PublicStudioProfilePage() {
       {/* Cover Image */}
       {coverUrl && (
         <div className="w-full h-[40vh] md:h-[50vh] relative overflow-hidden bg-gray-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={coverUrl}
             alt={`Portada de ${studio.nombre}`}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
             style={{ objectPosition: coverPosition }}
           />
 

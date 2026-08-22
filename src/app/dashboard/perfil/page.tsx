@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,11 +91,12 @@ function FramingModal({
 
         {/* Live Preview Box */}
         <div className="relative w-full h-48 md:h-64 bg-gray-100 border border-border overflow-hidden rounded shadow-inner">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={preview}
             alt="Vista Previa de Encuadre"
-            className="w-full h-full object-cover transition-all duration-150"
+            fill
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-cover transition-all duration-150"
             style={{ objectPosition: currentPosString }}
           />
           <div className="absolute top-2 left-2 bg-black/80 text-white text-[10px] uppercase font-bold px-3 py-1 rounded tracking-wider">
@@ -700,10 +702,11 @@ export default function PerfilEstudioPage() {
                 </div>
                 <div className="relative w-full h-44 bg-gray-100 flex items-center justify-center border border-border overflow-hidden group">
                   {cleanCoverUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img 
+                    <Image 
                       src={cleanCoverUrl} 
                       alt="Portada" 
+                      fill
+                      sizes="(max-width: 768px) 100vw, 600px"
                       className="absolute inset-0 w-full h-full object-cover z-0" 
                       style={{ objectPosition: coverPosition }}
                     />
@@ -727,7 +730,7 @@ export default function PerfilEstudioPage() {
                     id="cover-photo-input"
                     type="file"
                     accept="image/*"
-                    className="hidden"
+                    className="sr-only"
                     onChange={handleCoverUpload}
                   />
                 </div>
@@ -743,7 +746,7 @@ export default function PerfilEstudioPage() {
                     multiple 
                     accept="image/*"
                     onChange={handlePhotoUpload}
-                    className="hidden"
+                    className="sr-only"
                     disabled={photos.length >= 6}
                   />
                   <div className="p-8 md:p-12 flex flex-col items-center justify-center text-center text-muted-foreground group-hover:text-black transition-colors">
@@ -761,10 +764,11 @@ export default function PerfilEstudioPage() {
 
                       return (
                         <div key={photo.id} className="relative aspect-video border border-border group bg-gray-100 overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
+                          <Image 
                             src={cleanUrl} 
                             alt="Preview" 
+                            fill
+                            sizes="(max-width: 768px) 50vw, 300px"
                             className="w-full h-full object-cover" 
                             style={{ objectPosition: pos }}
                           />
@@ -826,10 +830,11 @@ export default function PerfilEstudioPage() {
 
             <div className="relative w-full h-32 bg-gray-100 flex items-center justify-center border border-border group overflow-hidden">
               {cleanCoverUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img 
+                <Image 
                   src={cleanCoverUrl} 
                   alt="Portada" 
+                  fill
+                  sizes="320px"
                   className="absolute inset-0 w-full h-full object-cover z-0" 
                   style={{ objectPosition: coverPosition }}
                 />

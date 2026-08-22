@@ -16,9 +16,14 @@ export async function generateMetadata(
   try {
     await connectToDatabase();
     
-    // El slug suele ser el ID del estudio
-    if (slug.length === 24) {
-      const studio = await Studio.findById(slug).lean();
+    let targetId = slug;
+    if (slug.length > 24) {
+      const match = slug.match(/([a-fA-F0-9]{24})$/);
+      if (match) targetId = match[1];
+    }
+    
+    if (targetId.length === 24) {
+      const studio = await Studio.findById(targetId).lean();
       
       if (studio) {
         const title = `${studio.nombre} | Estudio de Tatuajes en ${studio.ubicacion}`;
@@ -29,6 +34,9 @@ export async function generateMetadata(
         return {
           title,
           description,
+          alternates: {
+            canonical: url,
+          },
           openGraph: {
             title,
             description,
@@ -58,10 +66,13 @@ export async function generateMetadata(
     console.error("Error generating metadata for studio:", error);
   }
 
-  // Fallback if not found or error
   return {
-    title: 'Estudio de Tatuajes | Empleo Tattoo Argentina',
-    description: 'Directorio de los mejores estudios de tatuajes en Argentina.',
+    title: 'Estudio no encontrado | Empleo Tattoo Argentina',
+    description: 'El estudio buscado no existe o no se encuentra disponible.',
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 

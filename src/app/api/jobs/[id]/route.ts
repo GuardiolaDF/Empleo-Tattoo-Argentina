@@ -8,8 +8,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     await connectToDatabase();
 
-    const { id: jobId } = await params;
-    const job = await Job.findById(jobId);
+    const { id: rawId } = await params;
+    let targetId = rawId;
+    if (rawId.length > 24) {
+      const match = rawId.match(/([a-fA-F0-9]{24})$/);
+      if (match) targetId = match[1];
+    }
+
+    const job = await Job.findById(targetId);
 
     if (!job) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 });

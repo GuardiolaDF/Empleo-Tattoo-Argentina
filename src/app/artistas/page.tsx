@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
@@ -90,13 +91,40 @@ function JobCard({ id, index, studioName, role, specialty, location }: JobCardPr
 
 const ITEMS_PER_PAGE = 4;
 
-export default function ArtistasPage() {
+function ArtistasContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
-  const [filterBarOpen, setFilterBarOpen] = useState(false);
+  
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    searchParams.forEach((val, key) => {
+      if (key in FILTROS) {
+        initial[key] = val;
+      }
+    });
+    return initial;
+  });
+
+  const [filterBarOpen, setFilterBarOpen] = useState(() => Object.keys(activeFilters).length > 0);
   const [jobs, setJobs] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const current: Record<string, string> = {};
+    searchParams.forEach((val, key) => {
+      if (key in FILTROS) {
+        current[key] = val;
+      }
+    });
+    setActiveFilters(current);
+    if (Object.keys(current).length > 0) {
+      setFilterBarOpen(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -142,21 +170,37 @@ export default function ArtistasPage() {
     fetchJobs();
   }, []);
 
+  const updateUrlFilters = (newFilters: Record<string, string>) => {
+    const params = new URLSearchParams();
+    Object.entries(newFilters).forEach(([key, val]) => {
+      if (val) {
+        params.set(key, val);
+      }
+    });
+    const queryString = params.toString();
+    const newPath = queryString ? `${pathname}?${queryString}` : pathname;
+    router.push(newPath, { scroll: false });
+  };
+
   const handleFilterSelect = (category: string, value: string) => {
-    setActiveFilters(prev => ({ ...prev, [category]: value }));
+    const newFilters = { ...activeFilters, [category]: value };
+    setActiveFilters(newFilters);
+    updateUrlFilters(newFilters);
     setOpenDropdown(null);
-    setVisibleCount(ITEMS_PER_PAGE); // Reset pagination on filter change
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const removeFilter = (category: string) => {
     const newFilters = { ...activeFilters };
     delete newFilters[category];
     setActiveFilters(newFilters);
+    updateUrlFilters(newFilters);
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const clearFilters = () => {
     setActiveFilters({});
+    updateUrlFilters({});
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
@@ -383,5 +427,13 @@ export default function ArtistasPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ArtistasPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><p className="text-body text-muted-foreground">Cargando ofertas...</p></div>}>
+      <ArtistasContent />
+    </Suspense>
   );
 }

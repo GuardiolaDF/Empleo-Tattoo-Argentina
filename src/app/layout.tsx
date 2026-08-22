@@ -26,6 +26,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Empleo Tattoo Argentina", url: "https://empleotattoo.com.ar" }],
   creator: "Empleo Tattoo Argentina",
   publisher: "Empleo Tattoo Argentina",
+  verification: {
+    google: "TejyE-zc_Qc-TdaRqrfyafqhRf_gfNeu9r9KjLhhn_Y",
+  },
   openGraph: {
     type: "website",
     locale: "es_AR",
