@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { MapPin, Share2 } from "lucide-react";
 import { motion } from "framer-motion";

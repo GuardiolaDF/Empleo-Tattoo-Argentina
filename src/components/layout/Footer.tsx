@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { Instagram } from "lucide-react";
 
 export function Footer() {
   return (
@@ -13,7 +10,22 @@ export function Footer() {
           <div className="flex items-center gap-3 mb-2">
             <h2 className="text-h2 italic uppercase">EMPLEO TATTOO ARGENTINA</h2>
             <a href="https://www.instagram.com/empleotattooarg/" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">
-              <Instagram className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="w-8 h-8 md:w-10 md:h-10"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+              </svg>
             </a>
           </div>
           <p className="text-subtitle text-white/70 mb-1">Conectando estudios y artistas en toda la Argentina</p>
