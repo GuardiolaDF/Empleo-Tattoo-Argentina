@@ -23,9 +23,6 @@ export async function GET(req: NextRequest) {
     const isRental = style.toLowerCase().includes('alquiler');
     const action = isRental ? 'alquila' : 'busca';
 
-    const interBoldData = await interBold;
-    const bodoniItalicData = await bodoniItalic;
-
     return new ImageResponse(
       (
         <div
