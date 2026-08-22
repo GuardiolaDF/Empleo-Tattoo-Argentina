@@ -19,6 +19,43 @@ async function fetchFont(fontFamily: string, weight: number, style: string = 'no
   return fetch(resource[1]).then((res) => res.arrayBuffer());
 }
 
+function formatLocation(rawLocation: string): string {
+  const parts = rawLocation.split(',').map(p => p.trim().toUpperCase());
+  let province = '';
+  let city = '';
+
+  if (parts.length >= 3) {
+    province = parts[parts.length - 1];
+    city = parts[parts.length - 2];
+  } else if (parts.length === 2) {
+    province = parts[1];
+    city = parts[0];
+  } else {
+    return rawLocation;
+  }
+
+  if (province.includes('CABA') || province.includes('CIUDAD AUTÓNOMA')) {
+    return city;
+  }
+
+  if (province.includes('BUENOS AIRES') || province === 'GBA' || province.includes('GRAN BUENOS AIRES')) {
+    return city;
+  }
+
+  const provinceMap: Record<string, string> = {
+    'SANTA FE': 'SF', 'CÓRDOBA': 'CBA', 'CORDOBA': 'CBA', 'MENDOZA': 'MDZ',
+    'TUCUMÁN': 'TUC', 'TUCUMAN': 'TUC', 'SALTA': 'SLA', 'JUJUY': 'JUJ',
+    'SANTIAGO DEL ESTERO': 'SDE', 'CHACO': 'CHA', 'CORRIENTES': 'COR',
+    'MISIONES': 'MIS', 'ENTRE RÍOS': 'ER', 'ENTRE RIOS': 'ER', 'LA RIOJA': 'LR',
+    'CATAMARCA': 'CAT', 'SAN JUAN': 'SJ', 'SAN LUIS': 'SL', 'LA PAMPA': 'LP',
+    'NEUQUÉN': 'NQN', 'NEUQUEN': 'NQN', 'RÍO NEGRO': 'RN', 'RIO NEGRO': 'RN',
+    'CHUBUT': 'CHU', 'SANTA CRUZ': 'SCZ', 'TIERRA DEL FUEGO': 'TDF'
+  };
+
+  const init = provinceMap[province] || province.split(' ').map(w => w[0]).join('');
+  return `${city}, ${init}`;
+}
+
 export async function GET(req: NextRequest) {
   try {
     if (!interBoldData) {
@@ -32,10 +69,10 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const studio = searchParams.get('studio')?.toUpperCase() || 'ESTUDIO';
     const role = searchParams.get('role')?.toUpperCase() || 'PUESTO';
-    const location = searchParams.get('location')?.toUpperCase() || 'UBICACIÓN';
+    const rawLocation = searchParams.get('location') || 'UBICACIÓN';
     const style = searchParams.get('style') || '';
     
-    // Determine action based on style
+    const formattedLocation = formatLocation(rawLocation);
     const isRental = style.toLowerCase().includes('alquiler');
     const action = isRental ? 'alquila' : 'busca';
 
@@ -46,13 +83,12 @@ export async function GET(req: NextRequest) {
             display: 'flex',
             width: '100%',
             height: '100%',
-            backgroundColor: '#e5e7eb', // Light gray background
+            backgroundColor: '#e5e7eb',
             position: 'relative',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          {/* Safe Area 630x630 (WhatsApp 1:1) */}
           <div
             style={{
               display: 'flex',
@@ -68,12 +104,16 @@ export async function GET(req: NextRequest) {
             <div
               style={{
                 fontFamily: '"Inter"',
-                fontSize: 64,
+                fontSize: 56,
                 fontWeight: 800,
                 color: 'black',
                 lineHeight: 1,
                 letterSpacing: '-0.02em',
                 marginBottom: 10,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '100%',
               }}
             >
               {studio}
@@ -83,10 +123,10 @@ export async function GET(req: NextRequest) {
             <div
               style={{
                 fontFamily: '"Bodoni"',
-                fontSize: 56,
+                fontSize: 48,
                 color: 'black',
                 lineHeight: 1,
-                marginBottom: 20,
+                marginBottom: 16,
               }}
             >
               {action}
@@ -96,12 +136,16 @@ export async function GET(req: NextRequest) {
             <div
               style={{
                 fontFamily: '"Inter"',
-                fontSize: 96,
+                fontSize: 76,
                 fontWeight: 800,
                 color: 'black',
                 lineHeight: 1,
                 letterSpacing: '-0.02em',
                 marginBottom: 10,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '100%',
               }}
             >
               {role}
@@ -111,10 +155,10 @@ export async function GET(req: NextRequest) {
             <div
               style={{
                 fontFamily: '"Bodoni"',
-                fontSize: 56,
+                fontSize: 48,
                 color: 'black',
                 lineHeight: 1,
-                marginBottom: 20,
+                marginBottom: 16,
               }}
             >
               en
@@ -124,14 +168,18 @@ export async function GET(req: NextRequest) {
             <div
               style={{
                 fontFamily: '"Inter"',
-                fontSize: 80,
+                fontSize: 60,
                 fontWeight: 800,
                 color: 'black',
                 lineHeight: 1,
                 letterSpacing: '-0.02em',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '100%',
               }}
             >
-              {location}
+              {formattedLocation}
             </div>
 
             {/* Branding Logo (Bottom Right within Safe Area) */}
