@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { CheckCircle, Download, Copy, Trash2, EyeOff, Share2, Instagram } from "lucide-react";
+import { CheckCircle, Download, Copy, Trash2, EyeOff, Share2 } from "lucide-react";
 import { InstagramStoryTemplate } from "@/components/admin/InstagramStoryTemplate";
 import Script from "next/script";
 
