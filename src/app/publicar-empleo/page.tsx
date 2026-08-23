@@ -116,6 +116,15 @@ export default function PublicarEmpleoPage() {
     }
   };
 
+  const onError = (errors: any) => {
+    const firstError = Object.keys(errors)[0];
+    const element = document.getElementsByName(firstError)[0];
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.focus();
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* <Navbar /> */}
@@ -138,7 +147,7 @@ export default function PublicarEmpleoPage() {
 
         {/* Right Column: Form */}
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
 
           {/* Section 01 */}
           <section className="space-y-8">

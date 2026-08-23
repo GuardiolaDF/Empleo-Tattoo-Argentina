@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
+import imageCompression from "browser-image-compression";
 import { 
   Upload,
   X,
@@ -298,6 +299,12 @@ export default function PerfilEstudioPage() {
       return;
     }
 
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
     for (const file of files) {
       const tempId = Math.random().toString(36).substring(7);
       const preview = URL.createObjectURL(file);
@@ -305,8 +312,9 @@ export default function PerfilEstudioPage() {
       setPhotos(prev => [...prev, { id: tempId, file, preview, position: 'center 50%' }]);
 
       try {
+        const compressedFile = await imageCompression(file, options);
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', compressedFile);
         const res = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
@@ -316,9 +324,15 @@ export default function PerfilEstudioPage() {
           setPhotos(prev => prev.map(p => 
             p.id === tempId ? { ...p, url: data.url, preview: data.url } : p
           ));
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          alert(errData.error || "Error al subir la imagen.");
+          setPhotos(prev => prev.filter(p => p.id !== tempId));
         }
       } catch (error) {
         console.error('Upload error:', error);
+        alert("Ocurrió un error al procesar o subir la imagen.");
+        setPhotos(prev => prev.filter(p => p.id !== tempId));
       }
     }
   };
@@ -338,8 +352,16 @@ export default function PerfilEstudioPage() {
     setUploadingCover(true);
 
     try {
+      const file = e.target.files[0];
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+
       const formData = new FormData();
-      formData.append("file", e.target.files[0]);
+      formData.append("file", compressedFile);
       const uploadRes = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -348,9 +370,13 @@ export default function PerfilEstudioPage() {
       if (uploadRes.ok) {
         const { url } = await uploadRes.json();
         setPortadaUrl(url);
+      } else {
+        const errData = await uploadRes.json().catch(() => ({}));
+        alert(errData.error || "Error al subir la portada.");
       }
     } catch (error) {
       console.error("Cover upload error:", error);
+      alert("Ocurrió un error al procesar o subir la portada.");
     } finally {
       setUploadingCover(false);
     }
@@ -444,6 +470,15 @@ export default function PerfilEstudioPage() {
     }
   };
 
+  const onError = (errors: any) => {
+    const firstError = Object.keys(errors)[0];
+    const element = document.getElementsByName(firstError)[0];
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.focus();
+    }
+  };
+
   const cleanCoverUrl = portadaUrl ? portadaUrl.split('#pos=')[0] : null;
   const coverHash = portadaUrl ? portadaUrl.split('#pos=')[1] : null;
   const coverPosition = coverHash ? coverHash.replace('_', ' ') : 'center 50%';
@@ -467,7 +502,7 @@ export default function PerfilEstudioPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-16 max-w-2xl">
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-16 max-w-2xl">
             
             {/* Section 01 */}
             <div className="space-y-8">
