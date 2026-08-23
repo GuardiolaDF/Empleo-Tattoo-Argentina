@@ -145,12 +145,12 @@ export default function MarketingPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-border">
               <tr>
-                <th className="p-4 text-label-sm font-bold text-muted-foreground uppercase">Estudio</th>
-                <th className="p-4 text-label-sm font-bold text-muted-foreground uppercase">Búsqueda</th>
-                <th className="p-4 text-label-sm font-bold text-muted-foreground uppercase text-center">Acciones</th>
+                <th className="p-4 text-xs font-bold text-gray-700 uppercase">Estudio</th>
+                <th className="p-4 text-xs font-bold text-gray-700 uppercase">Búsqueda</th>
+                <th className="p-4 text-xs font-bold text-gray-700 uppercase text-center">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-gray-900">
               {displayedJobs.map(job => (
                 <tr key={job._id} className="border-b border-border hover:bg-gray-50 transition-colors">
                   <td className="p-4 font-bold uppercase">{job.studioName}</td>
