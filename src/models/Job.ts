@@ -13,6 +13,7 @@ export interface IJob extends Document {
   couponCode?: string;
   userId?: string;
   pricePaid?: number;
+  sharedOnInstagram?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +36,7 @@ const JobSchema = new Schema<IJob>(
     couponCode: { type: String },
     userId: { type: String },
     pricePaid: { type: Number, default: 0 },
+    sharedOnInstagram: { type: Boolean, default: false },
   },
   { timestamps: true, strict: 'throw' }
 );

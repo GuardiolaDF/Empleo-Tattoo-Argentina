@@ -41,6 +41,7 @@ export const metadata: Metadata = {
         url: "https://empleotattoo.com.ar/api/og/general?ext=.png",
         width: 1200,
         height: 630,
+        type: "image/png",
         alt: "Empleo Tattoo Argentina",
       }
     ],

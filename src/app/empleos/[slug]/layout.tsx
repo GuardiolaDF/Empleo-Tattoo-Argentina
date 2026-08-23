@@ -62,6 +62,7 @@ export async function generateMetadata(
               url: imageUrl,
               width: 1200,
               height: 630,
+              type: "image/png",
               alt: title,
             },
           ],
