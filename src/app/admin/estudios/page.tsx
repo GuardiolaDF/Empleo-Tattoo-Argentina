@@ -84,44 +84,44 @@ export default function AdminEstudiosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Estudios Registrados</h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h1 className="text-display-sm font-black uppercase tracking-tight">Estudios Registrados</h1>
+          <p className="text-muted-foreground font-bold uppercase tracking-wider text-sm mt-1">
             Supervisión de perfiles de estudios, ubicaciones y volumen de publicaciones activas.
           </p>
         </div>
         <button
           onClick={fetchStudios}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-bold uppercase tracking-wider text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           <span>Actualizar Lista</span>
         </button>
       </div>
 
       {/* Search Input */}
-      <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+      <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-black" />
           <input
             type="text"
             placeholder="Buscar por nombre de estudio, ubicación o usuario Instagram..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-9 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-sky-500"
+            className="w-full bg-gray-50 border-2 border-black pl-10 pr-4 py-3 text-sm font-bold text-black placeholder-gray-500 focus:outline-none focus:bg-white"
           />
         </div>
       </div>
 
       {/* Studios Table */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border-2 border-black overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
         {loading ? (
-          <div className="p-12 text-center text-zinc-500 text-sm">Cargando estudios...</div>
+          <div className="p-12 text-center text-black font-bold uppercase text-sm">Cargando estudios...</div>
         ) : filteredStudios.length === 0 ? (
-          <div className="p-12 text-center text-zinc-500 text-sm">No se encontraron estudios registrados.</div>
+          <div className="p-12 text-center text-black font-bold uppercase text-sm">No se encontraron estudios registrados.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-zinc-300">
-              <thead className="bg-zinc-950 text-xs uppercase text-zinc-500 border-b border-zinc-800">
+            <table className="w-full text-left text-sm text-black min-w-[800px]">
+              <thead className="bg-gray-50 text-xs uppercase font-black text-black border-b-2 border-black">
                 <tr>
                   <th className="px-6 py-4">Estudio</th>
                   <th className="px-6 py-4">Ubicación & Año</th>
@@ -130,52 +130,52 @@ export default function AdminEstudiosPage() {
                   <th className="px-6 py-4 text-right">Ver Perfil</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y-2 divide-gray-200">
                 {filteredStudios.map((studio) => (
-                  <tr key={studio._id} className="hover:bg-zinc-950/50 transition-colors">
+                  <tr key={studio._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-sky-950 text-sky-400 border border-sky-800/60 flex items-center justify-center font-bold text-sm">
+                        <div className="w-10 h-10 rounded-none bg-black text-white border-2 border-black flex items-center justify-center font-black text-lg uppercase shadow-sm">
                           {studio.nombre.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-semibold text-white">{studio.nombre}</div>
-                          <div className="text-xs text-zinc-500 font-mono">ID: {studio.userId.slice(0, 10)}...</div>
+                          <div className="font-black uppercase truncate max-w-[200px]">{studio.nombre}</div>
+                          <div className="text-xs text-muted-foreground font-bold uppercase mt-1">ID: {studio.userId.slice(0, 10)}...</div>
                         </div>
                       </div>
                     </td>
 
                     <td className="px-6 py-4">
-                      <div className="text-zinc-200 flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-zinc-500" />
+                      <div className="font-bold uppercase flex items-center gap-1">
+                        <MapPin className="w-4 h-4 text-black" />
                         {studio.ubicacion}
                       </div>
-                      <div className="text-xs text-zinc-500 mt-0.5">Est. {studio.anio}</div>
+                      <div className="text-xs text-muted-foreground font-bold uppercase mt-1">Est. {studio.anio}</div>
                     </td>
 
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col gap-2">
                         {studio.instagram && (
                           <a
                             href={`https://instagram.com/${studio.instagram.replace("@", "")}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-pink-400 hover:underline"
+                            className="inline-flex items-center gap-1 text-xs font-bold uppercase text-pink-600 hover:underline"
                           >
-                            <AtSign className="w-3.5 h-3.5" /> @{studio.instagram.replace("@", "")}
+                            <AtSign className="w-4 h-4" /> @{studio.instagram.replace("@", "")}
                           </a>
                         )}
                         {studio.whatsapp && (
-                          <span className="inline-flex items-center gap-1 text-xs text-emerald-400">
-                            <MessageSquare className="w-3.5 h-3.5" /> {studio.whatsapp}
+                          <span className="inline-flex items-center gap-1 text-xs font-bold uppercase text-green-700">
+                            <MessageSquare className="w-4 h-4" /> {studio.whatsapp}
                           </span>
                         )}
                       </div>
                     </td>
 
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-950 text-zinc-300 border border-zinc-800">
-                        <Briefcase className="w-3.5 h-3.5 text-sky-400" />
+                      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-none text-xs font-black uppercase bg-gray-100 text-black border-2 border-black">
+                        <Briefcase className="w-4 h-4" />
                         {studio.jobCount} avisos
                       </span>
                     </td>
@@ -184,29 +184,29 @@ export default function AdminEstudiosPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleSuspend(studio._id, studio.status || 'active')}
-                          className={`p-2 transition-colors rounded-lg border ${
+                          className={`p-3 transition-colors border-2 ${
                             studio.status === 'suspended'
-                              ? 'bg-amber-950/50 text-amber-400 border-amber-900/50 hover:bg-amber-900/50'
-                              : 'text-zinc-400 border-transparent hover:bg-zinc-800 hover:text-amber-400'
+                              ? 'bg-yellow-100 text-yellow-800 border-yellow-800 hover:bg-yellow-200'
+                              : 'text-black border-transparent hover:border-black hover:bg-white'
                           }`}
                           title={studio.status === 'suspended' ? 'Reactivar estudio' : 'Suspender estudio'}
                         >
-                          <PowerOff className="w-4 h-4" />
+                          <PowerOff className="w-5 h-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(studio._id)}
-                          className="p-2 text-zinc-400 border border-transparent rounded-lg hover:bg-zinc-800 hover:text-red-400 transition-colors"
+                          className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-colors"
                           title="Eliminar estudio permanentemente"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-5 h-5" />
                         </button>
                         <Link
                           href={`/estudios/${studio._id}`}
                           target="_blank"
-                          className="p-2 text-zinc-400 border border-transparent rounded-lg hover:bg-zinc-800 hover:text-sky-400 transition-colors"
+                          className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-colors"
                           title="Ver perfil público del estudio"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <ExternalLink className="w-5 h-5" />
                         </Link>
                       </div>
                     </td>

@@ -14,7 +14,8 @@ import {
   ExternalLink,
   MessageSquare,
   AtSign,
-  Eye
+  Eye,
+  TrendingUp
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,6 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboardPage() {
   await connectToDatabase();
 
-  // Consultas paralelas a MongoDB para máxima velocidad de renderizado
   const [
     totalJobs,
     activeJobs,
@@ -49,15 +49,12 @@ export default async function AdminDashboardPage() {
     Job.find().sort({ createdAt: -1 }).limit(5).lean()
   ]);
 
-  // Cálculo de ingresos
   let totalRevenue = 0;
   let monthlyRevenue = 0;
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Para evitar cargar todos los trabajos en memoria, hacemos agregaciones, pero para el MVP iterar un poco está bien.
-  // Como `activeJobs` solo nos da el COUNT (número), necesitamos hacer una consulta para calcular ingresos.
   const activeJobsData = await Job.find({ status: "active" }).select("pricePaid couponCode paymentId createdAt updatedAt").lean();
   
   activeJobsData.forEach((job: any) => {
@@ -75,181 +72,168 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">Resumen General</h1>
-        <p className="text-sm text-zinc-400 mt-1">
-          Información en tiempo real del estado de la plataforma y salud del marketplace.
-        </p>
+    <div className="space-y-8 pb-10">
+      <div className="mb-10">
+        <h1 className="text-display-sm font-black uppercase mb-2">Panel de Control</h1>
+        <p className="text-muted-foreground font-bold uppercase tracking-wider text-sm">Resumen en tiempo real</p>
       </div>
 
-      {/* Primary KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Avisos Totales */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Avisos Totales</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-950/60 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
-              <Briefcase className="w-4 h-4" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {/* Card 1: Empleos Activos */}
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-black uppercase tracking-wider">Avisos Totales</span>
+            <div className="w-10 h-10 border-2 border-black flex items-center justify-center text-black bg-gray-50">
+              <Briefcase className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white">{totalJobs}</p>
-            <div className="flex items-center gap-3 mt-2 text-xs">
-              <span className="flex items-center gap-1 text-emerald-400">
-                <CheckCircle2 className="w-3.5 h-3.5" /> {activeJobs} activos
+          <div>
+            <p className="text-5xl font-black">{totalJobs}</p>
+            <div className="flex items-center gap-4 text-xs font-bold uppercase mt-4">
+              <span className="flex items-center gap-1 text-emerald-600">
+                <CheckCircle2 className="w-4 h-4" /> {activeJobs} activos
               </span>
-              <span className="flex items-center gap-1 text-amber-400">
-                <Clock className="w-3.5 h-3.5" /> {pendingJobs} pendientes
+              <span className="flex items-center gap-1 text-amber-500">
+                <Clock className="w-4 h-4" /> {pendingJobs} pdtes.
               </span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Estudios Registrados */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Estudios Registrados</span>
-            <div className="w-8 h-8 rounded-lg bg-sky-950/60 border border-sky-800/40 flex items-center justify-center text-sky-400">
-              <Building2 className="w-4 h-4" />
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-black uppercase tracking-wider">Estudios</span>
+            <div className="w-10 h-10 border-2 border-black flex items-center justify-center text-black bg-gray-50">
+              <Building2 className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white">{totalStudios}</p>
-            <p className="text-xs text-zinc-400 mt-2">
-              Perfiles creados en la plataforma
+          <div>
+            <p className="text-5xl font-black">{totalStudios}</p>
+            <p className="text-xs font-bold uppercase text-muted-foreground mt-4">
+              Perfiles creados
             </p>
           </div>
         </div>
 
         {/* Card 3: Cupones de Anuncio */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Publicados con Cupón</span>
-            <div className="w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-800/40 flex items-center justify-center text-purple-400">
-              <Ticket className="w-4 h-4" />
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-black uppercase tracking-wider">Cupones</span>
+            <div className="w-10 h-10 border-2 border-black flex items-center justify-center text-black bg-gray-50">
+              <Ticket className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white">{couponJobs}</p>
-            <p className="text-xs text-zinc-400 mt-2">
-              {activeCoupons} cupones activos de {totalCoupons} creados
+          <div>
+            <p className="text-5xl font-black">{couponJobs}</p>
+            <p className="text-xs font-bold uppercase text-muted-foreground mt-4">
+              {activeCoupons} activos de {totalCoupons} creados
             </p>
           </div>
         </div>
 
         {/* Card 4: Ingresos Financieros */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Ingresos (ARS)</span>
-            <div className="w-8 h-8 rounded-lg bg-orange-950/60 border border-orange-800/40 flex items-center justify-center text-orange-400">
-              <MousePointerClick className="w-4 h-4" />
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-black uppercase tracking-wider">Ingresos</span>
+            <div className="w-10 h-10 border-2 border-black flex items-center justify-center text-black bg-gray-50">
+              <MousePointerClick className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white">${totalRevenue.toLocaleString("es-AR")}</p>
-            <p className="text-xs text-zinc-400 mt-2">
-              <span className="text-orange-400 font-semibold">${monthlyRevenue.toLocaleString("es-AR")}</span> este mes
+          <div>
+            <p className="text-4xl font-black truncate" title={`$${totalRevenue.toLocaleString("es-AR")}`}>
+              ${totalRevenue > 999999 ? (totalRevenue/1000000).toFixed(1) + 'M' : totalRevenue.toLocaleString("es-AR")}
+            </p>
+            <p className="text-xs font-bold uppercase text-muted-foreground mt-4">
+              <span className="text-black font-black">${monthlyRevenue.toLocaleString("es-AR")}</span> este mes
             </p>
           </div>
         </div>
       </div>
 
-      {/* Analytics Breakdown Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Engagement Detail */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 lg:col-span-1">
-          <h2 className="text-base font-bold text-white mb-4">Métricas de Interacción</h2>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-zinc-950 rounded-lg border border-zinc-800/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-emerald-950/80 text-emerald-400 flex items-center justify-center">
-                  <MessageSquare className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">Clics WhatsApp</p>
-                  <p className="text-xs text-zinc-400">Contactos directos</p>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-emerald-400">{whatsappClicks}</span>
+        {/* Col 1: Tráfico y Conversión */}
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <h2 className="text-sm font-black uppercase tracking-wider mb-6 pb-4 border-b-2 border-black flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-black" />
+            Métricas de Conversión
+          </h2>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
+                <Eye className="w-4 h-4 text-black" /> Vistas de Avisos
+              </span>
+              <span className="text-xl font-black">{jobViews}</span>
             </div>
-
-            <div className="flex items-center justify-between p-3 bg-zinc-950 rounded-lg border border-zinc-800/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-pink-950/80 text-pink-400 flex items-center justify-center">
-                  <AtSign className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">Clics Instagram</p>
-                  <p className="text-xs text-zinc-400">Visitas a perfil</p>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-pink-400">{instagramClicks}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-black" /> Clics a WhatsApp
+              </span>
+              <span className="text-xl font-black">{whatsappClicks}</span>
             </div>
-
-            <div className="flex items-center justify-between p-3 bg-zinc-950 rounded-lg border border-zinc-800/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-blue-950/80 text-blue-400 flex items-center justify-center">
-                  <Eye className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">Vistas de Avisos</p>
-                  <p className="text-xs text-zinc-400">Lecturas de publicaciones</p>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-blue-400">{jobViews}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
+                <AtSign className="w-4 h-4 text-black" /> Clics a Instagram
+              </span>
+              <span className="text-xl font-black">{instagramClicks}</span>
             </div>
           </div>
         </div>
 
-        {/* Recent Job Activity */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-white">Últimas Publicaciones</h2>
-            <Link
-              href="/admin/avisos"
-              className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
-            >
+        {/* Col 2 & 3: Últimos Avisos */}
+        <div className="lg:col-span-2 bg-white border-2 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-black">
+            <h2 className="text-sm font-black uppercase tracking-wider">Últimos Avisos</h2>
+            <Link href="/admin/avisos" className="text-xs font-bold uppercase text-black hover:underline flex items-center gap-1">
               Ver todos <ExternalLink className="w-3 h-3" />
             </Link>
           </div>
-
-          {recentJobs.length === 0 ? (
-            <p className="text-sm text-zinc-500 py-8 text-center">No hay publicaciones registradas aún.</p>
-          ) : (
-            <div className="space-y-3">
-              {recentJobs.map((job: any) => (
-                <div
-                  key={job._id.toString()}
-                  className="flex items-center justify-between p-3.5 bg-zinc-950 rounded-lg border border-zinc-800/80 hover:border-zinc-700 transition-colors"
-                >
-                  <div className="space-y-0.5">
-                    <p className="text-sm font-semibold text-white truncate max-w-xs">{job.title}</p>
-                    <p className="text-xs text-zinc-400">
-                      {job.studioName} &bull; <span className="text-zinc-500">{job.location}</span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {job.couponCode && (
-                      <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono bg-purple-950/80 text-purple-300 border border-purple-800/60 rounded">
-                        {job.couponCode}
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[500px]">
+              <thead>
+                <tr className="border-b-2 border-black">
+                  <th className="pb-3 text-xs font-black text-black uppercase tracking-wider">Estudio</th>
+                  <th className="pb-3 text-xs font-black text-black uppercase tracking-wider">Puesto</th>
+                  <th className="pb-3 text-xs font-black text-black uppercase tracking-wider">Estado</th>
+                  <th className="pb-3 text-xs font-black text-black uppercase tracking-wider text-right">Fecha</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {recentJobs.map((job) => (
+                  <tr key={job._id.toString()} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 text-sm font-bold uppercase text-black max-w-[150px] truncate">
+                      {job.studioName}
+                    </td>
+                    <td className="py-4 text-sm font-bold text-muted-foreground">
+                      {job.title}
+                    </td>
+                    <td className="py-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-none text-xs font-bold uppercase tracking-wider border-2 ${
+                        job.status === "active" 
+                          ? "bg-green-100 text-green-800 border-green-800" 
+                          : job.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800 border-yellow-800"
+                          : "bg-gray-100 text-gray-800 border-gray-800"
+                      }`}>
+                        {job.status === "active" ? "Activo" : job.status === "pending" ? "Pendiente" : "Inactivo"}
                       </span>
-                    )}
-                    <span
-                      className={`px-2.5 py-1 text-xs font-medium rounded-full ${
-                        job.status === "active"
-                          ? "bg-emerald-950 text-emerald-300 border border-emerald-800/60"
-                          : "bg-amber-950 text-amber-300 border border-amber-800/60"
-                      }`}
-                    >
-                      {job.status === "active" ? "Activo" : "Pendiente"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                    </td>
+                    <td className="py-4 text-sm text-black text-right font-bold">
+                      {new Date(job.createdAt).toLocaleDateString("es-AR")}
+                    </td>
+                  </tr>
+                ))}
+                {recentJobs.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-muted-foreground text-sm font-bold uppercase">
+                      No hay avisos recientes
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -95,75 +95,75 @@ export default function AdminRecuperacionPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Recuperación de Checkouts Abandonados</h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h1 className="text-display-sm font-black uppercase tracking-tight">Recuperación de Checkouts Abandonados</h1>
+          <p className="text-muted-foreground font-bold uppercase tracking-wider text-sm mt-1">
             Seguimiento de estudios que crearon un aviso pero no completaron la pasarela de pago o aplicación de cupón.
           </p>
         </div>
         <button
           onClick={fetchAbandoned}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-bold uppercase tracking-wider text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           <span>Actualizar Lista</span>
         </button>
       </div>
 
       {/* Main List */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
-        <div className="p-4 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingCart className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+      <div className="bg-white border-2 border-black overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+        <div className="p-6 bg-gray-50 border-b-2 border-black flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <ShoppingCart className="w-5 h-5 text-black" />
+            <span className="text-sm font-black uppercase tracking-wider text-black">
               Borradores Pendientes ({jobs.length})
             </span>
           </div>
-          <span className="text-xs text-zinc-500">Listos para acción o asistencia</span>
+          <span className="text-xs font-bold uppercase text-muted-foreground">Listos para acción o asistencia</span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-zinc-500 text-sm">Buscando publicaciones abandonadas...</div>
+          <div className="p-12 text-center text-black font-bold uppercase text-sm">Buscando publicaciones abandonadas...</div>
         ) : jobs.length === 0 ? (
-          <div className="p-12 text-center text-zinc-500 text-sm">
+          <div className="p-12 text-center text-black font-bold uppercase text-sm">
             🎉 ¡Excelente! No hay publicaciones abandonadas en este momento.
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800/80">
+          <div className="divide-y-2 divide-gray-200">
             {jobs.map((job) => (
               <div
                 key={job._id}
-                className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:bg-zinc-950/40 transition-colors"
+                className="p-6 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 hover:bg-gray-50 transition-colors"
               >
-                <div className="space-y-2 min-w-0 flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="px-2.5 py-0.5 text-xs font-semibold bg-amber-950 text-amber-300 border border-amber-800/60 rounded-full">
+                <div className="space-y-4 min-w-0 flex-1">
+                  <div className="flex items-center gap-4">
+                    <span className="px-3 py-1 text-xs font-black uppercase bg-yellow-100 text-yellow-900 border-2 border-yellow-900">
                       Pendiente de Pago
                     </span>
-                    <span className="text-xs text-zinc-500 flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" /> {formatDate(job.createdAt)}
+                    <span className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2">
+                      <Calendar className="w-4 h-4" /> {formatDate(job.createdAt)}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white truncate">{job.title}</h3>
+                  <h3 className="text-xl font-black uppercase truncate max-w-[400px]">{job.title}</h3>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400">
-                    <span className="flex items-center gap-1">
-                      <Building2 className="w-3.5 h-3.5 text-sky-400" /> {job.studioName}
+                  <div className="flex flex-wrap items-center gap-6 text-xs font-bold uppercase text-black">
+                    <span className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-black" /> {job.studioName}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-zinc-500" /> {job.location}
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="w-4 h-4" /> {job.location}
                     </span>
-                    <span className="text-zinc-500">{job.category}</span>
+                    <span className="text-muted-foreground">{job.category}</span>
                   </div>
 
                   {job.studioInfo && (
-                    <div className="text-xs text-zinc-500 pt-1 flex items-center gap-3">
+                    <div className="text-xs font-bold uppercase text-muted-foreground pt-2 flex items-center gap-3">
                       {job.studioInfo.whatsapp && (
                         <a
                           href={`https://wa.me/${job.studioInfo.whatsapp}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-emerald-400 hover:underline flex items-center gap-1"
+                          className="text-green-700 hover:underline flex items-center gap-2"
                         >
                           💬 Contactar Estudio por WhatsApp ({job.studioInfo.whatsapp})
                         </a>
@@ -172,23 +172,23 @@ export default function AdminRecuperacionPage() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+                <div className="flex items-center gap-3 w-full xl:w-auto justify-end">
                   <button
                     onClick={() => handleForceActivate(job._id)}
                     disabled={actionLoading === job._id}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 text-green-900 border-2 border-green-900 rounded-none text-xs font-black uppercase transition-transform hover:translate-y-[-2px]"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     <span>Aprobar & Activar</span>
                   </button>
 
                   <button
                     onClick={() => handleDeleteDraft(job._id)}
                     disabled={actionLoading === job._id}
-                    className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+                    className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-colors"
                     title="Descartar borrador abandonado"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>

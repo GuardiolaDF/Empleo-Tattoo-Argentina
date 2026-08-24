@@ -141,18 +141,18 @@ export default function MarketingPage() {
       {loading ? (
         <p>Cargando anuncios...</p>
       ) : (
-        <div className="bg-white border border-border overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-border">
+        <div className="bg-white border-2 border-black overflow-x-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <table className="w-full text-left min-w-[600px]">
+            <thead className="bg-gray-50 border-b-2 border-black">
               <tr>
-                <th className="p-4 text-xs font-bold text-gray-700 uppercase">Estudio</th>
-                <th className="p-4 text-xs font-bold text-gray-700 uppercase">Búsqueda</th>
-                <th className="p-4 text-xs font-bold text-gray-700 uppercase text-center">Acciones</th>
+                <th className="p-4 text-xs font-black text-black uppercase">Estudio</th>
+                <th className="p-4 text-xs font-black text-black uppercase">Búsqueda</th>
+                <th className="p-4 text-xs font-black text-black uppercase text-center">Acciones</th>
               </tr>
             </thead>
-            <tbody className="text-gray-900">
+            <tbody className="text-black">
               {displayedJobs.map(job => (
-                <tr key={job._id} className="border-b border-border hover:bg-gray-50 transition-colors">
+                <tr key={job._id} className="border-b border-black hover:bg-gray-50 transition-colors">
                   <td className="p-4 font-bold uppercase">{job.studioName}</td>
                   <td className="p-4 uppercase">{job.title} en {job.category}</td>
                   <td className="p-4 flex items-center justify-center space-x-2">

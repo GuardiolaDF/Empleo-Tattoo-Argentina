@@ -115,120 +115,120 @@ export default function AdminCuponesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Gestión Dinámica de Cupones</h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h1 className="text-display-sm font-black uppercase tracking-tight">Gestión Dinámica de Cupones</h1>
+          <p className="text-muted-foreground font-bold uppercase tracking-wider text-sm mt-1">
             Crea códigos promocionales en tiempo real, define límites de uso y porcentaje de descuento.
           </p>
         </div>
         <button
           onClick={fetchCoupons}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-bold uppercase tracking-wider text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           <span>Actualizar Lista</span>
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Creator Form */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 h-fit">
-          <div className="flex items-center gap-2 mb-4 text-emerald-400 font-semibold text-sm">
-            <Plus className="w-4 h-4" />
+        <div className="bg-white border-2 border-black p-6 h-fit shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="flex items-center gap-2 mb-6 text-black font-black uppercase text-sm border-b-2 border-black pb-4">
+            <Plus className="w-5 h-5" />
             <span>Crear Nuevo Cupón</span>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-950/60 border border-red-800/80 rounded-lg text-xs text-red-300">
+            <div className="mb-6 p-4 bg-red-100 border-2 border-red-800 text-xs font-bold uppercase text-red-800">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleCreateCoupon} className="space-y-4">
+          <form onSubmit={handleCreateCoupon} className="space-y-6">
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1">Código del Cupón</label>
+              <label className="block text-xs font-black uppercase tracking-wider text-black mb-2">Código del Cupón</label>
               <input
                 type="text"
                 placeholder="EJ: LALA100, PROMO2026"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-emerald-500 uppercase"
+                className="w-full bg-gray-50 border-2 border-black px-4 py-3 text-sm font-bold text-black font-mono placeholder-gray-400 focus:outline-none focus:bg-white uppercase"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1">Porcentaje de Descuento (%)</label>
+              <label className="block text-xs font-black uppercase tracking-wider text-black mb-2">Porcentaje de Descuento (%)</label>
               <input
                 type="number"
                 min="1"
                 max="100"
                 value={discountPercent}
                 onChange={(e) => setDiscountPercent(Number(e.target.value))}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500"
+                className="w-full bg-gray-50 border-2 border-black px-4 py-3 text-sm font-bold text-black focus:outline-none focus:bg-white"
               />
-              <p className="text-[11px] text-zinc-500 mt-1">100% para anuncios totalmente gratuitos.</p>
+              <p className="text-[11px] font-bold text-muted-foreground uppercase mt-2">100% para anuncios totalmente gratuitos.</p>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1">Cantidad Máxima de Usos</label>
+              <label className="block text-xs font-black uppercase tracking-wider text-black mb-2">Cantidad Máxima de Usos</label>
               <input
                 type="number"
                 min="1"
                 max="10000"
                 value={maxUses}
                 onChange={(e) => setMaxUses(Number(e.target.value))}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500"
+                className="w-full bg-gray-50 border-2 border-black px-4 py-3 text-sm font-bold text-black focus:outline-none focus:bg-white"
               />
             </div>
 
             <button
               type="submit"
               disabled={creating}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2 mt-6"
+              className="w-full bg-black hover:bg-black/80 text-white font-black uppercase tracking-wider py-4 px-4 text-xs transition-transform hover:translate-y-[-2px] flex items-center justify-center gap-2 border-2 border-transparent"
             >
-              <Ticket className="w-4 h-4" />
+              <Ticket className="w-5 h-5" />
               <span>{creating ? "Creando Cupón..." : "Crear Cupón Activo"}</span>
             </button>
           </form>
         </div>
 
         {/* Coupons List Table */}
-        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
-          <div className="p-4 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Cupones Registrados</span>
-            <span className="text-xs text-zinc-500">{coupons.length} cupones en total</span>
+        <div className="lg:col-span-2 bg-white border-2 border-black overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="p-6 bg-gray-50 border-b-2 border-black flex items-center justify-between">
+            <span className="text-sm font-black uppercase tracking-wider text-black">Cupones Registrados</span>
+            <span className="text-xs font-bold uppercase text-muted-foreground">{coupons.length} cupones en total</span>
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-zinc-500 text-sm">Cargando cupones...</div>
+            <div className="p-12 text-center text-black font-bold uppercase text-sm">Cargando cupones...</div>
           ) : coupons.length === 0 ? (
-            <div className="p-12 text-center text-zinc-500 text-sm">No hay cupones creados aún.</div>
+            <div className="p-12 text-center text-black font-bold uppercase text-sm">No hay cupones creados aún.</div>
           ) : (
-            <div className="divide-y divide-zinc-800/80">
+            <div className="divide-y-2 divide-gray-200">
               {coupons.map((coupon) => {
                 const percentUsed = Math.min(100, Math.round((coupon.currentUses / coupon.maxUses) * 100));
                 return (
-                  <div key={coupon._id} className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-zinc-950/40 transition-colors">
-                    <div className="space-y-1.5 flex-1 min-w-0">
-                      <div className="flex items-center gap-3">
-                        <span className="text-base font-extrabold font-mono text-white tracking-wide flex items-center gap-1.5">
-                          <Tag className="w-4 h-4 text-purple-400" />
+                  <div key={coupon._id} className="p-6 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 hover:bg-gray-50 transition-colors">
+                    <div className="space-y-4 flex-1 w-full min-w-0">
+                      <div className="flex items-center flex-wrap gap-3">
+                        <span className="text-lg font-black font-mono text-black uppercase tracking-widest flex items-center gap-2 border-2 border-black px-3 py-1 bg-white">
+                          <Tag className="w-5 h-5 text-black" />
                           {coupon.code}
                         </span>
-                        <span className="px-2 py-0.5 text-xs font-semibold bg-purple-950/80 text-purple-300 border border-purple-800/60 rounded">
+                        <span className="px-3 py-1 text-xs font-black uppercase bg-purple-100 text-purple-900 border-2 border-purple-900">
                           {coupon.discountPercent}% OFF
                         </span>
                       </div>
 
                       {/* Usage Progress Bar */}
-                      <div className="w-full max-w-xs space-y-1">
-                        <div className="flex justify-between text-[11px] text-zinc-400">
+                      <div className="w-full max-w-sm space-y-2">
+                        <div className="flex justify-between text-xs font-bold uppercase text-muted-foreground">
                           <span>Usos: {coupon.currentUses} de {coupon.maxUses}</span>
                           <span>{percentUsed}%</span>
                         </div>
-                        <div className="w-full bg-zinc-950 h-1.5 rounded-full overflow-hidden border border-zinc-800">
+                        <div className="w-full bg-gray-200 h-3 rounded-none overflow-hidden border-2 border-black">
                           <div
-                            className={`h-full transition-all ${
-                              percentUsed >= 100 ? "bg-red-500" : "bg-emerald-500"
+                            className={`h-full transition-all border-r-2 border-black ${
+                              percentUsed >= 100 ? "bg-red-500" : "bg-black"
                             }`}
                             style={{ width: `${percentUsed}%` }}
                           />
@@ -236,32 +236,32 @@ export default function AdminCuponesPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 self-end xl:self-center">
                       <button
                         onClick={() => handleToggleActive(coupon._id, coupon.active)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                        className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-black uppercase border-2 transition-transform hover:translate-y-[-1px] ${
                           coupon.active
-                            ? "bg-emerald-950 text-emerald-300 border-emerald-800 hover:bg-red-950 hover:text-red-300 hover:border-red-800"
-                            : "bg-red-950 text-red-300 border-red-800 hover:bg-emerald-950 hover:text-emerald-300 hover:border-emerald-800"
+                            ? "bg-green-100 text-green-800 border-green-800"
+                            : "bg-red-100 text-red-800 border-red-800"
                         }`}
                       >
                         {coupon.active ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Habilitado
+                            <CheckCircle2 className="w-4 h-4 text-green-800" /> Habilitado
                           </>
                         ) : (
                           <>
-                            <XCircle className="w-3.5 h-3.5 text-red-400" /> Pausado
+                            <XCircle className="w-4 h-4 text-red-800" /> Pausado
                           </>
                         )}
                       </button>
 
                       <button
                         onClick={() => handleDeleteCoupon(coupon._id)}
-                        className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+                        className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-colors"
                         title="Eliminar cupón"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>

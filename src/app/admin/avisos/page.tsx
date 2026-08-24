@@ -97,62 +97,62 @@ export default function AdminAvisosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Moderación de Avisos</h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h1 className="text-display-sm font-black uppercase tracking-tight">Moderación de Avisos</h1>
+          <p className="text-muted-foreground font-bold uppercase tracking-wider text-sm mt-1">
             Revisá, aprobá, cambiá el estado o eliminá publicaciones de la plataforma en tiempo real.
           </p>
         </div>
         <button
           onClick={fetchJobs}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-bold uppercase tracking-wider text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-transform"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           <span>Actualizar</span>
         </button>
       </div>
 
       {/* Control Bar: Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-6 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-black" />
           <input
             type="text"
             placeholder="Buscar por título, estudio o ubicación..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500"
+            className="w-full bg-gray-50 border-2 border-black pl-10 pr-4 py-3 text-sm font-bold text-black placeholder-gray-500 focus:outline-none focus:bg-white"
           />
         </div>
 
         {/* Status Filters */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setFilterStatus("all")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-4 py-3 text-xs font-black uppercase tracking-wider transition-colors border-2 ${
               filterStatus === "all"
-                ? "bg-zinc-800 text-white border border-zinc-700"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-black text-white border-black"
+                : "bg-gray-50 text-black border-transparent hover:border-black"
             }`}
           >
             Todos ({jobs.length})
           </button>
           <button
             onClick={() => setFilterStatus("active")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-4 py-3 text-xs font-black uppercase tracking-wider transition-colors border-2 ${
               filterStatus === "active"
-                ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
-                : "text-zinc-400 hover:text-emerald-400"
+                ? "bg-green-100 text-green-800 border-green-800"
+                : "bg-gray-50 text-black border-transparent hover:border-black"
             }`}
           >
             Activos ({jobs.filter((j) => j.status === "active").length})
           </button>
           <button
             onClick={() => setFilterStatus("pending")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-4 py-3 text-xs font-black uppercase tracking-wider transition-colors border-2 ${
               filterStatus === "pending"
-                ? "bg-amber-950 text-amber-300 border border-amber-800"
-                : "text-zinc-400 hover:text-amber-400"
+                ? "bg-yellow-100 text-yellow-800 border-yellow-800"
+                : "bg-gray-50 text-black border-transparent hover:border-black"
             }`}
           >
             Pendientes ({jobs.filter((j) => j.status === "pending").length})
@@ -161,18 +161,18 @@ export default function AdminAvisosPage() {
       </div>
 
       {/* Jobs Table */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border-2 border-black overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
         {loading ? (
-          <div className="p-12 text-center text-zinc-500 text-sm">Cargando avisos...</div>
+          <div className="p-12 text-center text-black text-sm font-bold uppercase">Cargando avisos...</div>
         ) : filteredJobs.length === 0 ? (
-          <div className="p-12 text-center text-zinc-500 text-sm flex flex-col items-center gap-2">
-            <AlertCircle className="w-8 h-8 text-zinc-600" />
+          <div className="p-12 text-center text-black text-sm font-bold uppercase flex flex-col items-center gap-4">
+            <AlertCircle className="w-10 h-10 text-black" />
             <p>No se encontraron avisos que coincidan con la búsqueda.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-zinc-300">
-              <thead className="bg-zinc-950 text-xs uppercase text-zinc-500 border-b border-zinc-800">
+            <table className="w-full text-left text-sm text-black min-w-[800px]">
+              <thead className="bg-gray-50 text-xs font-black uppercase text-black border-b-2 border-black">
                 <tr>
                   <th className="px-6 py-4">Aviso & Estudio</th>
                   <th className="px-6 py-4">Categoría / Ubicación</th>
@@ -181,28 +181,28 @@ export default function AdminAvisosPage() {
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y-2 divide-gray-200">
                 {filteredJobs.map((job) => (
-                  <tr key={job._id} className="hover:bg-zinc-950/50 transition-colors">
+                  <tr key={job._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-white truncate max-w-xs">{job.title}</div>
-                      <div className="text-xs text-zinc-400 mt-0.5">{job.studioName}</div>
+                      <div className="font-black uppercase truncate max-w-[200px]">{job.title}</div>
+                      <div className="text-xs font-bold text-muted-foreground mt-0.5 uppercase">{job.studioName}</div>
                     </td>
 
                     <td className="px-6 py-4">
-                      <div className="text-zinc-200">{job.category}</div>
-                      <div className="text-xs text-zinc-500">{job.location}</div>
+                      <div className="font-bold uppercase text-black">{job.category}</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase">{job.location}</div>
                     </td>
 
                     <td className="px-6 py-4">
                       {job.couponCode ? (
-                        <span className="inline-block px-2 py-0.5 text-xs font-mono bg-purple-950 text-purple-300 border border-purple-800/60 rounded">
+                        <span className="inline-block px-3 py-1 text-xs font-black uppercase bg-purple-100 text-purple-800 border-2 border-purple-800">
                           {job.couponCode}
                         </span>
                       ) : job.paymentId ? (
-                        <span className="text-xs text-zinc-400 font-mono">ID: {job.paymentId.slice(0, 10)}...</span>
+                        <span className="text-xs text-black font-bold uppercase">ID: {job.paymentId.slice(0, 10)}...</span>
                       ) : (
-                        <span className="text-xs text-zinc-600">Sin cupón</span>
+                        <span className="text-xs text-muted-foreground font-bold uppercase">Sin cupón</span>
                       )}
                     </td>
 
@@ -210,20 +210,20 @@ export default function AdminAvisosPage() {
                       <button
                         onClick={() => handleToggleStatus(job._id, job.status)}
                         disabled={actionLoading === job._id}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                        className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-black uppercase border-2 transition-transform hover:translate-y-[-1px] ${
                           job.status === "active"
-                            ? "bg-emerald-950/80 text-emerald-300 border-emerald-800 hover:bg-amber-950 hover:text-amber-300 hover:border-amber-800"
-                            : "bg-amber-950/80 text-amber-300 border-amber-800 hover:bg-emerald-950 hover:text-emerald-300 hover:border-emerald-800"
+                            ? "bg-green-100 text-green-800 border-green-800"
+                            : "bg-yellow-100 text-yellow-800 border-yellow-800"
                         }`}
                         title="Haz clic para alternar el estado"
                       >
                         {job.status === "active" ? (
                           <>
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Activo
+                            <CheckCircle2 className="w-4 h-4 text-green-800" /> Activo
                           </>
                         ) : (
                           <>
-                            <Clock className="w-3.5 h-3.5 text-amber-400" /> Pendiente
+                            <Clock className="w-4 h-4 text-yellow-800" /> Pendiente
                           </>
                         )}
                       </button>
@@ -233,19 +233,19 @@ export default function AdminAvisosPage() {
                       <Link
                         href={`/empleos/${job._id}`}
                         target="_blank"
-                        className="inline-flex items-center gap-1 p-2 text-zinc-400 hover:text-sky-400 transition-colors"
+                        className="inline-flex items-center justify-center p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all"
                         title="Ver en el sitio web"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-5 h-5" />
                       </Link>
 
                       <button
                         onClick={() => handleDeleteJob(job._id)}
                         disabled={actionLoading === job._id}
-                        className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+                        className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all"
                         title="Eliminar aviso"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </td>
                   </tr>
