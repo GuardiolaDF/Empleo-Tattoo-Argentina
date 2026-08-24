@@ -41,7 +41,7 @@ const FILTER_LABELS: Record<string, string> = {
   ubicacion: "UBICACIÓN"
 };
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 9;
 
 function EmpleosCatalogContent() {
   const searchParams = useSearchParams();

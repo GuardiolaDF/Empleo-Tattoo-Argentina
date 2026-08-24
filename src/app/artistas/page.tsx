@@ -40,7 +40,7 @@ const FILTER_LABELS: Record<string, string> = {
   ubicacion: "UBICACIÓN"
 };
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 9;
 
 function ArtistasContent() {
   const searchParams = useSearchParams();

@@ -79,7 +79,7 @@ const newsletterSchema = z.object({
 
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 9;
 
 function HomeContent() {
   const searchParams = useSearchParams();
