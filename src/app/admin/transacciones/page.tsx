@@ -105,8 +105,9 @@ export default function AdminTransaccionesPage() {
         ) : jobs.length === 0 ? (
           <div className="p-12 text-center text-black font-bold uppercase text-sm">No hay transacciones registradas.</div>
         ) : (
-          {/* Vista Mobile (Tarjetas) */}
-          <div className="block xl:hidden mt-4 space-y-4">
+          <>
+            {/* Vista Mobile (Tarjetas) */}
+            <div className="block xl:hidden mt-4 space-y-4">
             {jobs.map((job) => (
               <div key={job._id} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div>
@@ -238,7 +239,7 @@ export default function AdminTransaccionesPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </>
         )}
       </div>
     </div>

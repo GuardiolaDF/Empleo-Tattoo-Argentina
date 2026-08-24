@@ -129,8 +129,9 @@ export default function AdminFinanzasPage() {
         {filteredTransactions.length === 0 ? (
           <div className="p-12 text-center text-black font-bold uppercase text-sm">No se encontraron transacciones.</div>
         ) : (
-          {/* Vista Mobile (Tarjetas) */}
-          <div className="block xl:hidden mt-4 space-y-4">
+          <>
+            {/* Vista Mobile (Tarjetas) */}
+            <div className="block xl:hidden mt-4 space-y-4">
             {filteredTransactions.map((tx) => (
               <div key={tx.id} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex justify-between items-start">
@@ -217,7 +218,7 @@ export default function AdminFinanzasPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </>
         )}
       </div>
     </div>

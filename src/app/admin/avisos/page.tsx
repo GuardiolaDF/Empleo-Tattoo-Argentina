@@ -170,8 +170,9 @@ export default function AdminAvisosPage() {
             <p>No se encontraron avisos que coincidan con la búsqueda.</p>
           </div>
         ) : (
-          {/* Vista Mobile (Tarjetas) */}
-          <div className="block xl:hidden mt-4 space-y-4">
+          <>
+            {/* Vista Mobile (Tarjetas) */}
+            <div className="block xl:hidden mt-4 space-y-4">
             {filteredJobs.map((job) => (
               <div key={job._id} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div>
@@ -323,7 +324,7 @@ export default function AdminAvisosPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </>
         )}
       </div>
     </div>
