@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import connectToDatabase from '@/lib/mongodb';
 import Job from '@/models/Job';
@@ -119,7 +119,15 @@ export async function POST(request: Request) {
     if (type === 'payment' || action === 'payment.created' || action === 'payment.updated') {
       const paymentId = data?.id;
       if (paymentId) {
-        await processPayment(paymentId);
+        // Ejecutamos el trabajo pesado (BD y Mails) en background
+        // Esto permite que Vercel responda 200 OK inmediatamente sin cortar el proceso.
+        after(async () => {
+          try {
+            await processPayment(paymentId);
+          } catch (err) {
+            console.error("Background task failed after response:", err);
+          }
+        });
       }
     }
 
