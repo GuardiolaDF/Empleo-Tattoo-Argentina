@@ -189,8 +189,41 @@ export default async function AdminDashboardPage() {
             </Link>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[500px]">
+          {/* Vista Mobile (Tarjetas) */}
+          <div className="block xl:hidden mt-4 space-y-4">
+            {recentJobs.length === 0 ? (
+              <div className="py-8 text-center text-muted-foreground text-sm font-bold uppercase border-2 border-black">
+                No hay avisos recientes
+              </div>
+            ) : (
+              recentJobs.map((job) => (
+                <div key={job._id.toString()} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="text-sm font-black uppercase text-black">{job.studioName}</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase mt-1">{job.title}</div>
+                    </div>
+                    <span className={`inline-flex items-center px-2 py-1 text-[10px] font-black uppercase tracking-wider border-2 ${
+                      job.status === "active" 
+                        ? "bg-green-100 text-green-800 border-green-800" 
+                        : job.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800 border-yellow-800"
+                        : "bg-gray-100 text-gray-800 border-gray-800"
+                    }`}>
+                      {job.status === "active" ? "Activo" : job.status === "pending" ? "Pdte" : "Inactivo"}
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-black text-right pt-2 border-t-2 border-black">
+                    {new Date(job.createdAt).toLocaleDateString("es-AR")}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Vista Desktop (Tabla) */}
+          <div className="hidden xl:block overflow-x-auto mt-4">
+            <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b-2 border-black">
                   <th className="pb-3 text-xs font-black text-black uppercase tracking-wider">Estudio</th>
@@ -205,7 +238,7 @@ export default async function AdminDashboardPage() {
                     <td className="py-4 text-sm font-bold uppercase text-black max-w-[150px] truncate">
                       {job.studioName}
                     </td>
-                    <td className="py-4 text-sm font-bold text-muted-foreground">
+                    <td className="py-4 text-sm font-bold text-muted-foreground uppercase">
                       {job.title}
                     </td>
                     <td className="py-4">

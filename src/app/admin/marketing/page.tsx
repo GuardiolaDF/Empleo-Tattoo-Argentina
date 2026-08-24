@@ -141,70 +141,127 @@ export default function MarketingPage() {
       {loading ? (
         <p>Cargando anuncios...</p>
       ) : (
-        <div className="bg-white border-2 border-black overflow-x-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-          <table className="w-full text-left min-w-[600px]">
-            <thead className="bg-gray-50 border-b-2 border-black">
-              <tr>
-                <th className="p-4 text-xs font-black text-black uppercase">Estudio</th>
-                <th className="p-4 text-xs font-black text-black uppercase">Búsqueda</th>
-                <th className="p-4 text-xs font-black text-black uppercase text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="text-black">
-              {displayedJobs.map(job => (
-                <tr key={job._id} className="border-b border-black hover:bg-gray-50 transition-colors">
-                  <td className="p-4 font-bold uppercase">{job.studioName}</td>
-                  <td className="p-4 uppercase">{job.title} en {job.category}</td>
-                  <td className="p-4 flex items-center justify-center space-x-2">
-                    
-                    {/* Botón de Compartir Nativo (Móvil) o Descargar */}
-                    <button 
-                      onClick={() => generateAndDownloadStory(job, 'share')}
-                      disabled={renderingJobId === job._id}
-                      className="p-2 bg-black text-white rounded-md hover:bg-black/80 transition-colors flex items-center space-x-2"
-                      title="Compartir (Móvil) o Descargar"
-                    >
-                      {renderingJobId === job._id ? <span className="animate-spin text-sm">...</span> : <Share2 className="w-4 h-4" />}
-                      <span className="text-xs uppercase font-bold hidden md:inline">Compartir</span>
-                    </button>
+        <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          {/* Vista Mobile (Tarjetas) */}
+          <div className="block xl:hidden mt-4 space-y-4">
+            {displayedJobs.map((job) => (
+              <div key={job._id} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div>
+                  <div className="font-black uppercase">{job.studioName}</div>
+                  <div className="text-[10px] text-muted-foreground font-bold uppercase mt-0.5">{job.title} en {job.category}</div>
+                </div>
 
-                    <button 
-                      onClick={() => generateAndDownloadStory(job, 'download')}
-                      disabled={renderingJobId === job._id}
-                      className="p-2 border border-black text-black rounded-md hover:bg-gray-100 transition-colors"
-                      title="Descargar PNG"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
+                <div className="flex flex-wrap items-center gap-2 pt-4 border-t-2 border-black">
+                  <button 
+                    onClick={() => generateAndDownloadStory(job, 'share')}
+                    disabled={renderingJobId === job._id}
+                    className="p-2 bg-black text-white rounded-none hover:bg-black/80 transition-colors flex items-center gap-2"
+                    title="Compartir (Móvil) o Descargar"
+                  >
+                    {renderingJobId === job._id ? <span className="animate-spin text-sm">...</span> : <Share2 className="w-4 h-4" />}
+                    <span className="text-[10px] uppercase font-bold">Compartir</span>
+                  </button>
 
-                    <button 
-                      onClick={() => copyLink(job._id)}
-                      className="p-2 border border-gray-300 text-gray-600 rounded-md hover:bg-gray-100 transition-colors"
-                      title="Copiar Enlace (Para Sticker)"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </button>
+                  <button 
+                    onClick={() => generateAndDownloadStory(job, 'download')}
+                    disabled={renderingJobId === job._id}
+                    className="p-2 border-2 border-black text-black rounded-none hover:bg-white transition-colors"
+                    title="Descargar PNG"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
 
-                    <button 
-                      onClick={() => toggleStatus(job._id, job.sharedOnInstagram)}
-                      className={`p-2 border rounded-md transition-colors ${job.sharedOnInstagram ? 'border-green-500 text-green-600 hover:bg-green-50' : 'border-gray-300 text-gray-500 hover:bg-gray-100'}`}
-                      title={job.sharedOnInstagram ? "Marcar como Pendiente" : "Marcar como Compartido"}
-                    >
-                      {job.sharedOnInstagram ? <CheckCircle className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                    </button>
+                  <button 
+                    onClick={() => copyLink(job._id)}
+                    className="p-2 border-2 border-black text-black rounded-none hover:bg-white transition-colors"
+                    title="Copiar Enlace (Para Sticker)"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
 
-                  </td>
-                </tr>
-              ))}
-              {displayedJobs.length === 0 && (
+                  <button 
+                    onClick={() => toggleStatus(job._id, job.sharedOnInstagram)}
+                    className={`p-2 border-2 rounded-none transition-colors ${job.sharedOnInstagram ? 'border-green-800 bg-green-100 text-green-800' : 'border-black text-black hover:bg-white'}`}
+                    title={job.sharedOnInstagram ? "Marcar como Pendiente" : "Marcar como Compartido"}
+                  >
+                    {job.sharedOnInstagram ? <CheckCircle className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            ))}
+            {displayedJobs.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground border-2 border-black font-bold uppercase text-xs">
+                No hay anuncios en esta lista.
+              </div>
+            )}
+          </div>
+
+          {/* Vista Desktop (Tabla) */}
+          <div className="hidden xl:block overflow-x-auto border-t-2 border-black">
+            <table className="w-full text-left bg-white min-w-[700px]">
+              <thead className="bg-gray-50 border-b-2 border-black">
                 <tr>
-                  <td colSpan={3} className="p-8 text-center text-muted-foreground">
-                    No hay anuncios en esta lista.
-                  </td>
+                  <th className="p-4 text-xs font-black text-black uppercase">Estudio</th>
+                  <th className="p-4 text-xs font-black text-black uppercase">Puesto & Categoría</th>
+                  <th className="p-4 text-xs font-black text-black uppercase text-center">Acciones</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-black divide-y-2 divide-gray-200">
+                {displayedJobs.map(job => (
+                  <tr key={job._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 font-black uppercase">{job.studioName}</td>
+                    <td className="p-4 uppercase font-bold text-muted-foreground">{job.title} en {job.category}</td>
+                    <td className="p-4 flex items-center justify-center space-x-2">
+                      
+                      {/* Botón de Compartir Nativo (Móvil) o Descargar */}
+                      <button 
+                        onClick={() => generateAndDownloadStory(job, 'share')}
+                        disabled={renderingJobId === job._id}
+                        className="p-2 border-2 border-black bg-black text-white rounded-none hover:bg-black/80 transition-colors flex items-center space-x-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px]"
+                        title="Compartir (Móvil) o Descargar"
+                      >
+                        {renderingJobId === job._id ? <span className="animate-spin text-sm">...</span> : <Share2 className="w-4 h-4" />}
+                        <span className="text-xs uppercase font-bold hidden md:inline">Compartir</span>
+                      </button>
+
+                      <button 
+                        onClick={() => generateAndDownloadStory(job, 'download')}
+                        disabled={renderingJobId === job._id}
+                        className="p-2 border-2 border-black text-black rounded-none hover:bg-gray-100 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px]"
+                        title="Descargar PNG"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+
+                      <button 
+                        onClick={() => copyLink(job._id)}
+                        className="p-2 border-2 border-black text-black rounded-none hover:bg-gray-100 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px]"
+                        title="Copiar Enlace (Para Sticker)"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
+
+                      <button 
+                        onClick={() => toggleStatus(job._id, job.sharedOnInstagram)}
+                        className={`p-2 border-2 rounded-none transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px] ${job.sharedOnInstagram ? 'border-green-800 text-green-800 bg-green-100 hover:bg-green-200' : 'border-black text-black hover:bg-gray-100'}`}
+                        title={job.sharedOnInstagram ? "Marcar como Pendiente" : "Marcar como Compartido"}
+                      >
+                        {job.sharedOnInstagram ? <CheckCircle className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+
+                    </td>
+                  </tr>
+                ))}
+                {displayedJobs.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="p-8 text-center text-muted-foreground font-bold uppercase text-sm">
+                      No hay anuncios en esta lista.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

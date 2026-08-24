@@ -170,7 +170,78 @@ export default function AdminAvisosPage() {
             <p>No se encontraron avisos que coincidan con la búsqueda.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          {/* Vista Mobile (Tarjetas) */}
+          <div className="block xl:hidden mt-4 space-y-4">
+            {filteredJobs.map((job) => (
+              <div key={job._id} className="bg-gray-50 border-2 border-black p-4 flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div>
+                  <div className="font-black uppercase">{job.title}</div>
+                  <div className="text-xs font-bold text-muted-foreground mt-0.5 uppercase">{job.studioName}</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="font-bold text-muted-foreground uppercase">Categoría:</span>
+                    <div className="font-bold uppercase text-black">{job.category}</div>
+                  </div>
+                  <div>
+                    <span className="font-bold text-muted-foreground uppercase">Ubicación:</span>
+                    <div className="font-bold uppercase text-black">{job.location}</div>
+                  </div>
+                </div>
+
+                <div>
+                  {job.couponCode ? (
+                    <span className="inline-block px-3 py-1 text-[10px] font-black uppercase bg-purple-100 text-purple-800 border-2 border-purple-800">
+                      Cupón: {job.couponCode}
+                    </span>
+                  ) : job.paymentId ? (
+                    <span className="text-[10px] text-black font-bold uppercase">Pago ID: {job.paymentId.slice(0, 10)}...</span>
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground font-bold uppercase">Sin cupón/pago</span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t-2 border-black">
+                  <button
+                    onClick={() => handleToggleStatus(job._id, job.status)}
+                    disabled={actionLoading === job._id}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase border-2 transition-transform hover:translate-y-[-1px] ${
+                      job.status === "active"
+                        ? "bg-green-100 text-green-800 border-green-800"
+                        : "bg-yellow-100 text-yellow-800 border-yellow-800"
+                    }`}
+                  >
+                    {job.status === "active" ? (
+                      <><CheckCircle2 className="w-3 h-3 text-green-800" /> Activo</>
+                    ) : (
+                      <><Clock className="w-3 h-3 text-yellow-800" /> Pendiente</>
+                    )}
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/empleos/${job._id}`}
+                      target="_blank"
+                      className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteJob(job._id)}
+                      disabled={actionLoading === job._id}
+                      className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Vista Desktop (Tabla) */}
+          <div className="hidden xl:block overflow-x-auto">
             <table className="w-full text-left text-sm text-black min-w-[800px]">
               <thead className="bg-gray-50 text-xs font-black uppercase text-black border-b-2 border-black">
                 <tr>
