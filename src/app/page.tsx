@@ -449,7 +449,7 @@ function HomeContent() {
 
       {filteredJobs.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12 mt-10">
               {filteredJobs.slice(0, visibleCount).map((job, idx) => (
                 <Link key={job.id || idx} href={`/empleos/${job.id}`}>
                   <JobCard 
@@ -459,6 +459,7 @@ function HomeContent() {
                     role={job.role}
                     specialty={job.specialty}
                     location={job.location}
+                    metadata={[job.tipoRol, job.experiencia].filter(Boolean)}
                   />
                 </Link>
               ))}

@@ -8,85 +8,7 @@ import { MapPin, Settings2, Check, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 import { NewsletterForm } from "@/components/ui/NewsletterForm";
-
-const cardStyles = [
-  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted" }, // Tone 1: white
-  { bg: "bg-card-2", text: "text-white", muted: "text-gray-400" },   // Tone 2: near black
-  { bg: "bg-card-4", text: "text-white", muted: "text-gray-400" },   // Tone 4: dark gray
-  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted" }, // Tone 3: white
-];
-
-const FILTROS = {
-  puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
-    "Encargado/a de local", "Mantenimiento"],
-  experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
-    "Avanzado (3-5 años)", "Senior (+5 años)"],
-  especialidad: ["Blackwork", "Realismo", "Traditional", 
-    "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
-    "Dotwork", "Acuarela", "Lettering", "Cover up", 
-    "Generalista", "Comercial", "Otro"],
-  tipoEstudio: ["Privado", "Local comercial"],
-  tipoRol: ["Alquiler de box", "Residente con porcentaje", 
-    "Residente clientes propios"],
-  ubicacion: ["CABA", "Zona Norte GBA", "Zona Sur GBA", 
-    "Zona Oeste GBA", "Buenos Aires provincia", "Córdoba", 
-    "Rosario", "Mendoza", "Tucumán", "Salta", "Jujuy",
-    "Santiago del Estero", "Chaco", "Corrientes", "Misiones",
-    "Entre Ríos", "Santa Fe", "La Rioja", "Catamarca",
-    "San Juan", "San Luis", "La Pampa", "Neuquén",
-    "Río Negro", "Chubut", "Santa Cruz", 
-    "Tierra del Fuego", "Islas Malvinas"],
-};
-
-const FILTER_LABELS: Record<string, string> = {
-  puesto: "PUESTO",
-  experiencia: "EXPERIENCIA",
-  especialidad: "ESPECIALIDAD",
-  tipoEstudio: "TIPO DE ESTUDIO",
-  tipoRol: "TIPO DE ROL",
-  ubicacion: "UBICACIÓN"
-};
-
-interface JobCardProps {
-  id: string;
-  index: number;
-  studioName?: string;
-  role: string;
-  specialty: string;
-  location: string;
-}
-
-function JobCard({ id, index, studioName, role, specialty, location }: JobCardProps) {
-  const pattern = [0, 1, 1, 2];
-  const style = cardStyles[pattern[index % 4]];
-
-  return (
-    <Link 
-      href={`/empleos/${id}`} 
-      className={`group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-card-hover transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] border border-border ${style.bg} ${style.text}`} 
-    >
-      <div className="relative z-10 flex flex-col">
-        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2">
-          {studioName}
-        </h3>
-        
-        <div className="flex flex-col space-y-1 sm:space-y-2">
-          <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>busca</span>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-normal leading-tight line-clamp-2">{role}</h2>
-          <span className={`text-sm sm:text-base font-serif italic ${style.muted} line-clamp-1`}>{specialty}</span>
-        </div>
-      </div>
-      
-      <div className="relative z-10 flex flex-col space-y-1 sm:space-y-2 mt-4 sm:mt-6">
-        <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>en</span>
-        <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4 flex-shrink-0" />
-          <span className="text-xs sm:text-sm font-sans font-normal truncate">{location}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
+import { JobCard } from "@/components/ui/JobCard";
 
 
 const ITEMS_PER_PAGE = 4;
@@ -375,17 +297,19 @@ function ArtistasContent() {
 
         {filteredJobs.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12 mt-10">
               {visibleJobs.map((job, idx) => (
-                <JobCard 
-                  key={job.id || idx}
-                  id={job.id}
-                  index={idx}
-                  studioName={job.studioName}
-                  role={job.role}
-                  specialty={job.specialty}
-                  location={job.location}
-                />
+                <Link key={job.id || idx} href={`/empleos/${job.id}`}>
+                  <JobCard 
+                    jobId={job.id}
+                    index={idx}
+                    studioName={job.studioName}
+                    role={job.role}
+                    specialty={job.specialty}
+                    location={job.location}
+                    metadata={[job.tipoRol, job.experiencia].filter(Boolean)}
+                  />
+                </Link>
               ))}
             </div>
             {hasMore && (

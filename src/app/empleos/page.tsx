@@ -287,7 +287,7 @@ function EmpleosCatalogContent() {
 
           {filteredJobs.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
                 {visibleJobs.map((job, idx) => (
                   <Link key={job.id || idx} href={`/empleos/${job.id}`}>
                     <JobCard 
@@ -297,6 +297,7 @@ function EmpleosCatalogContent() {
                       role={job.role}
                       specialty={job.specialty}
                       location={job.location}
+                      metadata={[job.tipoRol, job.experiencia].filter(Boolean)}
                     />
                   </Link>
                 ))}
