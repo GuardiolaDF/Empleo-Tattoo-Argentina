@@ -12,13 +12,24 @@ function formatLocation(loc: string) {
   if (!loc) return "";
   const parts = loc.split(',').map(s => s.trim());
   if (parts.length >= 2) {
-    const prov = parts[0].toUpperCase();
-    if (prov.includes('CABA') || prov.includes('CAPITAL FEDERAL')) {
-      return parts[1]; // Barrio
-    } else if (prov.includes('BUENOS AIRES') || prov.includes('GBA')) {
-      return parts[1]; // Ciudad
+    const upperLoc = loc.toUpperCase();
+    
+    // Asumimos formato: [Calle/Barrio], [Ciudad], [Provincia], [País]
+    // Buscamos la provincia en las últimas posiciones
+    let city = parts.length > 2 ? parts[parts.length - 2] : parts[0];
+    let prov = parts[parts.length - 1];
+
+    if (prov.toUpperCase().includes('ARGENTINA') && parts.length >= 3) {
+      prov = parts[parts.length - 2];
+      city = parts[parts.length - 3];
+    }
+    
+    if (upperLoc.includes('CABA') || upperLoc.includes('CAPITAL FEDERAL')) {
+      return city; // Barrio
+    } else if (upperLoc.includes('BUENOS AIRES') || upperLoc.includes('GBA')) {
+      return city; // Ciudad
     } else {
-      return `${parts[1]}, ${parts[0]}`; // Ciudad, Provincia
+      return `${city}, ${prov}`; // Ciudad, Provincia
     }
   }
   return loc;
@@ -26,6 +37,14 @@ function formatLocation(loc: string) {
 
 export const InstagramStoryTemplate = forwardRef<HTMLDivElement, InstagramStoryTemplateProps>(
   ({ studioName, category, location }, ref) => {
+    
+    // Dynamic text sizing based on length to fit screen without clipping
+    const roleText = category.toUpperCase();
+    const locText = formatLocation(location).toUpperCase();
+    
+    const roleFontSize = Math.min(180, Math.floor(1300 / Math.max(roleText.length, 1))); 
+    const locFontSize = Math.min(120, Math.floor(800 / Math.max(locText.length, 1))); 
+
     return (
       <div 
         ref={ref}
@@ -59,9 +78,11 @@ export const InstagramStoryTemplate = forwardRef<HTMLDivElement, InstagramStoryT
           <span className="text-[100px] font-serif mb-12" style={{ fontFamily: 'var(--font-bodoni-moda)' }}>
             busca
           </span>
-          {/* Ajuste de tamaño para asegurar que entre en una línea */}
-          <h3 className="text-[140px] font-black uppercase tracking-tighter leading-[0.8] mb-16 whitespace-nowrap overflow-hidden">
-            {category}
+          <h3 
+            className="font-black uppercase tracking-tighter leading-none mb-16 whitespace-nowrap"
+            style={{ fontSize: `${roleFontSize}px` }}
+          >
+            {roleText}
           </h3>
           <div className="flex items-end w-full mt-auto mb-8">
             <span className="text-[100px] font-serif mb-2 flex-shrink-0" style={{ fontFamily: 'var(--font-bodoni-moda)' }}>
@@ -70,13 +91,16 @@ export const InstagramStoryTemplate = forwardRef<HTMLDivElement, InstagramStoryT
             {/* Línea expansible */}
             <div className="flex-1 h-2 bg-black mx-8 mb-6"></div>
             {/* Pin y Ubicación */}
-            <div className="flex items-center space-x-6 mb-2 flex-shrink-0">
+            <div className="flex items-center space-x-6 mb-2 flex-shrink-0 max-w-[800px]">
               <svg className="w-24 h-24 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <span className="text-[100px] font-black uppercase tracking-tight leading-none whitespace-nowrap">
-                {formatLocation(location)}
+              <span 
+                className="font-black uppercase tracking-tight leading-none whitespace-nowrap"
+                style={{ fontSize: `${locFontSize}px` }}
+              >
+                {locText}
               </span>
             </div>
           </div>
@@ -84,12 +108,12 @@ export const InstagramStoryTemplate = forwardRef<HTMLDivElement, InstagramStoryT
 
         {/* Inferior */}
         <div className="h-[500px] px-16 pt-24 relative bg-[#C0C0C0]">
-          <h4 className="text-[90px] font-serif pl-8" style={{ fontFamily: 'var(--font-bodoni-moda)' }}>
+          <h4 className="text-[75px] font-serif pl-8 whitespace-nowrap" style={{ fontFamily: 'var(--font-bodoni-moda)' }}>
             mirá el anuncio completo
           </h4>
           
           {/* Flecha curvada */}
-          <svg className="absolute left-16 top-56 w-[200px] h-[200px]" viewBox="0 0 100 100" fill="none" stroke="black" strokeWidth="3">
+          <svg className="absolute left-16 top-52 w-[200px] h-[200px]" viewBox="0 0 100 100" fill="none" stroke="black" strokeWidth="3">
             <path d="M 40 10 C -10 10, -10 90, 40 90" strokeLinecap="round" fill="none" />
             <polygon points="35,80 45,90 35,100" fill="black" stroke="black" strokeWidth="1" />
           </svg>

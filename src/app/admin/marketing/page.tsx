@@ -273,7 +273,7 @@ export default function MarketingPage() {
               key={job._id}
               ref={templateRef}
               studioName={job.studioName}
-              category={job.category}
+              category={job.title}
               location={job.location}
             />
           ))}
