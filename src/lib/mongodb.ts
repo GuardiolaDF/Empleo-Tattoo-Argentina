@@ -13,17 +13,18 @@ if (!cached) {
 }
 
 async function connectToDatabase() {
-  if (cached.conn && mongoose.connection.readyState === 1) {
+  if (cached.conn) {
     return cached.conn;
   }
 
-  if (!cached.promise || mongoose.connection.readyState === 0) {
+  if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 10000, // Reduce to fail faster if down
+      connectTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       maxPoolSize: 10,
+      maxIdleTimeMS: 10000, // CRÍTICO: Cierra conexiones ociosas antes de que AWS/Vercel mate el socket silenciosamente
     };
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((m) => {
