@@ -324,7 +324,8 @@ export default function AdminAvisosPage() {
                 ))}
               </tbody>
             </table>
-          </>
+          </div>
+        </>
         )}
       </div>
     </div>

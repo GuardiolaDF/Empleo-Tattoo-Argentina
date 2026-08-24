@@ -218,7 +218,8 @@ export default function AdminFinanzasPage() {
                 ))}
               </tbody>
             </table>
-          </>
+          </div>
+        </>
         )}
       </div>
     </div>

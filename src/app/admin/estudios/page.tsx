@@ -291,7 +291,8 @@ export default function AdminEstudiosPage() {
                 ))}
               </tbody>
             </table>
-          </>
+          </div>
+        </>
         )}
       </div>
     </div>

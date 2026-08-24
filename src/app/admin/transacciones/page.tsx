@@ -239,7 +239,8 @@ export default function AdminTransaccionesPage() {
                 ))}
               </tbody>
             </table>
-          </>
+          </div>
+        </>
         )}
       </div>
     </div>
