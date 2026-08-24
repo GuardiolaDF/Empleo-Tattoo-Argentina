@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { MapPin, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -21,6 +21,44 @@ export function JobCard({ index, jobId, studioName, role, specialty, location, m
   const containerClasses = isDark
     ? "bg-black text-white border border-black"
     : "bg-white text-black border border-black";
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const resizeText = () => {
+      if (!containerRef.current || !textRef.current) return;
+      
+      // We set a large base size to measure natural width accurately
+      const baseSize = 60; 
+      textRef.current.style.fontSize = `${baseSize}px`;
+      
+      const containerWidth = containerRef.current.clientWidth;
+      const textWidth = textRef.current.scrollWidth;
+      
+      if (textWidth > 0 && containerWidth > 0) {
+        // Calculate the scale needed to perfectly match the container width
+        const scale = containerWidth / textWidth;
+        // Cap the maximum font size so extremely short words don't become absurdly large
+        const finalSize = Math.min(baseSize * scale, 65); 
+        textRef.current.style.fontSize = `${finalSize}px`;
+      }
+    };
+
+    resizeText();
+    
+    // Create a ResizeObserver to watch for grid changes or window resizing
+    const observer = new ResizeObserver(() => {
+      // Use requestAnimationFrame to avoid ResizeObserver loop limit errors
+      window.requestAnimationFrame(resizeText);
+    });
+    
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    
+    return () => observer.disconnect();
+  }, [role]);
 
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -66,9 +104,10 @@ export function JobCard({ index, jobId, studioName, role, specialty, location, m
       </div>
 
       {/* Center (Protagonista) */}
-      <div className="mt-6 lg:mt-8 flex flex-col">
+      <div className="mt-6 lg:mt-8 flex flex-col overflow-hidden" ref={containerRef}>
         <h2 
-          className="text-3xl lg:text-4xl xl:text-[40px] tracking-tight font-serif font-medium leading-none uppercase break-words" 
+          ref={textRef}
+          className="font-serif font-medium leading-none uppercase whitespace-nowrap origin-left" 
           style={{ fontFamily: 'var(--font-bodoni-moda)' }}
         >
           {role}
