@@ -1,16 +1,8 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { MapPin, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
-
-export const cardStyles = [
-  { bg: "bg-card-1", text: "text-foreground", muted: "text-muted" }, // Tone 1: white
-  { bg: "bg-card-2", text: "text-white", muted: "text-gray-400" },   // Tone 2: near black
-  { bg: "bg-card-4", text: "text-white", muted: "text-gray-400" },   // Tone 4: dark gray
-  { bg: "bg-card-3", text: "text-foreground", muted: "text-muted" }, // Tone 3: white
-];
 
 export interface JobCardProps {
   index: number;
@@ -19,11 +11,16 @@ export interface JobCardProps {
   role: string;
   specialty: string;
   location: string;
+  metadata?: string[];
 }
 
-export function JobCard({ index, jobId, studioName, role, specialty, location }: JobCardProps) {
-  const pattern = [0, 1, 1, 2];
-  const style = cardStyles[pattern[index % 4]];
+export function JobCard({ index, jobId, studioName, role, specialty, location, metadata = [] }: JobCardProps) {
+  // Checkerboard pattern for a 3-column grid
+  const isDark = index % 2 !== 0;
+  
+  const containerClasses = isDark
+    ? "bg-black text-white border border-black"
+    : "bg-white text-black border border-black";
 
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,10 +32,7 @@ export function JobCard({ index, jobId, studioName, role, specialty, location }:
     
     if (navigator.share) {
       try {
-        await navigator.share({
-          title,
-          url,
-        });
+        await navigator.share({ title, url });
       } catch (err) {
         console.log("Error sharing:", err);
       }
@@ -53,41 +47,59 @@ export function JobCard({ index, jobId, studioName, role, specialty, location }:
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      whileHover={{ y: -8 }}
-      transition={{ 
-        duration: 0.4, 
-        ease: [0.4, 0, 0.2, 1],
-        y: { type: "spring", stiffness: 200, damping: 20 }
-      }}
-      className={`relative group flex flex-col p-6 sm:p-8 md:p-10 justify-between aspect-[3/4] sm:aspect-square md:aspect-[4/3] overflow-hidden border border-border ${style.bg} ${style.text} w-full h-full`} 
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3 }}
+      className={`relative flex flex-col min-h-[340px] p-6 lg:p-8 w-full h-full ${containerClasses}`} 
     >
-      {/* Share Button (Top-Right) */}
-      <button 
-        onClick={handleShare}
-        className={`absolute top-4 right-4 p-2 z-20 rounded-full hover:bg-black/10 transition-colors ${style.text} opacity-0 group-hover:opacity-100 sm:opacity-100`}
-        aria-label="Compartir"
-      >
-        <Share2 className="w-5 h-5" />
-      </button>
+      {/* Top (Cabecera) */}
+      <div className="flex justify-between items-end">
+        <span className="font-sans text-sm font-bold uppercase truncate pr-4 leading-none pb-[2px]">
+          {studioName || "Estudio"}
+        </span>
+        <button 
+          onClick={handleShare}
+          className="hover:opacity-50 transition-opacity flex-shrink-0 leading-none"
+          aria-label="Compartir"
+        >
+          <Share2 className="w-5 h-5" strokeWidth={1.5} />
+        </button>
+      </div>
 
-      <div className="relative z-10 flex flex-col mt-4 sm:mt-0 pr-10 sm:pr-12">
-        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-sans font-bold uppercase leading-tight tracking-tight mb-3 sm:mb-4 break-words line-clamp-2 text-left">
-          {studioName}
-        </h3>
-        
-        <div className="flex flex-col space-y-1 sm:space-y-2">
-          <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>busca</span>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-normal leading-tight line-clamp-2">{role}</h2>
-          <span className={`text-sm sm:text-base font-serif italic ${style.muted} line-clamp-1`}>{specialty}</span>
-        </div>
+      {/* Center (Protagonista) */}
+      <div className="mt-6 lg:mt-8 flex flex-col">
+        <h2 
+          className="text-3xl lg:text-4xl xl:text-[40px] tracking-tight font-serif font-medium leading-none uppercase break-words" 
+          style={{ fontFamily: 'var(--font-bodoni-moda)' }}
+        >
+          {role}
+        </h2>
+        <span className="font-sans text-base mt-2 line-clamp-1">
+          {specialty}
+        </span>
       </div>
       
-      <div className="relative z-10 flex flex-col space-y-1 sm:space-y-2 mt-4 sm:mt-6">
-        <span className={`text-label lowercase font-normal tracking-[0.2em] ${style.muted}`}>en</span>
-        <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4 flex-shrink-0" />
-          <span className="text-xs sm:text-sm font-sans font-normal truncate">{location}</span>
+      {/* Center-Bottom (Metadatos) */}
+      {metadata && metadata.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-6">
+          {metadata.map((tag, i) => (
+            <span 
+              key={i}
+              className={`font-sans text-[10px] uppercase font-medium tracking-[0.2em] border px-2 py-1 ${
+                isDark ? 'border-gray-600 text-gray-300' : 'border-gray-300 text-gray-700'
+              }`}
+            >
+              {tag}
+            </span>
+          ))}
         </div>
+      )}
+
+      {/* Bottom (Anclaje inferior) */}
+      <div className="mt-auto pt-8 flex items-center gap-2">
+        <MapPin className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+        <span className="font-sans text-xs sm:text-sm font-medium truncate">
+          {location}
+        </span>
       </div>
     </motion.div>
   );
