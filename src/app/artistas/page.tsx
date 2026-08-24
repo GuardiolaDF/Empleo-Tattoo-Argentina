@@ -9,7 +9,36 @@ import Link from "next/link";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
 import { NewsletterForm } from "@/components/ui/NewsletterForm";
 import { JobCard } from "@/components/ui/JobCard";
+const FILTROS = {
+  puesto: ["Tatuador/a", "Perforador/a", "Recepcionista", 
+    "Encargado/a de local", "Mantenimiento"],
+  experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
+    "Avanzado (3-5 años)", "Senior (+5 años)"],
+  especialidad: ["Blackwork", "Realismo", "Traditional", 
+    "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
+    "Dotwork", "Acuarela", "Lettering", "Cover up", 
+    "Generalista", "Comercial", "Otro"],
+  tipoEstudio: ["Privado", "Local comercial"],
+  tipoRol: ["Alquiler de box", "Residente con porcentaje", 
+    "Residente clientes propios"],
+  ubicacion: ["CABA", "Zona Norte GBA", "Zona Sur GBA", 
+    "Zona Oeste GBA", "Buenos Aires provincia", "Córdoba", 
+    "Rosario", "Mendoza", "Tucumán", "Salta", "Jujuy",
+    "Santiago del Estero", "Chaco", "Corrientes", "Misiones",
+    "Entre Ríos", "Santa Fe", "La Rioja", "Catamarca",
+    "San Juan", "San Luis", "La Pampa", "Neuquén",
+    "Río Negro", "Chubut", "Santa Cruz", 
+    "Tierra del Fuego", "Islas Malvinas"],
+};
 
+const FILTER_LABELS: Record<string, string> = {
+  puesto: "PUESTO",
+  experiencia: "EXPERIENCIA",
+  especialidad: "ESPECIALIDAD",
+  tipoEstudio: "TIPO DE ESTUDIO",
+  tipoRol: "TIPO DE ROL",
+  ubicacion: "UBICACIÓN"
+};
 
 const ITEMS_PER_PAGE = 4;
 
