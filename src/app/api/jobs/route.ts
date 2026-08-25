@@ -44,12 +44,12 @@ export async function GET(request: Request) {
 // Rate limiter en memoria
 const rateLimit = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minuto
-const MAX_REQUESTS_PER_WINDOW = 5;
+const MAX_REQUESTS_PER_WINDOW = 15;
 
 export async function POST(request: Request) {
   try {
     // 1. Rate Limiting Check
-    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous';
     const now = Date.now();
     const windowStart = now - RATE_LIMIT_WINDOW_MS;
     

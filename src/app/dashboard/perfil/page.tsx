@@ -435,6 +435,11 @@ export default function PerfilEstudioPage() {
         .map(p => p.url || p.preview)
         .filter(url => url.startsWith('http'));
 
+      let safeWebsite = data.website || '';
+      if (safeWebsite && !/^https?:\/\//i.test(safeWebsite)) {
+        safeWebsite = `https://${safeWebsite}`;
+      }
+
       const payload = {
         nombre: data.nombre,
         anio: data.anio,
@@ -443,7 +448,7 @@ export default function PerfilEstudioPage() {
         instagram: finalInstagram,
         whatsapp: finalWhatsapp,
         countryCode: selectedCountry.code,
-        website: data.website || '',
+        website: safeWebsite,
         especialidades: specialties,
         fotos: photoUrls,
         portada: portadaUrl || '',
@@ -460,7 +465,8 @@ export default function PerfilEstudioPage() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setTimeout(() => setIsSuccess(false), 5000);
       } else {
-        alert('Error al guardar. Intenta nuevamente.');
+        const errorData = await res.json().catch(() => ({}));
+        alert(errorData.error || 'Error al guardar el perfil. Revisa que todos los campos sean correctos.');
       }
     } catch (error) {
       console.error('Save error:', error);

@@ -51,8 +51,8 @@ export default function PublicarEmpleoPage() {
             const data = await res.json();
             if (data) {
               reset({
-                nombreEstudio: data.name || "",
-                localizacion: data.address || "",
+                nombreEstudio: data.nombre || data.name || "",
+                localizacion: data.ubicacion || data.address || "",
               });
             }
           }
@@ -98,9 +98,15 @@ export default function PublicarEmpleoPage() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({}));
         console.error("Error API Jobs:", errorData);
-        alert("Hubo un error al guardar tu publicación. Revisa la consola.");
+        if (res.status === 400 && errorData.details) {
+          alert(`Error en los datos del formulario. Revisa los campos ingresados.`);
+        } else if (res.status === 429) {
+          alert("Has intentado enviar demasiadas solicitudes. Espera un momento y reintenta.");
+        } else {
+          alert(errorData.error || "Hubo un error al guardar tu publicación. Intenta nuevamente.");
+        }
         return;
       }
 
