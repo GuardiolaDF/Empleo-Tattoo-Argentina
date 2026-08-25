@@ -119,19 +119,60 @@ export async function POST(request: Request) {
     if (type === 'payment' || action === 'payment.created' || action === 'payment.updated') {
       const paymentId = data?.id;
       if (paymentId) {
-        // Ejecutamos el trabajo pesado (BD y Mails) en background
-        // Esto permite que Vercel responda 200 OK inmediatamente sin cortar el proceso.
-        after(async () => {
-          try {
-            await processPayment(paymentId);
-          } catch (err) {
-            console.error("Background task failed after response:", err);
+        // SOLUCIÓN: Aguardar la operación crítica de Base de Datos antes de confirmar a MP. 
+        // Si falla, el catch forzará un status 500, obligando a MercadoPago a reintentar más tarde.
+        try {
+          const paymentData = await new Payment(client).get({ id: paymentId });
+          if ((paymentData.status === 'approved' || paymentData.status === 'in_process') && paymentData.external_reference) {
+            await connectToDatabase();
+            const updatedJob = await Job.findByIdAndUpdate(
+              paymentData.external_reference,
+              { status: 'active', paymentId: paymentId, pricePaid: 5000 },
+              { returnDocument: 'after' }
+            );
+            
+            // Tarea secundaria no bloqueante
+            if (updatedJob) {
+               after(async () => { 
+                 // Logic to send mass emails inside after
+                 try {
+                   const subscribers = await Subscriber.find({ active: true });
+                   if (subscribers.length > 0) {
+                     const emails = subscribers.map((sub: any) => ({
+                       from: 'notificaciones@resend.dev', 
+                       to: sub.email,
+                       subject: `¡Nuevo Empleo en ETA! ${updatedJob.title} en ${updatedJob.studioName}`,
+                       html: `
+                         <div style="font-family: sans-serif; padding: 20px;">
+                           <h1 style="color: #000; text-transform: uppercase;">Nuevo Aviso Publicado</h1>
+                           <p><strong>${updatedJob.studioName}</strong> está buscando un/a <strong>${updatedJob.title}</strong> en <strong>${updatedJob.location}</strong>.</p>
+                           <p>Especialidad buscada: ${updatedJob.category}</p>
+                           <br />
+                           <a href="https://empleotattoo.com" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; font-weight: bold;">Ver Oferta en el Feed</a>
+                         </div>
+                       `
+                     }));
+                     await resend.batch.send(emails.slice(0, 100));
+                   }
+                 } catch (emailError) {
+                   console.error("Error sending automated emails:", emailError);
+                 }
+               });
+            }
+          } else if ((paymentData.status === 'rejected' || paymentData.status === 'cancelled') && paymentData.external_reference) {
+            await connectToDatabase();
+            await Job.findByIdAndUpdate(
+              paymentData.external_reference,
+              { status: 'pending' }
+            );
           }
-        });
+        } catch (dbError) {
+          console.error("Fallo crítico en Base de Datos durante Webhook. Forzando reintento de MP:", dbError);
+          return NextResponse.json({ error: "Database Sync Failed" }, { status: 500 });
+        }
       }
     }
 
-    // Critical: Return a 200 OK immediately
     return NextResponse.json({ status: "success" }, { status: 200 });
   } catch (error) {
     console.error('Webhook error:', error);
