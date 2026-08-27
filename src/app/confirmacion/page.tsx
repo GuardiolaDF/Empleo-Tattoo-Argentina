@@ -2,8 +2,35 @@
 
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 
-export default function ConfirmacionPage() {
+function ConfirmacionContent() {
+  const searchParams = useSearchParams();
+  const externalReference = searchParams.get("external_reference") || searchParams.get("jobId");
+  const paymentId = searchParams.get("payment_id") || "N/A";
+  
+  const [job, setJob] = useState<any>(null);
+  
+  useEffect(() => {
+    if (!externalReference) return;
+    async function fetchJob() {
+      try {
+        const res = await fetch(`/api/jobs/${externalReference}`);
+        if (res.ok) {
+          const data = await res.json();
+          setJob(data.job);
+        }
+      } catch (error) {
+        console.error("Error fetching job:", error);
+      }
+    }
+    fetchJob();
+  }, [externalReference]);
+
+  const studioName = job?.studioName || "Tu Estudio";
+  const jobTitle = job?.title || "Aviso de Empleo";
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-12 space-y-8">
       <div className="bg-white w-full max-w-xl border border-border">
@@ -12,7 +39,7 @@ export default function ConfirmacionPage() {
         <div className="p-8 md:p-12 pb-6">
           <div className="flex justify-between items-start mb-16">
             <span className="text-caption-sm mt-2">
-              Transaction ID: #829314
+              Transacción ID: #{paymentId}
             </span>
             <div className="bg-black text-white w-12 h-12 flex items-center justify-center">
               <Check className="w-6 h-6" />
@@ -26,8 +53,8 @@ export default function ConfirmacionPage() {
           {/* Studio Info Card */}
           <div className="bg-gray-50 p-8 flex justify-between items-start border border-transparent">
             <div>
-              <h2 className="text-h2 mb-1">Black Lung Studio</h2>
-              <p className="text-body-sm text-muted-foreground">Tatuador Senior</p>
+              <h2 className="text-h2 mb-1">{studioName}</h2>
+              <p className="text-body-sm text-muted-foreground">{jobTitle}</p>
             </div>
             <div className="bg-black text-white px-3 py-1">
               <span className="text-caption-sm">En Línea</span>
@@ -108,5 +135,13 @@ export default function ConfirmacionPage() {
       </div>
 
     </div>
+  );
+}
+
+export default function ConfirmacionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><p className="text-body text-muted-foreground">Cargando...</p></div>}>
+      <ConfirmacionContent />
+    </Suspense>
   );
 }

@@ -20,7 +20,15 @@ export const studioSchema = z.object({
   instagram: z.string().trim().max(100),
   whatsapp: z.string().trim().max(50),
   countryCode: z.string().trim().max(10).default('54'),
-  website: z.string().trim().url("Debe ser una URL válida").or(z.literal('')).optional(),
+  website: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && val.length > 0 && !/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    },
+    z.string().trim().url("Debe ser una URL válida").or(z.literal(''))
+  ).optional(),
   especialidades: z.array(z.string().trim().max(50)).optional().default([]),
   fotos: z.array(z.string().url()).optional().default([]),
   portada: z.string().url().or(z.literal('')).optional(),

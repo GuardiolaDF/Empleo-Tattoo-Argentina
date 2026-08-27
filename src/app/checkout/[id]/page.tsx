@@ -223,10 +223,10 @@ export default function CheckoutPage() {
               <form onSubmit={handleApplyCoupon} className="flex gap-2">
                 <input 
                   type="text"
-                  placeholder="Ej. ETA100"
+                  placeholder="Ej. EJEMPLO-DESC20"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  disabled={appliedCoupon?.isFree}
+                  disabled={appliedCoupon?.isFree || isProcessing}
                   className="flex-1 border border-border px-4 py-2.5 outline-none text-body focus:border-black uppercase transition-colors"
                 />
                 <button

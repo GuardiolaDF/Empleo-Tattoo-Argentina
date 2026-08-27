@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SpecialtyPill } from "@/components/ui/SpecialtyPill";
@@ -38,26 +40,20 @@ const profileSchema = z.object({
     .regex(/^[a-zA-Z0-9._]{2,30}$/, "Solo letras, números, puntos y guiones bajos. Mín. 2 caracteres.")
     .min(1, "Este campo es requerido"),
   whatsapp: z.string()
-    .regex(/^\d{2}\s\d{4}\s\d{4}$/, "Ingresá un número válido. Ej: 11 2222 3333")
-    .min(1, "Este campo es requerido"),
-  website: z.string()
-    .refine((val) => val === "" || /^[a-zA-Z0-9][a-zA-Z0-9-_.]+\.[a-zA-Z]{2,}/.test(val), {
-      message: "Ingresá un dominio válido. Ej: tuestudio.com"
-    })
-    .optional(),
+    .min(1, "Este campo es requerido")
+    .regex(/^\+[1-9]\d{1,14}$/, "Debe ser un número válido en formato internacional"),
+  website: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && val.length > 0 && !/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    },
+    z.string().url("Debe ser una URL válida").or(z.literal(''))
+  ).optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
-
-const COUNTRY_CODES = [
-  { code: "54", flag: "🇦🇷", label: "+54 Argentina" },
-  { code: "598", flag: "🇺🇾", label: "+598 Uruguay" },
-  { code: "56", flag: "🇨🇱", label: "+56 Chile" },
-  { code: "591", flag: "🇧🇴", label: "+591 Bolivia" },
-  { code: "595", flag: "🇵🇾", label: "+595 Paraguay" },
-  { code: "55", flag: "🇧🇷", label: "+55 Brasil" },
-  { code: "34", flag: "🇪🇸", label: "+34 España" },
-];
 
 function FramingModal({
   preview,
@@ -175,12 +171,9 @@ export default function PerfilEstudioPage() {
   const [photos, setPhotos] = useState<{ id: string; file?: File; preview: string; url?: string; position?: string }[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [portadaUrl, setPortadaUrl] = useState<string | null>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const [studioId, setStudioId] = useState<string | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -198,9 +191,10 @@ export default function PerfilEstudioPage() {
     handleSubmit,
     watch,
     reset,
+    control,
     formState: { errors },
   } = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema) as any,
     mode: "onChange",
     defaultValues: {
       nombre: "",
@@ -220,16 +214,6 @@ export default function PerfilEstudioPage() {
   const liveInstagram = watch("instagram");
   const liveWhatsapp = watch("whatsapp");
   const liveWebsite = watch("website");
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsCountryDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   // Load existing studio data if user is logged in
   useEffect(() => {
@@ -262,11 +246,9 @@ export default function PerfilEstudioPage() {
                 };
               }));
             }
-            const country = COUNTRY_CODES.find(c => c.code === data.countryCode);
-            if (country) setSelectedCountry(country);
-            if (data._id) setStudioId(data._id);
-            if (data.portada) setPortadaUrl(data.portada);
-          }
+              if (data._id) setStudioId(data._id);
+              if (data.portada) setPortadaUrl(data.portada);
+            }
         }
       } catch (error) {
         console.error('Error loading studio:', error);
@@ -274,8 +256,6 @@ export default function PerfilEstudioPage() {
     }
     loadStudio();
   }, [status, reset]);
-
-  const { onChange: onChangeWhatsapp, ...restWhatsapp } = register("whatsapp");
 
   // --- Handlers ---
   const handleAddSpecialty = () => {
@@ -426,19 +406,12 @@ export default function PerfilEstudioPage() {
 
     setIsSaving(true);
     try {
-      const rawDigits = data.whatsapp.replace(/\D/g, '');
-      const prefix = selectedCountry.code === "54" ? "549" : selectedCountry.code;
-      const finalWhatsapp = `${prefix}${rawDigits}`;
+      const finalWhatsapp = data.whatsapp;
       const finalInstagram = `@${data.instagram}`;
       
       const photoUrls = photos
         .map(p => p.url || p.preview)
         .filter(url => url.startsWith('http'));
-
-      let safeWebsite = data.website || '';
-      if (safeWebsite && !/^https?:\/\//i.test(safeWebsite)) {
-        safeWebsite = `https://${safeWebsite}`;
-      }
 
       const payload = {
         nombre: data.nombre,
@@ -447,8 +420,8 @@ export default function PerfilEstudioPage() {
         bio: data.bio,
         instagram: finalInstagram,
         whatsapp: finalWhatsapp,
-        countryCode: selectedCountry.code,
-        website: safeWebsite,
+        countryCode: '54', // Valor por defecto ya que E.164 lo incluye
+        website: data.website || '',
         especialidades: specialties,
         fotos: photoUrls,
         portada: portadaUrl || '',
@@ -648,51 +621,22 @@ export default function PerfilEstudioPage() {
                 <div className="flex flex-col space-y-2">
                   <label className="text-label-sm text-muted-foreground">Número de WhatsApp</label>
                   <div className="relative flex">
-                    <div className="relative flex items-stretch bg-muted border border-r-0 border-border text-body text-muted-foreground" ref={dropdownRef}>
-                      <button 
-                        type="button"
-                        onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                        className="px-4 py-3 flex items-center gap-2 hover:bg-black/5 transition-colors"
-                      >
-                        {selectedCountry.flag} +{selectedCountry.code}
-                      </button>
-                      {isCountryDropdownOpen && (
-                        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-border z-50 shadow-dropdown">
-                          {COUNTRY_CODES.map((country) => (
-                            <button
-                              key={country.code}
-                              type="button"
-                              onClick={() => {
-                                setSelectedCountry(country);
-                                setIsCountryDropdownOpen(false);
-                              }}
-                              className="w-full px-4 py-3 text-left hover:bg-black/5 transition-colors text-body-sm flex items-center gap-3 text-black border-b border-border/50 last:border-0"
-                            >
-                              <span className="text-sm">{country.flag}</span> <span>{country.label}</span>
-                            </button>
-                          ))}
-                        </div>
+                    <Controller
+                      name="whatsapp"
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <PhoneInput
+                          international
+                          defaultCountry="AR"
+                          value={value}
+                          onChange={onChange}
+                          className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white`}
+                        />
                       )}
-                    </div>
-                    <div className="relative flex-1">
-                      <input 
-                        {...restWhatsapp}
-                        onChange={(e) => {
-                          let val = e.target.value.replace(/\D/g, '');
-                          if (val.length > 10) val = val.slice(0, 10);
-                          let formatted = val;
-                          if (val.length > 2) formatted = val.slice(0, 2) + ' ' + val.slice(2);
-                          if (val.length > 6) formatted = val.slice(0, 2) + ' ' + val.slice(2, 6) + ' ' + val.slice(6);
-                          e.target.value = formatted;
-                          onChangeWhatsapp(e);
-                        }}
-                        placeholder="11 2222 3333"
-                        className={`w-full border ${errors.whatsapp ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white pr-10`}
-                      />
-                      {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
-                        <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2" />
-                      )}
-                    </div>
+                    />
+                    {liveWhatsapp && liveWhatsapp.length > 0 && !errors.whatsapp && (
+                      <Check className="w-4 h-4 text-green-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    )}
                   </div>
                   {errors.whatsapp && <span className="text-caption-sm text-red-500">{errors.whatsapp.message}</span>}
                 </div>
@@ -700,13 +644,10 @@ export default function PerfilEstudioPage() {
                 <div className="flex flex-col space-y-2 md:col-span-2">
                   <label className="text-label-sm text-muted-foreground">Website (Opcional)</label>
                   <div className="relative flex">
-                    <div className="flex items-center px-4 bg-muted border border-r-0 border-border cursor-default text-body text-muted-foreground">
-                      https://
-                    </div>
                     <div className="relative flex-1">
                       <input 
                         {...register("website")}
-                        placeholder="tuestudio.com (opcional)"
+                        placeholder="https://tuestudio.com (opcional)"
                         className={`w-full border ${errors.website ? 'border-red-500' : 'border-border'} px-4 py-3 outline-none text-body focus:border-black transition-colors bg-white pr-10`}
                       />
                       {liveWebsite && liveWebsite.length > 0 && !errors.website && (
