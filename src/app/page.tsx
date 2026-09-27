@@ -36,7 +36,7 @@ const FILTROS = {
     "Encargado/a de local", "Mantenimiento"],
   experiencia: ["Sin experiencia", "Intermedio (1-3 años)", 
     "Avanzado (3-5 años)", "Senior (+5 años)"],
-  especialidad: ["Blackwork", "Realismo", "Traditional", 
+  especialidad: ["Blackwork", "Black and Grey", "Realismo", "Traditional", 
     "Neo Traditional", "Japonés", "Geométrico", "Fineline", 
     "Dotwork", "Acuarela", "Lettering", "Cover up", 
     "Generalista", "Comercial", "Otro"],

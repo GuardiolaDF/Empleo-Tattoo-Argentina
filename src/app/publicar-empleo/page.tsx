@@ -259,6 +259,7 @@ export default function PublicarEmpleoPage() {
                   <option value="Comercial">Comercial</option>
                   <option value="Generalista">Generalista</option>
                   <option value="Blackwork">Blackwork</option>
+                  <option value="Black and Grey">Black and Grey</option>
                   <option value="Realismo">Realismo</option>
                   <option value="Traditional">Traditional</option>
                   <option value="Neo Traditional">Neo Traditional</option>

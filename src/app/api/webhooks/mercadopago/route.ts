@@ -5,6 +5,7 @@ import Job from '@/models/Job';
 import Subscriber from '@/models/Subscriber';
 import { Resend } from 'resend';
 import crypto from 'crypto';
+import { sendTelegramAlert } from '@/lib/telegram';
 
 const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || '' });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -133,6 +134,9 @@ export async function POST(request: Request) {
             
             // Tarea secundaria no bloqueante
             if (updatedJob) {
+               // Enviar alerta a Telegram
+               sendTelegramAlert(`💰 <b>¡Nuevo pago exitoso!</b>\nLa publicación de <i>${updatedJob.studioName}</i> ya está Activa.`);
+               
                after(async () => { 
                  // Logic to send mass emails inside after
                  try {
@@ -166,8 +170,9 @@ export async function POST(request: Request) {
               { status: 'pending' }
             );
           }
-        } catch (dbError) {
+        } catch (dbError: any) {
           console.error("Fallo crítico en Base de Datos durante Webhook. Forzando reintento de MP:", dbError);
+          sendTelegramAlert(`⚠️ <b>Error Crítico en Webhook</b>\nFalló la Base de Datos al intentar activar una publicación.\n<code>${dbError.message}</code>`);
           return NextResponse.json({ error: "Database Sync Failed" }, { status: 500 });
         }
       }
