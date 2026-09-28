@@ -10,6 +10,8 @@ const options = {
   connectTimeoutMS: 10000,
   socketTimeoutMS: 45000,
   maxPoolSize: 10,
+  family: 4,
+  tlsAllowInvalidCertificates: process.env.NODE_ENV === 'development',
 };
 
 let clientPromise: Promise<MongoClient>;

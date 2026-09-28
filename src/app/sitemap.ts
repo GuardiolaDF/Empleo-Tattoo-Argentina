@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import connectToDatabase from '@/lib/mongodb';
 import Job from '@/models/Job';
 import Studio from '@/models/Studio';
+import Convention from '@/models/Convention';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://empleotattoo.com.ar';
@@ -32,6 +33,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/convenciones`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/guia-del-artista`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -47,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let dynamicJobs: MetadataRoute.Sitemap = [];
   let dynamicStudios: MetadataRoute.Sitemap = [];
+  let dynamicConventions: MetadataRoute.Sitemap = [];
 
   try {
     await connectToDatabase();
@@ -66,10 +74,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }));
+
+    const conventions = await Convention.find({ publicationStatus: 'published' }).select('slug updatedAt').lean();
+    dynamicConventions = conventions.map((c: any) => ({
+      url: `${baseUrl}/convenciones/${c.slug}`,
+      lastModified: c.updatedAt ? new Date(c.updatedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
   } catch (error) {
     console.error('Error generating dynamic sitemap:', error);
   }
 
-  return [...staticEntries, ...dynamicJobs, ...dynamicStudios];
+  return [...staticEntries, ...dynamicJobs, ...dynamicStudios, ...dynamicConventions];
 }
-

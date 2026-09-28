@@ -33,3 +33,40 @@ export const studioSchema = z.object({
   fotos: z.array(z.string().url()).optional().default([]),
   portada: z.string().url().or(z.literal('')).optional(),
 });
+
+const baseConventionSchema = z.object({
+  title: z.string().trim().min(3, "El título debe tener al menos 3 caracteres").max(120),
+  posterUrl: z.string().url("Debe ser una URL válida"),
+  posterPublicId: z.string().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  province: z.string().trim().min(2, "La provincia es obligatoria").max(100),
+  city: z.string().trim().min(2, "La ciudad es obligatoria").max(100),
+  venue: z.string().trim().max(150).optional().or(z.literal('')),
+  address: z.string().trim().max(200).optional().or(z.literal('')),
+  instagramUrl: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && val.length > 0 && !/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    },
+    z.string().trim().url("Debe ser una URL válida").or(z.literal(''))
+  ).optional(),
+  websiteUrl: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && val.length > 0 && !/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    },
+    z.string().trim().url("Debe ser una URL válida").or(z.literal(''))
+  ).optional(),
+});
+
+export const createConventionSchema = baseConventionSchema.refine(data => data.endDate >= data.startDate, {
+  message: "La fecha de fin debe ser igual o posterior a la fecha de inicio",
+  path: ["endDate"],
+});
+
+export const updateConventionSchema = baseConventionSchema.partial();

@@ -20,11 +20,13 @@ async function connectToDatabase() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 10000, // Reduce to fail faster if down
+      serverSelectionTimeoutMS: 10000, 
       connectTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       maxPoolSize: 10,
-      maxIdleTimeMS: 10000, // CRÍTICO: Cierra conexiones ociosas antes de que AWS/Vercel mate el socket silenciosamente
+      maxIdleTimeMS: 10000,
+      family: 4, 
+      tlsAllowInvalidCertificates: process.env.NODE_ENV === 'development', // Salta el bloqueo del antivirus local
     };
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((m) => {
