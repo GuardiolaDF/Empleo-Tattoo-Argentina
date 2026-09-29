@@ -26,8 +26,7 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
     return d.toISOString().split('T')[0];
   };
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
-    // @ts-ignore - TS has issues matching z.coerce.date() with react-hook-form
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<any>({
     resolver: zodResolver(updateConventionSchema),
     defaultValues: {
       title: convention.title,
@@ -43,7 +42,7 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
     }
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: any) => {
     if (!posterUrl) {
       setError('Debes tener un póster para la convención');
       return;

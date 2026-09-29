@@ -19,8 +19,7 @@ export default function NuevaConvencionPage() {
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [posterPublicId, setPosterPublicId] = useState<string>('');
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
-    // @ts-ignore - TS has issues matching z.coerce.date() with react-hook-form
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<any>({
     resolver: zodResolver(createConventionSchema),
     defaultValues: {
       province: '',
@@ -28,7 +27,7 @@ export default function NuevaConvencionPage() {
     }
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: any) => {
     if (!posterUrl) {
       setError('Debes subir un póster para la convención');
       return;
