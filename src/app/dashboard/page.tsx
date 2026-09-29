@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -44,7 +44,7 @@ interface StudioData {
   portada?: string;
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -366,5 +366,20 @@ export default function DashboardPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-body text-muted-foreground">Cargando...</p>
+        </main>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
