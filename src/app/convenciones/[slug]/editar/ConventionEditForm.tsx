@@ -27,6 +27,7 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
   };
 
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
+    // @ts-ignore - TS has issues matching z.coerce.date() with react-hook-form
     resolver: zodResolver(updateConventionSchema),
     defaultValues: {
       title: convention.title,

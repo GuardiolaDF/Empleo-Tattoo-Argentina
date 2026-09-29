@@ -20,6 +20,7 @@ export default function NuevaConvencionPage() {
   const [posterPublicId, setPosterPublicId] = useState<string>('');
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+    // @ts-ignore - TS has issues matching z.coerce.date() with react-hook-form
     resolver: zodResolver(createConventionSchema),
     defaultValues: {
       province: '',
