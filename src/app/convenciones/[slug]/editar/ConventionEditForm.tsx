@@ -26,8 +26,8 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
     return d.toISOString().split('T')[0];
   };
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<any>({
-    resolver: zodResolver(updateConventionSchema),
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
+    resolver: zodResolver(updateConventionSchema) as any,
     defaultValues: {
       title: convention.title,
       province: convention.province,
@@ -42,7 +42,7 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
     }
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     if (!posterUrl) {
       setError('Debes tener un póster para la convención');
       return;

@@ -19,15 +19,15 @@ export default function NuevaConvencionPage() {
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [posterPublicId, setPosterPublicId] = useState<string>('');
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<any>({
-    resolver: zodResolver(createConventionSchema),
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+    resolver: zodResolver(createConventionSchema) as any,
     defaultValues: {
       province: '',
       city: '',
     }
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     if (!posterUrl) {
       setError('Debes subir un póster para la convención');
       return;
