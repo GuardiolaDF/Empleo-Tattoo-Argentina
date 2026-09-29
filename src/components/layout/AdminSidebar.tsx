@@ -17,7 +17,8 @@ import {
   Globe,
   Smartphone,
   Menu,
-  X
+  X,
+  Calendar
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -27,6 +28,7 @@ interface AdminSidebarProps {
 const adminNavItems = [
   { href: "/admin", label: "Resumen", icon: LayoutDashboard },
   { href: "/admin/avisos", label: "Moderación de Avisos", icon: Briefcase },
+  { href: "/admin/convenciones", label: "Gestión Convenciones", icon: Calendar },
   { href: "/admin/estudios", label: "Estudios Registrados", icon: Building2 },
   { href: "/admin/cupones", label: "Gestión de Cupones", icon: Ticket },
   { href: "/admin/marketing", label: "Marketing & RRSS", icon: Smartphone },
