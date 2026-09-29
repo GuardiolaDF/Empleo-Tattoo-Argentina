@@ -69,4 +69,6 @@ export const createConventionSchema = baseConventionSchema.refine(data => data.e
   path: ["endDate"],
 });
 
-export const updateConventionSchema = baseConventionSchema.partial();
+export const updateConventionSchema = baseConventionSchema.partial().extend({
+  eventStatus: z.enum(['scheduled', 'postponed', 'cancelled']).optional(),
+});
