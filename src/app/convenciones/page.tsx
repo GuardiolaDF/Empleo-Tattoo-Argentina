@@ -65,9 +65,26 @@ export default async function ConventionsPage(props: ConventionsPageProps) {
         <section className="flex-1 flex flex-col">
           {conventions.length > 0 ? (
             <div className="flex flex-col w-full">
-              {conventions.map((conv: any, index: number) => (
-                <div key={conv._id.toString()} className={index !== conventions.length - 1 ? "border-b-4 border-black" : ""}>
-                  <ConventionCard convention={conv} />
+              {Object.entries(
+                conventions.reduce((acc: any, conv: any) => {
+                  const d = new Date(conv.startDate);
+                  const monthYear = d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+                  if (!acc[monthYear]) acc[monthYear] = [];
+                  acc[monthYear].push(conv);
+                  return acc;
+                }, {})
+              ).map(([monthYear, convs]: [string, any], groupIndex: number) => (
+                <div key={monthYear} className="flex flex-col">
+                  {/* Sticky Month/Year Header */}
+                  <div className="sticky top-[73px] z-30 h-[48px] bg-black text-white px-8 md:px-12 lg:px-16 flex items-center border-b-4 border-black uppercase font-black tracking-[0.2em] text-sm lg:text-lg">
+                    {monthYear}
+                  </div>
+                  
+                  {convs.map((conv: any, index: number) => (
+                    <div key={conv._id.toString()} className="border-b-4 border-black">
+                      <ConventionCard convention={conv} />
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>

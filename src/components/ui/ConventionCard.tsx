@@ -30,7 +30,7 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
   const isCancelled = convention.eventStatus === 'cancelled';
 
   return (
-    <div className="relative flex flex-col lg:flex-row bg-white overflow-hidden min-h-[calc(100vh-140px)] group">
+    <div className="relative flex flex-col lg:flex-row bg-white overflow-hidden h-auto min-h-[calc(100vh-120px)] group">
       
       {/* Poster Container - Left side */}
       <div className="relative w-full lg:w-[55%] bg-gray-100 flex items-center justify-center p-8 lg:p-12 lg:border-r-4 border-black">
@@ -38,7 +38,7 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
           <img 
             src={convention.posterUrl} 
             alt={`Poster de ${convention.title}`}
-            className={`w-full max-h-[85vh] object-contain shadow-2xl ${isCancelled ? 'grayscale opacity-50' : ''}`}
+            className={`w-full max-h-[calc(100vh-184px)] object-contain shadow-2xl ${isCancelled ? 'grayscale opacity-50' : ''}`}
           />
         ) : (
           <div className="text-muted-foreground text-sm uppercase tracking-widest font-bold">Sin imagen disponible</div>
@@ -77,9 +77,17 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
           
           <div className="flex items-center gap-4 text-xl lg:text-2xl text-black">
             <MapPin className="w-8 h-8 shrink-0 stroke-[3]" />
-            <span className="font-bold uppercase tracking-wider">
-              {convention.city} — {convention.province}
-            </span>
+            <div className="flex flex-col">
+              <span className="font-bold uppercase tracking-wider">
+                {convention.city} — {convention.province}
+              </span>
+              {(convention.venue || convention.address) && (
+                <span className="text-lg mt-1 font-medium text-neutral-600">
+                  {convention.venue && `${convention.venue} `}
+                  {convention.address && `(${convention.address})`}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
