@@ -56,20 +56,23 @@ export default async function ConventionsPage(props: ConventionsPageProps) {
           </div>
         </section>
 
-        {/* Content Section */}
-        <section className="flex-1 px-8 md:px-12 lg:px-16 py-12">
-          {/* Tabs & Filters */}
+        {/* Sticky Filters */}
+        <div className="sticky top-0 z-40 bg-gray-50 border-b-2 border-black">
           <ConventionFilters status={status} province={province} />
+        </div>
 
-          {/* Grid */}
+        {/* Content Section */}
+        <section className="flex-1 flex flex-col">
           {conventions.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {conventions.map((conv: any) => (
-                <ConventionCard key={conv._id.toString()} convention={conv} />
+            <div className="flex flex-col w-full">
+              {conventions.map((conv: any, index: number) => (
+                <div key={conv._id.toString()} className={index !== conventions.length - 1 ? "border-b-4 border-black" : ""}>
+                  <ConventionCard convention={conv} />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white border border-border p-16 flex flex-col items-center justify-center text-center">
+            <div className="bg-white border-b border-border p-16 flex flex-col items-center justify-center text-center min-h-[50vh]">
               <h3 className="text-h3 mb-4">Sin resultados</h3>
               <p className="text-body-sm text-muted-foreground max-w-sm">
                 {province 
