@@ -74,10 +74,12 @@ export default async function ConventionsPage(props: ConventionsPageProps) {
                   return acc;
                 }, {})
               ).map(([monthYear, convs]: [string, any], groupIndex: number) => (
-                <div key={monthYear} className="flex flex-col">
-                  {/* Sticky Month/Year Header */}
-                  <div className="sticky top-[73px] z-30 h-[48px] bg-black text-white px-8 md:px-12 lg:px-16 flex items-center border-b-4 border-black uppercase font-black tracking-[0.2em] text-sm lg:text-lg">
-                    {monthYear}
+                <div key={monthYear} className="flex flex-col relative">
+                  {/* Sticky Month/Year Header Overlay */}
+                  <div className="sticky top-[73px] z-30 h-0 overflow-visible pointer-events-none">
+                    <div className="inline-block bg-black/90 backdrop-blur text-white px-6 py-3 mt-6 ml-8 md:ml-12 lg:ml-16 uppercase font-black tracking-widest text-sm shadow-xl pointer-events-auto">
+                      {monthYear}
+                    </div>
                   </div>
                   
                   {convs.map((conv: any, index: number) => (

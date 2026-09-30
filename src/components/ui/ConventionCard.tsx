@@ -30,15 +30,15 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
   const isCancelled = convention.eventStatus === 'cancelled';
 
   return (
-    <div className="relative flex flex-col lg:flex-row bg-white overflow-hidden h-auto min-h-[calc(100vh-120px)] group">
+    <div className="relative flex flex-col lg:flex-row bg-white overflow-hidden min-h-[calc(100vh-73px)] lg:h-[calc(100vh-73px)] group">
       
       {/* Poster Container - Left side */}
-      <div className="relative w-full lg:w-[55%] bg-gray-100 flex items-center justify-center p-8 lg:p-12 lg:border-r-4 border-black">
+      <div className="relative w-full lg:w-[55%] h-[60vh] lg:h-full bg-gray-100 flex items-center justify-center p-8 lg:p-12 lg:border-r-4 border-black overflow-hidden">
         {convention.posterUrl ? (
           <img 
             src={convention.posterUrl} 
             alt={`Poster de ${convention.title}`}
-            className={`w-full max-h-[calc(100vh-184px)] object-contain shadow-2xl ${isCancelled ? 'grayscale opacity-50' : ''}`}
+            className={`w-full h-full object-contain shadow-2xl ${isCancelled ? 'grayscale opacity-50' : ''}`}
           />
         ) : (
           <div className="text-muted-foreground text-sm uppercase tracking-widest font-bold">Sin imagen disponible</div>
@@ -58,7 +58,7 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
       </div>
 
       {/* Content - Right side */}
-      <div className="w-full lg:w-[45%] p-10 lg:p-20 flex flex-col justify-center bg-white relative">
+      <div className="w-full lg:w-[45%] h-full p-10 lg:p-20 flex flex-col bg-white overflow-y-auto">
         
         {/* Date top left of the content panel */}
         <div className="mb-12">
@@ -75,16 +75,16 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
             {convention.title}
           </h3>
           
-          <div className="flex items-center gap-4 text-xl lg:text-2xl text-black">
-            <MapPin className="w-8 h-8 shrink-0 stroke-[3]" />
+          <div className="flex items-start gap-4 text-xl lg:text-2xl text-black">
+            <MapPin className="w-8 h-8 shrink-0 stroke-[3] mt-1" />
             <div className="flex flex-col">
               <span className="font-bold uppercase tracking-wider">
                 {convention.city} — {convention.province}
               </span>
               {(convention.venue || convention.address) && (
-                <span className="text-lg mt-1 font-medium text-neutral-600">
-                  {convention.venue && `${convention.venue} `}
-                  {convention.address && `(${convention.address})`}
+                <span className="text-lg mt-2 font-medium text-neutral-600">
+                  {convention.venue && <span className="block">{convention.venue}</span>}
+                  {convention.address && <span className="block text-base mt-1">📍 {convention.address}</span>}
                 </span>
               )}
             </div>
@@ -92,29 +92,18 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
         </div>
 
         {/* Bottom Actions */}
-        <div className="mt-16 pt-8 flex items-center justify-between border-t-4 border-black">
-          <div className="flex items-center gap-6">
-            {convention.instagramUrl && (
-              <a href={convention.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 uppercase font-bold tracking-widest text-sm hover:underline">
-                <div className="flex items-center justify-center w-12 h-12 bg-black text-white hover:bg-black/80 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </div>
-                Instagram
-              </a>
-            )}
-            {convention.websiteUrl && (
-              <a href={convention.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 uppercase font-bold tracking-widest text-sm hover:underline">
-                <div className="flex items-center justify-center w-12 h-12 bg-black text-white hover:bg-black/80 transition-colors">
-                  <Globe className="w-5 h-5" />
-                </div>
-                Web
-              </a>
-            )}
-          </div>
+        <div className="mt-auto pt-16 flex items-center justify-end gap-4 border-t-4 border-black">
+          {convention.instagramUrl && (
+            <a href={convention.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-14 h-14 bg-black text-white hover:bg-black/80 transition-colors" title="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+          )}
+          {convention.websiteUrl && (
+            <a href={convention.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-14 h-14 bg-black text-white hover:bg-black/80 transition-colors" title="Sitio Web">
+              <Globe className="w-6 h-6" />
+            </a>
+          )}
           
-          {/* We don't have a specific URL to share if we don't have detail pages, 
-              but we can share the main url + hash if we added an id, or just visually provide a share button.
-              For now we'll just add the share logic linking to /convenciones#id if needed, but since it's just a UI draft we can put a simple button. */}
           <button 
             onClick={(e) => {
               e.preventDefault();
@@ -128,9 +117,10 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
                 alert("Enlace copiado al portapapeles");
               }
             }}
-            className="flex items-center gap-3 uppercase font-bold tracking-widest text-sm hover:underline"
+            className="flex items-center justify-center w-14 h-14 bg-black text-white hover:bg-black/80 transition-colors"
+            title="Compartir"
           >
-            Compartir
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
           </button>
         </div>
       </div>
