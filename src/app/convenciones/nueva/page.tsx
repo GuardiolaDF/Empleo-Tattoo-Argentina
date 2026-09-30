@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CldUploadWidget } from 'next-cloudinary';
+
 import { ImagePlus, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { createConventionSchema } from '@/lib/schemas';
@@ -18,6 +18,32 @@ export default function NuevaConvencionPage() {
   const [error, setError] = useState<string | null>(null);
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [posterPublicId, setPosterPublicId] = useState<string>('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
+      const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+      if (uploadRes.ok) {
+        const { url, publicId } = await uploadRes.json();
+        setPosterUrl(url);
+        setPosterPublicId(publicId);
+        setValue('posterUrl', url);
+      } else {
+        const errData = await uploadRes.json();
+        setError(errData.error || 'Error al subir la imagen');
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setError('Error al subir la imagen');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
     resolver: zodResolver(createConventionSchema) as any,
@@ -96,34 +122,31 @@ export default function NuevaConvencionPage() {
           {/* Póster */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">Póster oficial *</label>
-            <CldUploadWidget 
-              uploadPreset="ml_default" // Should probably configure a specific preset in Cloudinary, but default often works if unsigned is allowed. We will leave it generic.
-              options={{ maxFiles: 1, clientAllowedFormats: ['jpg', 'png', 'webp'], maxFileSize: 5000000 }}
-              onSuccess={(result: any) => {
-                setPosterUrl(result.info.secure_url);
-                setPosterPublicId(result.info.public_id);
-                setValue('posterUrl', result.info.secure_url);
-              }}
-            >
-              {({ open }) => (
-                <div 
-                  onClick={() => open()}
-                  className="w-full aspect-[4/5] max-w-sm mx-auto sm:mx-0 border-2 border-dashed border-neutral-700 hover:border-primary/50 bg-neutral-950 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden group"
-                >
-                  {posterUrl ? (
-                    <img src={posterUrl} alt="Preview" className="w-full h-full object-contain" />
-                  ) : (
-                    <div className="text-center p-6 flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-neutral-900 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-                        <ImagePlus className="w-6 h-6 text-neutral-400 group-hover:text-primary" />
-                      </div>
-                      <p className="text-white font-medium mb-1">Subir póster</p>
-                      <p className="text-xs text-neutral-500">JPG, PNG o WEBP (Max 5MB)</p>
-                    </div>
-                  )}
+            <div className="relative w-full aspect-[4/5] max-w-sm mx-auto sm:mx-0 border-2 border-dashed border-neutral-700 hover:border-primary/50 bg-neutral-950 rounded-xl flex flex-col items-center justify-center transition-colors overflow-hidden group">
+              <input 
+                type="file" 
+                accept="image/jpeg, image/png, image/webp"
+                onChange={handleImageUpload}
+                disabled={uploadingImage}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+              {uploadingImage ? (
+                <div className="text-center p-6 flex flex-col items-center pointer-events-none">
+                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
+                  <p className="text-white font-medium">Subiendo...</p>
+                </div>
+              ) : posterUrl ? (
+                <img src={posterUrl} alt="Preview" className="w-full h-full object-contain pointer-events-none" />
+              ) : (
+                <div className="text-center p-6 flex flex-col items-center pointer-events-none">
+                  <div className="w-12 h-12 rounded-full bg-neutral-900 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                    <ImagePlus className="w-6 h-6 text-neutral-400 group-hover:text-primary" />
+                  </div>
+                  <p className="text-white font-medium mb-1">Subir póster</p>
+                  <p className="text-xs text-neutral-500">JPG, PNG o WEBP (Max 5MB)</p>
                 </div>
               )}
-            </CldUploadWidget>
+            </div>
             <input type="hidden" {...register('posterUrl')} />
             {(!posterUrl && errors.posterUrl) && <p className="text-red-400 text-sm mt-1">{errors.posterUrl.message}</p>}
           </div>
