@@ -7,7 +7,8 @@ import ConventionEditForm from './ConventionEditForm';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default async function EditarConvencionPage({ params }: { params: { slug: string } }) {
+export default async function EditarConvencionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -15,7 +16,7 @@ export default async function EditarConvencionPage({ params }: { params: { slug:
   }
 
   await connectToDatabase();
-  const convention = await Convention.findOne({ slug: params.slug }).lean();
+  const convention = await Convention.findOne({ slug }).lean();
 
   if (!convention) {
     notFound();

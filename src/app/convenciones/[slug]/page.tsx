@@ -10,12 +10,13 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 interface ConventionPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: ConventionPageProps): Promise<Metadata> {
+  const { slug } = await params;
   await connectToDatabase();
-  const convention = await Convention.findOne({ slug: params.slug }).lean();
+  const convention = await Convention.findOne({ slug }).lean();
 
   if (!convention) {
     return {
@@ -38,8 +39,9 @@ export async function generateMetadata({ params }: ConventionPageProps): Promise
 }
 
 export default async function ConventionDetailPage({ params }: ConventionPageProps) {
+  const { slug } = await params;
   await connectToDatabase();
-  const convention = await Convention.findOne({ slug: params.slug }).lean();
+  const convention = await Convention.findOne({ slug }).lean();
 
   if (!convention) {
     notFound();
