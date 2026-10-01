@@ -11,6 +11,7 @@ export interface IConvention extends Document {
   city: string;
   venue?: string;
   address?: string;
+  scheduleDetails?: string;
   instagramUrl?: string;
   websiteUrl?: string;
   publicationStatus: 'pending' | 'published';
@@ -32,6 +33,7 @@ const ConventionSchema = new Schema<IConvention>(
     city: { type: String, required: true },
     venue: { type: String },
     address: { type: String },
+    scheduleDetails: { type: String },
     instagramUrl: { type: String },
     websiteUrl: { type: String },
     publicationStatus: {

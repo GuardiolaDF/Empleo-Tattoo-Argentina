@@ -44,6 +44,7 @@ const baseConventionSchema = z.object({
   city: z.string().trim().min(2, "La ciudad es obligatoria").max(100),
   venue: z.string().trim().max(150).optional().or(z.literal('')),
   address: z.string().trim().max(200).optional().or(z.literal('')),
+  scheduleDetails: z.string().trim().max(300).optional().or(z.literal('')),
   instagramUrl: z.preprocess(
     (val) => {
       if (typeof val === "string" && val.length > 0 && !/^https?:\/\//i.test(val)) {

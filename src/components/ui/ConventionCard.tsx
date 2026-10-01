@@ -33,7 +33,7 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
     <div className="relative flex flex-col lg:flex-row bg-white overflow-hidden min-h-[calc(100vh-73px)] lg:h-[calc(100vh-73px)] group">
       
       {/* Poster Container - Left side */}
-      <div className="relative w-full lg:w-[55%] h-[60vh] lg:h-full bg-gray-100 flex items-center justify-center p-8 lg:p-12 lg:border-r-4 border-black overflow-hidden">
+      <div className="relative w-full lg:w-[50%] h-[60vh] lg:h-full bg-gray-100 flex items-center justify-center p-8 lg:p-12 lg:border-r-4 border-black overflow-hidden">
         {convention.posterUrl ? (
           <img 
             src={convention.posterUrl} 
@@ -58,10 +58,10 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
       </div>
 
       {/* Content - Right side */}
-      <div className="w-full lg:w-[45%] h-full p-10 lg:p-20 flex flex-col bg-white overflow-y-auto">
+      <div className="w-full lg:w-[50%] h-full p-8 lg:p-16 flex flex-col justify-center bg-white overflow-hidden">
         
         {/* Date top left of the content panel */}
-        <div className="mb-12">
+        <div className="mb-10">
           <div className="inline-flex items-center gap-3 border-4 border-black px-6 py-3 bg-black text-white">
             <span className="uppercase font-bold tracking-widest text-lg lg:text-2xl">
               {formatDates(convention.startDate, convention.endDate)}
@@ -89,6 +89,20 @@ export default function ConventionCard({ convention }: ConventionCardProps) {
               )}
             </div>
           </div>
+          
+          {convention.scheduleDetails && (
+            <div className="flex items-start gap-4 text-xl lg:text-2xl text-black">
+              <Calendar className="w-8 h-8 shrink-0 stroke-[3] mt-1" />
+              <div className="flex flex-col">
+                <span className="font-bold uppercase tracking-wider">
+                  Horarios
+                </span>
+                <span className="text-lg mt-2 font-medium text-neutral-600 whitespace-pre-line">
+                  {convention.scheduleDetails}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Bottom Actions */}

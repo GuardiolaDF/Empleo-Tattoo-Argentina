@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     const result = await cloudinary.uploader.upload(base64, {
       folder: 'eta-studios',
       transformation: [
-        { width: 1200, height: 800, crop: 'fill', quality: 'auto', fetch_format: 'auto' }
+        { quality: 'auto', fetch_format: 'auto' }
       ],
     });
 

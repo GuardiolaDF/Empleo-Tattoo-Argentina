@@ -237,6 +237,16 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
           </div>
         </div>
 
+        <div>
+          <label className='block text-sm font-medium text-neutral-300 mb-1'>Horarios (Opcional)</label>
+          <textarea 
+            {...register('scheduleDetails')} 
+            rows={2}
+            className='w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors'
+            placeholder='Ej. Apertura 12:00hs. Premiación a partir de las 20:00hs.'
+          />
+        </div>
+
         {/* Links */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
@@ -272,3 +282,4 @@ export default function ConventionEditForm({ convention }: { convention: any }) 
     </div>
   );
 }
+
