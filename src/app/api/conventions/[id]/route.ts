@@ -9,7 +9,7 @@ type Context = { params: { id: string } };
 
 export async function GET(request: Request, context: any) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     await connectToDatabase();
     
     // We check if it's a valid ID or if we should find by slug. 
@@ -30,7 +30,7 @@ export async function GET(request: Request, context: any) {
 
 export async function PUT(request: Request, context: any) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const session = await auth();
     
     if (!session?.user?.id) {
@@ -76,7 +76,7 @@ export async function PUT(request: Request, context: any) {
 
 export async function DELETE(request: Request, context: any) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const session = await auth();
     
     if (!session?.user?.id) {

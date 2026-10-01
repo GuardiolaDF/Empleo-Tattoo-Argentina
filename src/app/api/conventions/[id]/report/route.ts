@@ -5,7 +5,7 @@ import { auth } from '@/auth';
 
 export async function POST(request: Request, context: any) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const session = await auth();
     
     if (!session?.user?.id) {
