@@ -89,6 +89,13 @@ export default async function ConventionsPage(props: ConventionsPageProps) {
                   ))}
                 </div>
               ))}
+
+              {/* End of List Separator */}
+              <div className="flex flex-col items-center justify-center py-20 bg-gray-100 border-b-4 border-black border-t-4">
+                <span className="uppercase font-bold tracking-widest text-sm text-neutral-500">
+                  No hay más eventos cargados
+                </span>
+              </div>
             </div>
           ) : (
             <div className="bg-white border-b border-border p-16 flex flex-col items-center justify-center text-center min-h-[50vh]">
