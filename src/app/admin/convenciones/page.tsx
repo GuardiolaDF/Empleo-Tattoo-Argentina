@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, CheckCircle2, Clock, Trash2, ExternalLink, RefreshCw, AlertCircle } from "lucide-react";
+import { Search, CheckCircle2, Clock, Trash2, ExternalLink, RefreshCw, AlertCircle, Edit } from "lucide-react";
 import Link from "next/link";
 
 interface Convention {
@@ -201,6 +201,7 @@ export default function AdminConvencionesPage() {
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Link>
+                    <Link href={`/convenciones/${conv.slug}/editar`} className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"><Edit className="w-4 h-4" /></Link>
                     <button
                       onClick={() => handleDeleteConvention(conv._id)}
                       disabled={actionLoading === conv._id}
@@ -279,6 +280,7 @@ export default function AdminConvencionesPage() {
                       >
                         <ExternalLink className="w-5 h-5" />
                       </Link>
+                      <Link href={`/convenciones/${conv.slug}/editar`} className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all" title="Editar"><Edit className="w-5 h-5" /></Link>
 
                       <button
                         onClick={() => handleDeleteConvention(conv._id)}
