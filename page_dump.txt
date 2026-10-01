@@ -197,15 +197,15 @@ export default function AdminConvencionesPage() {
                     <Link
                       href={`/convenciones/${conv.slug}`}
                       target="_blank"
-                      className="inline-flex items-center justify-center p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
+                      className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Link>
-                    <Link href={`/convenciones/${conv.slug}/editar`} className="inline-flex items-center justify-center p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"><Edit className="w-4 h-4" /></Link>
+                    <Link href={`/convenciones/${conv.slug}/editar`} className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"><Edit className="w-4 h-4" /></Link>
                     <button
                       onClick={() => handleDeleteConvention(conv._id)}
                       disabled={actionLoading === conv._id}
-                      className="inline-flex items-center justify-center p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
+                      className="p-2 text-black border-2 border-black bg-white hover:bg-gray-100 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -271,7 +271,7 @@ export default function AdminConvencionesPage() {
                       </button>
                     </td>
 
-                    <td className="px-6 py-4 flex justify-end gap-2">
+                    <td className="px-6 py-4 text-right space-x-2">
                       <Link
                         href={`/convenciones/${conv.slug}`}
                         target="_blank"
@@ -280,12 +280,12 @@ export default function AdminConvencionesPage() {
                       >
                         <ExternalLink className="w-5 h-5" />
                       </Link>
-                      <Link href={`/convenciones/${conv.slug}/editar`} className="inline-flex items-center justify-center p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all" title="Editar"><Edit className="w-5 h-5" /></Link>
+                      <Link href={`/convenciones/${conv.slug}/editar`} className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all" title="Editar"><Edit className="w-5 h-5" /></Link>
 
                       <button
                         onClick={() => handleDeleteConvention(conv._id)}
                         disabled={actionLoading === conv._id}
-                        className="inline-flex items-center justify-center p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all"
+                        className="p-3 text-black border-2 border-transparent hover:border-black hover:bg-white transition-all"
                         title="Eliminar convención"
                       >
                         <Trash2 className="w-5 h-5" />

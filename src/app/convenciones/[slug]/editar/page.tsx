@@ -15,7 +15,7 @@ export default async function EditarConvencionPage({ params }: { params: { slug:
   }
 
   await connectToDatabase();
-  const convention = await Convention.findById(params.slug).lean();
+  const convention = await Convention.findOne({ slug: params.slug }).lean();
 
   if (!convention) {
     notFound();
